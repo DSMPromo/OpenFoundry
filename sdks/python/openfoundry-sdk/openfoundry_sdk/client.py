@@ -46,6 +46,7 @@ class OpenFoundryClient:
         self.pipeline = _OperationNamespace(createpipeline=self.pipeline_pipeline_createpipeline, createschedule=self.pipeline_schedule_createschedule, deletepipeline=self.pipeline_pipeline_deletepipeline, deleteschedule=self.pipeline_schedule_deleteschedule, getdatasetlineage=self.pipeline_lineage_getdatasetlineage, getfulllineage=self.pipeline_lineage_getfulllineage, getpipeline=self.pipeline_pipeline_getpipeline, getrun=self.pipeline_scheduleruns_getrun, getschedule=self.pipeline_schedule_getschedule, listpipelines=self.pipeline_pipeline_listpipelines, listruns=self.pipeline_scheduleruns_listruns, listschedules=self.pipeline_schedule_listschedules, previewnextfires=self.pipeline_schedule_previewnextfires, recordlineage=self.pipeline_lineage_recordlineage, runschedulenow=self.pipeline_schedule_runschedulenow, triggerrun=self.pipeline_pipeline_triggerrun, updatepipeline=self.pipeline_pipeline_updatepipeline, updateschedule=self.pipeline_schedule_updateschedule)
         self.query = _OperationNamespace(deletesavedquery=self.query_query_deletesavedquery, executequery=self.query_query_executequery, explainquery=self.query_query_explainquery, listsavedqueries=self.query_query_listsavedqueries, savequery=self.query_query_savequery)
         self.runtime = _OperationNamespace(dropsession=self.runtime_pythonruntime_dropsession, ensuresession=self.runtime_pythonruntime_ensuresession, executeinlinefunction=self.runtime_pythonruntime_executeinlinefunction, executenotebookcell=self.runtime_pythonruntime_executenotebookcell, executepipelinetransform=self.runtime_pythonruntime_executepipelinetransform)
+        self.vertex = _OperationNamespace(centrality=self.vertex_traversal_centrality, createannotation=self.vertex_vertex_createannotation, createderivedpropertybinding=self.vertex_vertex_createderivedpropertybinding, creategraph=self.vertex_vertex_creategraph, creategraphversion=self.vertex_vertex_creategraphversion, createscenario=self.vertex_vertex_createscenario, createsearcharound=self.vertex_vertex_createsearcharound, deleteannotation=self.vertex_vertex_deleteannotation, deletederivedpropertybinding=self.vertex_vertex_deletederivedpropertybinding, deletegraph=self.vertex_vertex_deletegraph, deletescenario=self.vertex_vertex_deletescenario, deletesearcharound=self.vertex_vertex_deletesearcharound, diffscenario=self.vertex_vertex_diffscenario, executesearcharound=self.vertex_traversal_executesearcharound, expandneighbors=self.vertex_traversal_expandneighbors, findpaths=self.vertex_traversal_findpaths, forkgraph=self.vertex_vertex_forkgraph, getgraph=self.vertex_vertex_getgraph, getgraphversion=self.vertex_vertex_getgraphversion, getscenario=self.vertex_vertex_getscenario, getsearcharound=self.vertex_vertex_getsearcharound, histogram=self.vertex_traversal_histogram, linksummary=self.vertex_traversal_linksummary, listannotations=self.vertex_vertex_listannotations, listderivedpropertybindings=self.vertex_vertex_listderivedpropertybindings, listgraphversions=self.vertex_vertex_listgraphversions, listgraphs=self.vertex_vertex_listgraphs, listscenarios=self.vertex_vertex_listscenarios, listsearcharounds=self.vertex_vertex_listsearcharounds, promotescenariotoactions=self.vertex_vertex_promotescenariotoactions, updateannotation=self.vertex_vertex_updateannotation, updategraph=self.vertex_vertex_updategraph, updatescenario=self.vertex_vertex_updatescenario, updatesearcharound=self.vertex_vertex_updatesearcharound)
 
     def clone(self, **overrides: Any) -> "OpenFoundryClient":
         return OpenFoundryClient(base_url=overrides.get("base_url", self.base_url), headers=overrides.get("headers", self.default_headers), token=overrides.get("token", self.token), timeout_seconds=overrides.get("timeout_seconds", self.timeout_seconds), max_retries=overrides.get("max_retries", self.max_retries), retry_backoff_seconds=overrides.get("retry_backoff_seconds", self.retry_backoff_seconds), user_agent=overrides.get("user_agent", self.user_agent))
@@ -401,6 +402,108 @@ class OpenFoundryClient:
     def v1_marketplaceproduct_uninstall(self, body: models.UninstallRequest, headers: Mapping[str, str] | None = None) -> Any:
         return self._request("POST", "/api/v1/v1/uninstall", None, None, body, headers=headers)
 
+    def vertex_traversal_centrality(self, body: models.CentralityRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/centrality", None, None, body, headers=headers)
+
+    def vertex_vertex_createannotation(self, body: models.CreateAnnotationRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/create-annotation", None, None, body, headers=headers)
+
+    def vertex_vertex_createderivedpropertybinding(self, body: models.CreateDerivedPropertyBindingRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/create-derived-property-binding", None, None, body, headers=headers)
+
+    def vertex_vertex_creategraph(self, body: models.CreateGraphRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/create-graph", None, None, body, headers=headers)
+
+    def vertex_vertex_creategraphversion(self, body: models.CreateGraphVersionRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/create-graph-version", None, None, body, headers=headers)
+
+    def vertex_vertex_createscenario(self, body: models.CreateScenarioRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/create-scenario", None, None, body, headers=headers)
+
+    def vertex_vertex_createsearcharound(self, body: models.CreateSearchAroundRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/create-search-around", None, None, body, headers=headers)
+
+    def vertex_vertex_deleteannotation(self, id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("DELETE", "/api/v1/vertex/delete-annotation", None, {"id": id}, None, headers=headers)
+
+    def vertex_vertex_deletederivedpropertybinding(self, id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("DELETE", "/api/v1/vertex/delete-derived-property-binding", None, {"id": id}, None, headers=headers)
+
+    def vertex_vertex_deletegraph(self, id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("DELETE", "/api/v1/vertex/delete-graph", None, {"id": id}, None, headers=headers)
+
+    def vertex_vertex_deletescenario(self, id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("DELETE", "/api/v1/vertex/delete-scenario", None, {"id": id}, None, headers=headers)
+
+    def vertex_vertex_deletesearcharound(self, id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("DELETE", "/api/v1/vertex/delete-search-around", None, {"id": id}, None, headers=headers)
+
+    def vertex_vertex_diffscenario(self, body: models.DiffScenarioRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/diff-scenario", None, None, body, headers=headers)
+
+    def vertex_traversal_executesearcharound(self, body: models.ExecuteSearchAroundRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/execute-search-around", None, None, body, headers=headers)
+
+    def vertex_traversal_expandneighbors(self, body: models.ExpandNeighborsRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/expand-neighbors", None, None, body, headers=headers)
+
+    def vertex_traversal_findpaths(self, body: models.FindPathsRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/find-paths", None, None, body, headers=headers)
+
+    def vertex_vertex_forkgraph(self, body: models.ForkGraphRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/fork-graph", None, None, body, headers=headers)
+
+    def vertex_vertex_getgraph(self, id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/get-graph", None, {"id": id}, None, headers=headers)
+
+    def vertex_vertex_getgraphversion(self, graph_id: Uuid | None = None, version: int | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/get-graph-version", None, {"graph_id": graph_id, "version": version}, None, headers=headers)
+
+    def vertex_vertex_getscenario(self, id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/get-scenario", None, {"id": id}, None, headers=headers)
+
+    def vertex_vertex_getsearcharound(self, id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/get-search-around", None, {"id": id}, None, headers=headers)
+
+    def vertex_traversal_histogram(self, body: models.HistogramRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/histogram", None, None, body, headers=headers)
+
+    def vertex_traversal_linksummary(self, body: models.LinkSummaryRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/link-summary", None, None, body, headers=headers)
+
+    def vertex_vertex_listannotations(self, graph_id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/list-annotations", None, {"graph_id": graph_id}, None, headers=headers)
+
+    def vertex_vertex_listderivedpropertybindings(self, object_type_id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/list-derived-property-bindings", None, {"object_type_id": object_type_id}, None, headers=headers)
+
+    def vertex_vertex_listgraphversions(self, graph_id: Uuid | None = None, pagination: PageRequest | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/list-graph-versions", None, {"graph_id": graph_id, "pagination": pagination}, None, headers=headers)
+
+    def vertex_vertex_listgraphs(self, pagination: PageRequest | None = None, project_id: Uuid | None = None, search: str | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/list-graphs", None, {"pagination": pagination, "project_id": project_id, "search": search}, None, headers=headers)
+
+    def vertex_vertex_listscenarios(self, graph_id: Uuid | None = None, pagination: PageRequest | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/list-scenarios", None, {"graph_id": graph_id, "pagination": pagination}, None, headers=headers)
+
+    def vertex_vertex_listsearcharounds(self, pagination: PageRequest | None = None, project_id: Uuid | None = None, search: str | None = None, starting_object_type_id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("GET", "/api/v1/vertex/list-search-arounds", None, {"pagination": pagination, "project_id": project_id, "search": search, "starting_object_type_id": starting_object_type_id}, None, headers=headers)
+
+    def vertex_vertex_promotescenariotoactions(self, body: models.PromoteScenarioRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/vertex/promote-scenario-to-actions", None, None, body, headers=headers)
+
+    def vertex_vertex_updateannotation(self, body: models.UpdateAnnotationRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("PATCH", "/api/v1/vertex/update-annotation", None, None, body, headers=headers)
+
+    def vertex_vertex_updategraph(self, body: models.UpdateGraphRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("PATCH", "/api/v1/vertex/update-graph", None, None, body, headers=headers)
+
+    def vertex_vertex_updatescenario(self, body: models.UpdateScenarioRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("PATCH", "/api/v1/vertex/update-scenario", None, None, body, headers=headers)
+
+    def vertex_vertex_updatesearcharound(self, body: models.UpdateSearchAroundRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("PATCH", "/api/v1/vertex/update-search-around", None, None, body, headers=headers)
+
     def admin_v2_getcontrolpanel(self, headers: Mapping[str, str] | None = None) -> Any:
         return self._request("GET", "/api/v2/admin/control-panel", None, None, None, headers=headers)
 
@@ -690,6 +793,74 @@ class OpenFoundryClient:
                 return self.v1_eventrouter_subscribe(payload.get('body', payload), headers=headers)
             case "open_foundry.marketplace.v1.MarketplaceProductService.Uninstall":
                 return self.v1_marketplaceproduct_uninstall(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.TraversalService.Centrality":
+                return self.vertex_traversal_centrality(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.CreateAnnotation":
+                return self.vertex_vertex_createannotation(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.CreateDerivedPropertyBinding":
+                return self.vertex_vertex_createderivedpropertybinding(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.CreateGraph":
+                return self.vertex_vertex_creategraph(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.CreateGraphVersion":
+                return self.vertex_vertex_creategraphversion(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.CreateScenario":
+                return self.vertex_vertex_createscenario(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.CreateSearchAround":
+                return self.vertex_vertex_createsearcharound(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.DeleteAnnotation":
+                return self.vertex_vertex_deleteannotation((payload.get('query') or {}).get("id"), headers=headers)
+            case "open_foundry.vertex.VertexService.DeleteDerivedPropertyBinding":
+                return self.vertex_vertex_deletederivedpropertybinding((payload.get('query') or {}).get("id"), headers=headers)
+            case "open_foundry.vertex.VertexService.DeleteGraph":
+                return self.vertex_vertex_deletegraph((payload.get('query') or {}).get("id"), headers=headers)
+            case "open_foundry.vertex.VertexService.DeleteScenario":
+                return self.vertex_vertex_deletescenario((payload.get('query') or {}).get("id"), headers=headers)
+            case "open_foundry.vertex.VertexService.DeleteSearchAround":
+                return self.vertex_vertex_deletesearcharound((payload.get('query') or {}).get("id"), headers=headers)
+            case "open_foundry.vertex.VertexService.DiffScenario":
+                return self.vertex_vertex_diffscenario(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.TraversalService.ExecuteSearchAround":
+                return self.vertex_traversal_executesearcharound(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.TraversalService.ExpandNeighbors":
+                return self.vertex_traversal_expandneighbors(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.TraversalService.FindPaths":
+                return self.vertex_traversal_findpaths(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.ForkGraph":
+                return self.vertex_vertex_forkgraph(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.GetGraph":
+                return self.vertex_vertex_getgraph((payload.get('query') or {}).get("id"), headers=headers)
+            case "open_foundry.vertex.VertexService.GetGraphVersion":
+                return self.vertex_vertex_getgraphversion((payload.get('query') or {}).get("graph_id"), (payload.get('query') or {}).get("version"), headers=headers)
+            case "open_foundry.vertex.VertexService.GetScenario":
+                return self.vertex_vertex_getscenario((payload.get('query') or {}).get("id"), headers=headers)
+            case "open_foundry.vertex.VertexService.GetSearchAround":
+                return self.vertex_vertex_getsearcharound((payload.get('query') or {}).get("id"), headers=headers)
+            case "open_foundry.vertex.TraversalService.Histogram":
+                return self.vertex_traversal_histogram(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.TraversalService.LinkSummary":
+                return self.vertex_traversal_linksummary(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.ListAnnotations":
+                return self.vertex_vertex_listannotations((payload.get('query') or {}).get("graph_id"), headers=headers)
+            case "open_foundry.vertex.VertexService.ListDerivedPropertyBindings":
+                return self.vertex_vertex_listderivedpropertybindings((payload.get('query') or {}).get("object_type_id"), headers=headers)
+            case "open_foundry.vertex.VertexService.ListGraphVersions":
+                return self.vertex_vertex_listgraphversions((payload.get('query') or {}).get("graph_id"), (payload.get('query') or {}).get("pagination"), headers=headers)
+            case "open_foundry.vertex.VertexService.ListGraphs":
+                return self.vertex_vertex_listgraphs((payload.get('query') or {}).get("pagination"), (payload.get('query') or {}).get("project_id"), (payload.get('query') or {}).get("search"), headers=headers)
+            case "open_foundry.vertex.VertexService.ListScenarios":
+                return self.vertex_vertex_listscenarios((payload.get('query') or {}).get("graph_id"), (payload.get('query') or {}).get("pagination"), headers=headers)
+            case "open_foundry.vertex.VertexService.ListSearchArounds":
+                return self.vertex_vertex_listsearcharounds((payload.get('query') or {}).get("pagination"), (payload.get('query') or {}).get("project_id"), (payload.get('query') or {}).get("search"), (payload.get('query') or {}).get("starting_object_type_id"), headers=headers)
+            case "open_foundry.vertex.VertexService.PromoteScenarioToActions":
+                return self.vertex_vertex_promotescenariotoactions(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.UpdateAnnotation":
+                return self.vertex_vertex_updateannotation(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.UpdateGraph":
+                return self.vertex_vertex_updategraph(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.UpdateScenario":
+                return self.vertex_vertex_updatescenario(payload.get('body', payload), headers=headers)
+            case "open_foundry.vertex.VertexService.UpdateSearchAround":
+                return self.vertex_vertex_updatesearcharound(payload.get('body', payload), headers=headers)
             case "rest.admin.v2.getControlPanel":
                 return self.admin_v2_getcontrolpanel(headers=headers)
             case "rest.admin.v2.updateControlPanel":

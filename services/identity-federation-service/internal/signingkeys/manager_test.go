@@ -137,8 +137,9 @@ func TestManager_RotateThreeTimes_GraceAndExpiry(t *testing.T) {
 		mat, err := mgr.ActiveKey(ctx)
 		require.NoError(t, err)
 		claims := sampleClaims()
-		// Push exp far enough out so the test never trips the EXP gate.
-		claims.EXP = clk.Now().Add(48 * time.Hour).Unix()
+		// Push exp well past real wall-clock time: DecodeTokenRS256Multi
+		// validates exp against time.Now(), not the manager's mock clock.
+		claims.EXP = time.Now().Add(72 * time.Hour).Unix()
 		tok, err := mgr.IssueRS256(ctx, claims)
 		require.NoError(t, err)
 		return mat.Record.Kid, tok

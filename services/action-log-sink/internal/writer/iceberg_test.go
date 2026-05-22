@@ -34,7 +34,9 @@ func sampleEnvelope() envelope.ActionEnvelope {
 }
 
 func TestIcebergWriter_AppendSendsExpectedBatch(t *testing.T) {
-	t.Parallel()
+	// Intentionally not parallel: this test swaps the package-level Now
+	// seam, which the parallel IcebergWriter tests read via Append.
+	// Running serially keeps that mutation out of the parallel phase.
 	fixedNow := time.UnixMicro(1_700_000_000_111_222).UTC()
 	prev := Now
 	Now = func() time.Time { return fixedNow }

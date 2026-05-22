@@ -801,6 +801,233 @@ public final class OpenFoundryClient {
         return request("POST", "/api/v1/v1/uninstall", pathParams, queryParams, bodyJson);
     }
 
+    public String vertexTraversalCentrality(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/centrality", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexCreateannotation(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/create-annotation", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexCreatederivedpropertybinding(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/create-derived-property-binding", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexCreategraph(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/create-graph", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexCreategraphversion(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/create-graph-version", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexCreatescenario(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/create-scenario", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexCreatesearcharound(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/create-search-around", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexDeleteannotation(String id) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (id != null) { queryParams.put("id", id); }
+        return request("DELETE", "/api/v1/vertex/delete-annotation", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexDeletederivedpropertybinding(String id) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (id != null) { queryParams.put("id", id); }
+        return request("DELETE", "/api/v1/vertex/delete-derived-property-binding", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexDeletegraph(String id) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (id != null) { queryParams.put("id", id); }
+        return request("DELETE", "/api/v1/vertex/delete-graph", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexDeletescenario(String id) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (id != null) { queryParams.put("id", id); }
+        return request("DELETE", "/api/v1/vertex/delete-scenario", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexDeletesearcharound(String id) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (id != null) { queryParams.put("id", id); }
+        return request("DELETE", "/api/v1/vertex/delete-search-around", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexDiffscenario(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/diff-scenario", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexTraversalExecutesearcharound(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/execute-search-around", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexTraversalExpandneighbors(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/expand-neighbors", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexTraversalFindpaths(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/find-paths", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexForkgraph(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/fork-graph", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexGetgraph(String id) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (id != null) { queryParams.put("id", id); }
+        return request("GET", "/api/v1/vertex/get-graph", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexGetgraphversion(String graphId, Long version) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (graphId != null) { queryParams.put("graph_id", graphId); }
+        if (version != null) { queryParams.put("version", version); }
+        return request("GET", "/api/v1/vertex/get-graph-version", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexGetscenario(String id) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (id != null) { queryParams.put("id", id); }
+        return request("GET", "/api/v1/vertex/get-scenario", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexGetsearcharound(String id) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (id != null) { queryParams.put("id", id); }
+        return request("GET", "/api/v1/vertex/get-search-around", pathParams, queryParams, null);
+    }
+
+    public String vertexTraversalHistogram(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/histogram", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexTraversalLinksummary(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/link-summary", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexListannotations(String graphId) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (graphId != null) { queryParams.put("graph_id", graphId); }
+        return request("GET", "/api/v1/vertex/list-annotations", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexListderivedpropertybindings(String objectTypeId) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (objectTypeId != null) { queryParams.put("object_type_id", objectTypeId); }
+        return request("GET", "/api/v1/vertex/list-derived-property-bindings", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexListgraphversions(String graphId, String pagination) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (graphId != null) { queryParams.put("graph_id", graphId); }
+        if (pagination != null) { queryParams.put("pagination", pagination); }
+        return request("GET", "/api/v1/vertex/list-graph-versions", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexListgraphs(String pagination, String projectId, String search) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (pagination != null) { queryParams.put("pagination", pagination); }
+        if (projectId != null) { queryParams.put("project_id", projectId); }
+        if (search != null) { queryParams.put("search", search); }
+        return request("GET", "/api/v1/vertex/list-graphs", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexListscenarios(String graphId, String pagination) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (graphId != null) { queryParams.put("graph_id", graphId); }
+        if (pagination != null) { queryParams.put("pagination", pagination); }
+        return request("GET", "/api/v1/vertex/list-scenarios", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexListsearcharounds(String pagination, String projectId, String search, String startingObjectTypeId) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = new LinkedHashMap<>();
+        if (pagination != null) { queryParams.put("pagination", pagination); }
+        if (projectId != null) { queryParams.put("project_id", projectId); }
+        if (search != null) { queryParams.put("search", search); }
+        if (startingObjectTypeId != null) { queryParams.put("starting_object_type_id", startingObjectTypeId); }
+        return request("GET", "/api/v1/vertex/list-search-arounds", pathParams, queryParams, null);
+    }
+
+    public String vertexVertexPromotescenariotoactions(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/vertex/promote-scenario-to-actions", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexUpdateannotation(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("PATCH", "/api/v1/vertex/update-annotation", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexUpdategraph(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("PATCH", "/api/v1/vertex/update-graph", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexUpdatescenario(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("PATCH", "/api/v1/vertex/update-scenario", pathParams, queryParams, bodyJson);
+    }
+
+    public String vertexVertexUpdatesearcharound(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("PATCH", "/api/v1/vertex/update-search-around", pathParams, queryParams, bodyJson);
+    }
+
     public String adminV2Getcontrolpanel() throws IOException, InterruptedException {
         Map<String, Object> pathParams = Map.of();
         Map<String, Object> queryParams = Map.of();

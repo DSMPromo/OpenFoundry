@@ -61,6 +61,10 @@
       "description": "Operations generated for the `open_foundry.query` namespace."
     },
     {
+      "name": "open_foundry.vertex",
+      "description": "Operations generated for the `open_foundry.vertex` namespace."
+    },
+    {
       "name": "openfoundry.streaming.router.v1",
       "description": "Operations generated for the `openfoundry.streaming.router.v1` namespace."
     },
@@ -6328,6 +6332,1828 @@
         "x-openfoundry-stability": "beta"
       }
     },
+    "/api/v1/vertex/centrality": {
+      "post": {
+        "summary": "TraversalService Centrality",
+        "description": "Generated from `open_foundry.vertex` RPC `Centrality` in service `TraversalService`.",
+        "operationId": "open_foundry.vertex.TraversalService.Centrality",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CentralityRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CentralityResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.centrality",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/create-annotation": {
+      "post": {
+        "summary": "VertexService CreateAnnotation",
+        "description": "Generated from `open_foundry.vertex` RPC `CreateAnnotation` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.CreateAnnotation",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAnnotationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Annotation"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.createannotation",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/create-derived-property-binding": {
+      "post": {
+        "summary": "VertexService CreateDerivedPropertyBinding",
+        "description": "Generated from `open_foundry.vertex` RPC `CreateDerivedPropertyBinding` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.CreateDerivedPropertyBinding",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDerivedPropertyBindingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DerivedPropertyBinding"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.createderivedpropertybinding",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/create-graph": {
+      "post": {
+        "summary": "VertexService CreateGraph",
+        "description": "Generated from `open_foundry.vertex` RPC `CreateGraph` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.CreateGraph",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGraphRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Graph"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.creategraph",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/create-graph-version": {
+      "post": {
+        "summary": "VertexService CreateGraphVersion",
+        "description": "Generated from `open_foundry.vertex` RPC `CreateGraphVersion` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.CreateGraphVersion",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGraphVersionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GraphVersion"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.creategraphversion",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/create-scenario": {
+      "post": {
+        "summary": "VertexService CreateScenario",
+        "description": "Generated from `open_foundry.vertex` RPC `CreateScenario` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.CreateScenario",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScenarioRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scenario"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.createscenario",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/create-search-around": {
+      "post": {
+        "summary": "VertexService CreateSearchAround",
+        "description": "Generated from `open_foundry.vertex` RPC `CreateSearchAround` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.CreateSearchAround",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSearchAroundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchAround"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.createsearcharound",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/delete-annotation": {
+      "delete": {
+        "summary": "VertexService DeleteAnnotation",
+        "description": "Generated from `open_foundry.vertex` RPC `DeleteAnnotation` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.DeleteAnnotation",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `DeleteAnnotationRequest.id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteAnnotationResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.deleteannotation",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/delete-derived-property-binding": {
+      "delete": {
+        "summary": "VertexService DeleteDerivedPropertyBinding",
+        "description": "Generated from `open_foundry.vertex` RPC `DeleteDerivedPropertyBinding` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.DeleteDerivedPropertyBinding",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `DeleteDerivedPropertyBindingRequest.id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteDerivedPropertyBindingResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.deletederivedpropertybinding",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/delete-graph": {
+      "delete": {
+        "summary": "VertexService DeleteGraph",
+        "description": "Generated from `open_foundry.vertex` RPC `DeleteGraph` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.DeleteGraph",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `DeleteGraphRequest.id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteGraphResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.deletegraph",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/delete-scenario": {
+      "delete": {
+        "summary": "VertexService DeleteScenario",
+        "description": "Generated from `open_foundry.vertex` RPC `DeleteScenario` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.DeleteScenario",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `DeleteScenarioRequest.id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteScenarioResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.deletescenario",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/delete-search-around": {
+      "delete": {
+        "summary": "VertexService DeleteSearchAround",
+        "description": "Generated from `open_foundry.vertex` RPC `DeleteSearchAround` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.DeleteSearchAround",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `DeleteSearchAroundRequest.id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSearchAroundResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.deletesearcharound",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/diff-scenario": {
+      "post": {
+        "summary": "VertexService DiffScenario",
+        "description": "Generated from `open_foundry.vertex` RPC `DiffScenario` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.DiffScenario",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiffScenarioRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioDiff"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.diffscenario",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/execute-search-around": {
+      "post": {
+        "summary": "TraversalService ExecuteSearchAround",
+        "description": "Generated from `open_foundry.vertex` RPC `ExecuteSearchAround` in service `TraversalService`.",
+        "operationId": "open_foundry.vertex.TraversalService.ExecuteSearchAround",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecuteSearchAroundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecuteSearchAroundResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.executesearcharound",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/expand-neighbors": {
+      "post": {
+        "summary": "TraversalService ExpandNeighbors",
+        "description": "Generated from `open_foundry.vertex` RPC `ExpandNeighbors` in service `TraversalService`.",
+        "operationId": "open_foundry.vertex.TraversalService.ExpandNeighbors",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpandNeighborsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpandNeighborsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.expandneighbors",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/find-paths": {
+      "post": {
+        "summary": "TraversalService FindPaths",
+        "description": "Generated from `open_foundry.vertex` RPC `FindPaths` in service `TraversalService`.",
+        "operationId": "open_foundry.vertex.TraversalService.FindPaths",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindPathsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindPathsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.findpaths",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/fork-graph": {
+      "post": {
+        "summary": "VertexService ForkGraph",
+        "description": "Generated from `open_foundry.vertex` RPC `ForkGraph` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.ForkGraph",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForkGraphRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Graph"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.forkgraph",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/get-graph": {
+      "get": {
+        "summary": "VertexService GetGraph",
+        "description": "Generated from `open_foundry.vertex` RPC `GetGraph` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.GetGraph",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `GetGraphRequest.id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Graph"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.getgraph",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/get-graph-version": {
+      "get": {
+        "summary": "VertexService GetGraphVersion",
+        "description": "Generated from `open_foundry.vertex` RPC `GetGraphVersion` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.GetGraphVersion",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "graph_id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `GetGraphVersionRequest.graph_id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `GetGraphVersionRequest.version`.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GraphVersion"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.getgraphversion",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/get-scenario": {
+      "get": {
+        "summary": "VertexService GetScenario",
+        "description": "Generated from `open_foundry.vertex` RPC `GetScenario` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.GetScenario",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `GetScenarioRequest.id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scenario"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.getscenario",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/get-search-around": {
+      "get": {
+        "summary": "VertexService GetSearchAround",
+        "description": "Generated from `open_foundry.vertex` RPC `GetSearchAround` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.GetSearchAround",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `GetSearchAroundRequest.id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchAround"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.getsearcharound",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/histogram": {
+      "post": {
+        "summary": "TraversalService Histogram",
+        "description": "Generated from `open_foundry.vertex` RPC `Histogram` in service `TraversalService`.",
+        "operationId": "open_foundry.vertex.TraversalService.Histogram",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistogramRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistogramResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.histogram",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/link-summary": {
+      "post": {
+        "summary": "TraversalService LinkSummary",
+        "description": "Generated from `open_foundry.vertex` RPC `LinkSummary` in service `TraversalService`.",
+        "operationId": "open_foundry.vertex.TraversalService.LinkSummary",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkSummaryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkSummaryResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.linksummary",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/list-annotations": {
+      "get": {
+        "summary": "VertexService ListAnnotations",
+        "description": "Generated from `open_foundry.vertex` RPC `ListAnnotations` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.ListAnnotations",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "graph_id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListAnnotationsRequest.graph_id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAnnotationsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.listannotations",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/list-derived-property-bindings": {
+      "get": {
+        "summary": "VertexService ListDerivedPropertyBindings",
+        "description": "Generated from `open_foundry.vertex` RPC `ListDerivedPropertyBindings` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.ListDerivedPropertyBindings",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "object_type_id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListDerivedPropertyBindingsRequest.object_type_id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListDerivedPropertyBindingsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.listderivedpropertybindings",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/list-graph-versions": {
+      "get": {
+        "summary": "VertexService ListGraphVersions",
+        "description": "Generated from `open_foundry.vertex` RPC `ListGraphVersions` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.ListGraphVersions",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "graph_id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListGraphVersionsRequest.graph_id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          },
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListGraphVersionsRequest.pagination`.",
+            "schema": {
+              "$ref": "#/components/schemas/PageRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListGraphVersionsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.listgraphversions",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/list-graphs": {
+      "get": {
+        "summary": "VertexService ListGraphs",
+        "description": "Generated from `open_foundry.vertex` RPC `ListGraphs` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.ListGraphs",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListGraphsRequest.pagination`.",
+            "schema": {
+              "$ref": "#/components/schemas/PageRequest"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListGraphsRequest.project_id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListGraphsRequest.search`.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListGraphsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.listgraphs",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/list-scenarios": {
+      "get": {
+        "summary": "VertexService ListScenarios",
+        "description": "Generated from `open_foundry.vertex` RPC `ListScenarios` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.ListScenarios",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "graph_id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListScenariosRequest.graph_id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          },
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListScenariosRequest.pagination`.",
+            "schema": {
+              "$ref": "#/components/schemas/PageRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListScenariosResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.listscenarios",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/list-search-arounds": {
+      "get": {
+        "summary": "VertexService ListSearchArounds",
+        "description": "Generated from `open_foundry.vertex` RPC `ListSearchArounds` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.ListSearchArounds",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListSearchAroundsRequest.pagination`.",
+            "schema": {
+              "$ref": "#/components/schemas/PageRequest"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListSearchAroundsRequest.project_id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListSearchAroundsRequest.search`.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "starting_object_type_id",
+            "in": "query",
+            "required": false,
+            "description": "Query parameter derived from `ListSearchAroundsRequest.starting_object_type_id`.",
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSearchAroundsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.listsearcharounds",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/promote-scenario-to-actions": {
+      "post": {
+        "summary": "VertexService PromoteScenarioToActions",
+        "description": "Generated from `open_foundry.vertex` RPC `PromoteScenarioToActions` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.PromoteScenarioToActions",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromoteScenarioRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromoteScenarioResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.promotescenariotoactions",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/update-annotation": {
+      "patch": {
+        "summary": "VertexService UpdateAnnotation",
+        "description": "Generated from `open_foundry.vertex` RPC `UpdateAnnotation` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.UpdateAnnotation",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAnnotationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Annotation"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.updateannotation",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/update-graph": {
+      "patch": {
+        "summary": "VertexService UpdateGraph",
+        "description": "Generated from `open_foundry.vertex` RPC `UpdateGraph` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.UpdateGraph",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGraphRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Graph"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.updategraph",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/update-scenario": {
+      "patch": {
+        "summary": "VertexService UpdateScenario",
+        "description": "Generated from `open_foundry.vertex` RPC `UpdateScenario` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.UpdateScenario",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScenarioRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scenario"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.updatescenario",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/vertex/update-search-around": {
+      "patch": {
+        "summary": "VertexService UpdateSearchAround",
+        "description": "Generated from `open_foundry.vertex` RPC `UpdateSearchAround` in service `VertexService`.",
+        "operationId": "open_foundry.vertex.VertexService.UpdateSearchAround",
+        "tags": [
+          "open_foundry.vertex"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSearchAroundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchAround"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "vertex",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.vertex.updatesearcharound",
+        "x-openfoundry-stability": "beta"
+      }
+    },
     "/api/v2/admin/control-panel": {
       "get": {
         "summary": "Get control panel (v2)",
@@ -7330,6 +9156,37 @@
           }
         }
       },
+      "Annotation": {
+        "type": "object",
+        "properties": {
+          "author_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "geometry_json": {
+            "type": "string"
+          },
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/AnnotationKind"
+          },
+          "text": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "ApiError": {
         "type": "object",
         "properties": {
@@ -7662,6 +9519,51 @@
           }
         }
       },
+      "CentralityRequest": {
+        "type": "object",
+        "properties": {
+          "branch_context": {
+            "type": "string"
+          },
+          "measures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CentralityMeasure"
+            }
+          },
+          "object_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectRef"
+            }
+          }
+        }
+      },
+      "CentralityResponse": {
+        "type": "object",
+        "properties": {
+          "scores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CentralityScore"
+            }
+          }
+        }
+      },
+      "CentralityScore": {
+        "type": "object",
+        "properties": {
+          "measure": {
+            "$ref": "#/components/schemas/CentralityMeasure"
+          },
+          "ref": {
+            "$ref": "#/components/schemas/ObjectRef"
+          },
+          "value": {
+            "type": "number"
+          }
+        }
+      },
       "Column": {
         "type": "object",
         "properties": {
@@ -7785,6 +9687,44 @@
           }
         }
       },
+      "Cost": {
+        "type": "object",
+        "properties": {
+          "budget_exceeded": {
+            "type": "boolean"
+          },
+          "cpu_seconds": {
+            "type": "number"
+          },
+          "indices_hit": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rows_scanned": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "CreateAnnotationRequest": {
+        "type": "object",
+        "properties": {
+          "geometry_json": {
+            "type": "string"
+          },
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/AnnotationKind"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
       "CreateBranchRequest": {
         "type": "object",
         "properties": {
@@ -7860,6 +9800,78 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "CreateDerivedPropertyBindingRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "function_rid": {
+            "type": "string"
+          },
+          "object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "property_name": {
+            "type": "string"
+          },
+          "return_type": {
+            "$ref": "#/components/schemas/ParamType"
+          }
+        }
+      },
+      "CreateGraphRequest": {
+        "type": "object",
+        "properties": {
+          "branch_context": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "markings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "model_rid": {
+            "type": "string"
+          },
+          "organizations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "project_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "seed_object_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateGraphVersionRequest": {
+        "type": "object",
+        "properties": {
+          "changelog": {
+            "type": "string"
+          },
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
           }
         }
       },
@@ -8095,6 +10107,29 @@
           }
         }
       },
+      "CreateScenarioRequest": {
+        "type": "object",
+        "properties": {
+          "branch_context": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "edits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StagedEdit"
+            }
+          },
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "CreateScheduleRequest": {
         "type": "object",
         "properties": {
@@ -8115,6 +10150,35 @@
           },
           "trigger": {
             "$ref": "#/components/schemas/Trigger"
+          }
+        }
+      },
+      "CreateSearchAroundRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundParameter"
+            }
+          },
+          "project_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "starting_object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundStep"
+            }
+          },
+          "title": {
+            "type": "string"
           }
         }
       },
@@ -8269,6 +10333,22 @@
           }
         }
       },
+      "DeleteAnnotationRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "DeleteAnnotationResponse": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          }
+        }
+      },
       "DeleteConnectionRequest": {
         "type": "object",
         "properties": {
@@ -8292,6 +10372,38 @@
       "DeleteDatasetResponse": {
         "type": "object",
         "properties": {}
+      },
+      "DeleteDerivedPropertyBindingRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "DeleteDerivedPropertyBindingResponse": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DeleteGraphRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "DeleteGraphResponse": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          }
+        }
       },
       "DeleteLinkTypeRequest": {
         "type": "object",
@@ -8396,6 +10508,22 @@
         "type": "object",
         "properties": {}
       },
+      "DeleteScenarioRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "DeleteScenarioResponse": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          }
+        }
+      },
       "DeleteScheduleRequest": {
         "type": "object",
         "properties": {
@@ -8407,6 +10535,67 @@
       "DeleteScheduleResponse": {
         "type": "object",
         "properties": {}
+      },
+      "DeleteSearchAroundRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "DeleteSearchAroundResponse": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DerivedPropertyBinding": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "function_rid": {
+            "type": "string"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "owner_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "property_name": {
+            "type": "string"
+          },
+          "return_type": {
+            "$ref": "#/components/schemas/ParamType"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DiffScenarioRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
       },
       "DisableModelRequest": {
         "type": "object",
@@ -8656,6 +10845,89 @@
           }
         }
       },
+      "ExecuteSearchAroundRequest": {
+        "type": "object",
+        "properties": {
+          "inline": {
+            "$ref": "#/components/schemas/InlineSearchAround"
+          },
+          "saved_search_around_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "ExecuteSearchAroundResponse": {
+        "type": "object",
+        "properties": {
+          "cost": {
+            "$ref": "#/components/schemas/Cost"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResultGroup"
+            }
+          }
+        }
+      },
+      "ExpandNeighborsRequest": {
+        "type": "object",
+        "properties": {
+          "branch_context": {
+            "type": "string"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundFilter"
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "link_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "object_id": {
+            "type": "string"
+          },
+          "object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "ExpandNeighborsResponse": {
+        "type": "object",
+        "properties": {
+          "hidden_count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectRef"
+            }
+          },
+          "next_cursor": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "total_is_estimate": {
+            "type": "boolean"
+          }
+        }
+      },
       "ExplainQueryRequest": {
         "type": "object",
         "properties": {
@@ -8846,6 +11118,50 @@
           }
         }
       },
+      "FindPathsRequest": {
+        "type": "object",
+        "properties": {
+          "branch_context": {
+            "type": "string"
+          },
+          "end": {
+            "$ref": "#/components/schemas/ObjectRef"
+          },
+          "k": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "max_hops": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "start": {
+            "$ref": "#/components/schemas/ObjectRef"
+          }
+        }
+      },
+      "FindPathsResponse": {
+        "type": "object",
+        "properties": {
+          "paths": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Path"
+            }
+          }
+        }
+      },
+      "ForkGraphRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "new_title": {
+            "type": "string"
+          }
+        }
+      },
       "GeneratePresignedDownloadUrlRequest": {
         "type": "object",
         "properties": {
@@ -8901,6 +11217,26 @@
       "GetFullLineageRequest": {
         "type": "object",
         "properties": {}
+      },
+      "GetGraphRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "GetGraphVersionRequest": {
+        "type": "object",
+        "properties": {
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "GetIngestJobRequest": {
         "type": "object",
@@ -8989,6 +11325,14 @@
           }
         }
       },
+      "GetScenarioRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
       "GetScheduleRequest": {
         "type": "object",
         "properties": {
@@ -9002,6 +11346,14 @@
         "properties": {
           "rid": {
             "type": "string"
+          }
+        }
+      },
+      "GetSearchAroundRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
           }
         }
       },
@@ -9021,6 +11373,98 @@
             "items": {
               "$ref": "#/components/schemas/DatasetVersion"
             }
+          }
+        }
+      },
+      "Graph": {
+        "type": "object",
+        "properties": {
+          "branch_context": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "layer_configuration_json": {
+            "type": "string"
+          },
+          "layout_state_json": {
+            "type": "string"
+          },
+          "markings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "model_rid": {
+            "type": "string"
+          },
+          "organizations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "owner_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "project_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "rid": {
+            "type": "string"
+          },
+          "seed_object_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timeline_state_json": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GraphVersion": {
+        "type": "object",
+        "properties": {
+          "author_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "changelog": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "snapshot_json": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -9077,6 +11521,77 @@
         "properties": {
           "check_rid": {
             "type": "string"
+          }
+        }
+      },
+      "HistogramBucket": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "value_json": {
+            "type": "string"
+          }
+        }
+      },
+      "HistogramFacet": {
+        "type": "object",
+        "properties": {
+          "buckets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistogramBucket"
+            }
+          },
+          "n": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "numeric": {
+            "$ref": "#/components/schemas/NumericSummary"
+          },
+          "object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "property": {
+            "type": "string"
+          },
+          "uniq": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "HistogramRequest": {
+        "type": "object",
+        "properties": {
+          "branch_context": {
+            "type": "string"
+          },
+          "object_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectRef"
+            }
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "HistogramResponse": {
+        "type": "object",
+        "properties": {
+          "facets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistogramFacet"
+            }
           }
         }
       },
@@ -9188,6 +11703,26 @@
           },
           "target_dataset_id": {
             "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "InlineSearchAround": {
+        "type": "object",
+        "properties": {
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundParameter"
+            }
+          },
+          "starting_object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundStep"
+            }
           }
         }
       },
@@ -9449,6 +11984,55 @@
           }
         }
       },
+      "LinkSummaryEntry": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "count_is_estimate": {
+            "type": "boolean"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "link_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "target_object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "LinkSummaryRequest": {
+        "type": "object",
+        "properties": {
+          "branch_context": {
+            "type": "string"
+          },
+          "object_id": {
+            "type": "string"
+          },
+          "object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "LinkSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkSummaryEntry"
+            }
+          }
+        }
+      },
       "LinkType": {
         "type": "object",
         "properties": {
@@ -9538,6 +12122,25 @@
           }
         }
       },
+      "ListAnnotationsRequest": {
+        "type": "object",
+        "properties": {
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "ListAnnotationsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Annotation"
+            }
+          }
+        }
+      },
       "ListConnectionsRequest": {
         "type": "object",
         "properties": {
@@ -9584,6 +12187,78 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Dataset"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PageResponse"
+          }
+        }
+      },
+      "ListDerivedPropertyBindingsRequest": {
+        "type": "object",
+        "properties": {
+          "object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "ListDerivedPropertyBindingsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DerivedPropertyBinding"
+            }
+          }
+        }
+      },
+      "ListGraphVersionsRequest": {
+        "type": "object",
+        "properties": {
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PageRequest"
+          }
+        }
+      },
+      "ListGraphVersionsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GraphVersion"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PageResponse"
+          }
+        }
+      },
+      "ListGraphsRequest": {
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/PageRequest"
+          },
+          "project_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "search": {
+            "type": "string"
+          }
+        }
+      },
+      "ListGraphsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Graph"
             }
           },
           "pagination": {
@@ -10002,6 +12677,31 @@
           }
         }
       },
+      "ListScenariosRequest": {
+        "type": "object",
+        "properties": {
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PageRequest"
+          }
+        }
+      },
+      "ListScenariosResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Scenario"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PageResponse"
+          }
+        }
+      },
       "ListScheduleRunsRequest": {
         "type": "object",
         "properties": {
@@ -10067,6 +12767,37 @@
             "items": {
               "$ref": "#/components/schemas/Schedule"
             }
+          }
+        }
+      },
+      "ListSearchAroundsRequest": {
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/PageRequest"
+          },
+          "project_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "search": {
+            "type": "string"
+          },
+          "starting_object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "ListSearchAroundsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAround"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PageResponse"
           }
         }
       },
@@ -10382,6 +13113,27 @@
           }
         }
       },
+      "NumericSummary": {
+        "type": "object",
+        "properties": {
+          "avg": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "n": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sum": {
+            "type": "number"
+          }
+        }
+      },
       "ObjectInstance": {
         "type": "object",
         "properties": {
@@ -10410,6 +13162,23 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "ObjectRef": {
+        "type": "object",
+        "properties": {
+          "display_label": {
+            "type": "string"
+          },
+          "object_id": {
+            "type": "string"
+          },
+          "object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "properties_json": {
+            "type": "string"
           }
         }
       },
@@ -10564,6 +13333,37 @@
           "total_pages": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "Path": {
+        "type": "object",
+        "properties": {
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PathEdge"
+            }
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectRef"
+            }
+          },
+          "weight": {
+            "type": "number"
+          }
+        }
+      },
+      "PathEdge": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "link_type_id": {
+            "$ref": "#/components/schemas/Uuid"
           }
         }
       },
@@ -10965,6 +13765,28 @@
           }
         }
       },
+      "PromoteScenarioRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "target_branch": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PromoteScenarioResponse": {
+        "type": "object",
+        "properties": {
+          "action_invocation_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        }
+      },
       "Property": {
         "type": "object",
         "properties": {
@@ -11345,6 +14167,24 @@
           }
         }
       },
+      "ResultGroup": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectRef"
+            }
+          },
+          "object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
       "Role": {
         "type": "object",
         "properties": {
@@ -11506,6 +14346,76 @@
           }
         }
       },
+      "Scenario": {
+        "type": "object",
+        "properties": {
+          "author_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "branch_context": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "edits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StagedEdit"
+            }
+          },
+          "graph_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ScenarioDiff": {
+        "type": "object",
+        "properties": {
+          "added_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "changed_edge_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "changed_node_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "impacted_object_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metrics_json": {
+            "type": "string"
+          },
+          "removed_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "scenario_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
       "Schedule": {
         "type": "object",
         "properties": {
@@ -11620,6 +14530,110 @@
           }
         }
       },
+      "SearchAround": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "owner_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundParameter"
+            }
+          },
+          "project_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "rid": {
+            "type": "string"
+          },
+          "starting_object_type_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundStep"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SearchAroundFilter": {
+        "type": "object",
+        "properties": {
+          "literal_json": {
+            "type": "string"
+          },
+          "op": {
+            "$ref": "#/components/schemas/FilterOp"
+          },
+          "parameter_ref": {
+            "type": "string"
+          },
+          "property": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchAroundParameter": {
+        "type": "object",
+        "properties": {
+          "default_value_json": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ParamType"
+          }
+        }
+      },
+      "SearchAroundStep": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundFilter"
+            }
+          },
+          "ordinal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "relation_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
       "SearchObjectsRequest": {
         "type": "object",
         "properties": {
@@ -11672,6 +14686,29 @@
             "type": "string"
           },
           "status": {
+            "type": "string"
+          }
+        }
+      },
+      "StagedEdit": {
+        "type": "object",
+        "properties": {
+          "action_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EditKind"
+          },
+          "new_value_json": {
+            "type": "string"
+          },
+          "old_value_json": {
+            "type": "string"
+          },
+          "property_name": {
+            "type": "string"
+          },
+          "target_ref": {
             "type": "string"
           }
         }
@@ -11990,6 +15027,20 @@
           }
         }
       },
+      "UpdateAnnotationRequest": {
+        "type": "object",
+        "properties": {
+          "geometry_json": {
+            "type": "string"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
       "UpdateCellRequest": {
         "type": "object",
         "properties": {
@@ -12078,6 +15129,41 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "UpdateGraphRequest": {
+        "type": "object",
+        "properties": {
+          "branch_context": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "layer_configuration_json": {
+            "type": "string"
+          },
+          "layout_state_json": {
+            "type": "string"
+          },
+          "model_rid": {
+            "type": "string"
+          },
+          "seed_object_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timeline_state_json": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
           }
         }
       },
@@ -12191,6 +15277,26 @@
           }
         }
       },
+      "UpdateScenarioRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "edits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StagedEdit"
+            }
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "UpdateScheduleRequest": {
         "type": "object",
         "properties": {
@@ -12217,6 +15323,32 @@
           },
           "trigger": {
             "$ref": "#/components/schemas/Trigger"
+          }
+        }
+      },
+      "UpdateSearchAroundRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundParameter"
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAroundStep"
+            }
+          },
+          "title": {
+            "type": "string"
           }
         }
       },

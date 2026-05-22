@@ -4,7 +4,7 @@ Use this page when you need to quickly answer "where should this change live?"
 
 ## Runtime Code
 
-`services/` contains 50 service directories under a single Go module rooted at `github.com/openfoundry/openfoundry-go`. The textual boilerplate every new service starts from lives at `docs/templates/service-skeleton/` (its `.go` files carry `//go:build ignore` so the toolchain skips them in place). Grouping below follows the Helm releases under `infra/helm/apps/` (`of-platform`, `of-data-engine`, `of-ontology`, `of-ml-aip`, `of-apps-ops`, `of-web`).
+`services/` contains 51 service directories under a single Go module rooted at `github.com/openfoundry/openfoundry-go`. The textual boilerplate every new service starts from lives at `docs/templates/service-skeleton/` (its `.go` files carry `//go:build ignore` so the toolchain skips them in place). Grouping below follows the Helm releases under `infra/helm/apps/` (`of-platform`, `of-data-engine`, `of-ontology`, `of-ml-aip`, `of-apps-ops`, `of-web`).
 
 ### Platform (auth, gateway, tenancy)
 
@@ -106,7 +106,7 @@ Use this page when you need to quickly answer "where should this change live?"
 
 ## Shared Libraries
 
-`libs/` contains 36 cross-cutting Go packages: `auth-middleware`, `authz-cedar-go` (Cedar engine), `audit-trail`, `core-models`, `db-pool`, `event-bus-control` (NATS JetStream), `event-bus-data` (Kafka), `event-scheduler`, `observability` (slog + OTel + Prometheus), `ontology-kernel`, `pipeline-expression`, `pipeline-plan`, `pipeline-runtime`, `plugin-sdk` (WASM connectors — placeholder), `proto-gen` (generated), `python-sidecar`, `query-engine`, `restrictedview`, `saga`, `scheduling-cron`, `state-machine`, `storage-abstraction`, `testing`, `vector-store`, `ai-kernel-go`, `ml-kernel-go`, `geospatial-core`, `geospatial-tiles`, `cassandra-kernel`, `idempotency`, `outbox`, `media-scanner`, `analytical-logic`, `search-abstraction`, `capabilities`, `scheduling-linter`.
+`libs/` contains 38 cross-cutting Go packages: `auth-middleware`, `authz-cedar-go` (Cedar engine), `audit-trail`, `core-models`, `db-pool`, `event-bus-control` (NATS JetStream), `event-bus-data` (Kafka), `event-scheduler`, `observability` (slog + OTel + Prometheus), `ontology-kernel`, `pipeline-expression`, `pipeline-plan`, `pipeline-runtime`, `plugin-sdk` (WASM connectors — placeholder), `proto-gen` (generated), `python-sidecar`, `query-engine`, `restrictedview`, `saga`, `scheduling-cron`, `state-machine`, `storage-abstraction`, `testing`, `vector-store`, `ai-kernel-go`, `ml-kernel-go`, `geospatial-core`, `geospatial-tiles`, `cassandra-kernel`, `idempotency`, `outbox`, `media-scanner`, `analytical-logic`, `search-abstraction`, `capabilities`, `scheduling-linter`, `aip-graph-reasoning`, `poc-geopolitica-transforms`.
 
 ## UI and Contracts
 
@@ -114,7 +114,7 @@ Use this page when you need to quickly answer "where should this change live?"
 | --- | --- |
 | `apps/web` | main product frontend (React 19 + Vite + TypeScript) |
 | `apps/web/src/routes` | route components (Workshop, ontology, datasets, pipelines, AI, audit, …) |
-| `proto/` | 23 Protobuf domains; Go generated to `libs/proto-gen/` |
+| `proto/` | 24 Protobuf domains; Go generated to `libs/proto-gen/` |
 | `sdks/typescript`, `sdks/python`, `sdks/java` | generated client SDKs |
 
 ## Tooling

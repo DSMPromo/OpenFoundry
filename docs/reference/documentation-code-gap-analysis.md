@@ -8,9 +8,9 @@ Snapshot date: 2026-05-18. The values below come from the working tree, not from
 
 | Evidence command / source | Current code value | Documentation impact |
 | --- | ---: | --- |
-| `find services -mindepth 1 -maxdepth 1 -type d` | 50 service directories | Pages must not claim the current monorepo has 42 service binaries. If they mention “42,” they are historical or stale. |
-| `find libs -mindepth 1 -maxdepth 1 -type d` | 36 library directories | Pages must not claim the current monorepo has 33 shared libraries. |
-| `find proto -mindepth 1 -maxdepth 1 -type d` | 23 protobuf domains | Contract docs should describe these proto domains as the current source of truth. |
+| `find services -mindepth 1 -maxdepth 1 -type d` | 51 service directories | Pages must not claim the current monorepo has 42 service binaries. If they mention “42,” they are historical or stale. |
+| `find libs -mindepth 1 -maxdepth 1 -type d` | 38 library directories | Pages must not claim the current monorepo has 33 shared libraries. |
+| `find proto -mindepth 1 -maxdepth 1 -type d` | 24 protobuf domains | Contract docs should describe these proto domains as the current source of truth. |
 | `services/edge-gateway-service/internal/proxy/router_table.go` | Gateway route ownership is prefix-based and alias-driven | Public-route docs must follow the router table, not inferred service names. |
 | `services/edge-gateway-service/internal/config/config.go` + `services/edge-gateway-service/config.yaml` + service-local configs | Several gateway aliases intentionally point at consolidated owners instead of same-named placeholder services | Port and route docs must distinguish “binary exists” from “gateway default routes traffic there.” |
 | Root `justfile` | `just` is a shim over Makefile targets; no `infra-up`, `dev-stack`, `docs-build`, `smoke`, or `ci-frontend` recipes are defined | Contributor docs must prefer active `make`, `pnpm`, and `docker compose` commands. |
@@ -19,7 +19,7 @@ Snapshot date: 2026-05-18. The values below come from the working tree, not from
 
 ### 1. Service and library inventory drift
 
-The current filesystem inventory is 50 service directories and 36 shared-library directories. Older repository summaries still claimed 42 Go microservices and 33 shared libraries. The root README has now been corrected to the current counts, and `docs/reference/repository-layout.md` already contains the current detailed inventory.
+The current filesystem inventory is 51 service directories and 38 shared-library directories. Older repository summaries still claimed 42 Go microservices and 33 shared libraries. The root README has now been corrected to the current counts, and `docs/reference/repository-layout.md` already contains the current detailed inventory.
 
 Services that were historically missing or incorrectly described in older docs include:
 
@@ -182,10 +182,10 @@ rg -n "\b42\b|\b33\b|service directories|shared libraries|Go microservices|micro
 
 Files reviewed as current inventory surfaces or likely inventory-adjacent prose:
 
-- `README.md`, `ARCHITECTURE.md`, and `docs/reference/repository-layout.md`: already matched the current 50 service directories, 36 shared libraries, and 23 protobuf domains.
+- `README.md`, `ARCHITECTURE.md`, and `docs/reference/repository-layout.md`: already matched the current 51 service directories, 38 shared libraries, and 24 protobuf domains.
 - `PoC/02-arquitectura-y-servicios.md`: already labeled itself a demo-scope snapshot and linked to `docs/reference/repository-layout.md` for the authoritative current service/library list.
-- `PoC/README.md`: corrected two current-facing PoC index/scope claims from “42” to the code-derived 50 service directories and linked those claims back to `docs/reference/repository-layout.md`.
-- `PoC/13-riesgos-y-plan-b.md`: corrected the customer FAQ answer from “42 Go services” to the code-derived 50 service directories and linked it back to `docs/reference/repository-layout.md`.
+- `PoC/README.md`: corrected two current-facing PoC index/scope claims from “42” to the code-derived 51 service directories and linked those claims back to `docs/reference/repository-layout.md`.
+- `PoC/13-riesgos-y-plan-b.md`: corrected the customer FAQ answer from “42 Go services” to the code-derived 51 service directories and linked it back to `docs/reference/repository-layout.md`.
 
 Claims intentionally left intact after semantic review:
 
