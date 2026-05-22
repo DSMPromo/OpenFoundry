@@ -185,3 +185,64 @@ func TestProductionWithoutDatabaseFailsClosed(t *testing.T) {
 		t.Fatal("expected server construction to fail without database or explicit memory-store allowance")
 	}
 }
+
+func TestReportArtifactStreamsRenderedFile(t *testing.T) {
+	cfg := &config.Config{}
+	cfg.Service.Name = "report-service"
+	cfg.Service.Version = "test"
+	cfg.JWT.Secret = "secret"
+	cfg.Server.Addr = "127.0.0.1:0"
+	srv, err := New(cfg, observability.NewMetrics(), nil, WithReportStore(handlers.NewMemoryReportStore()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	token := testToken(t, cfg.JWT.Secret)
+	do := func(method, path, body string) *httptest.ResponseRecorder {
+		t.Helper()
+		req := httptest.NewRequest(method, path, bytes.NewBufferString(body))
+		req.Header.Set("Authorization", "Bearer "+token)
+		w := httptest.NewRecorder()
+		srv.httpServer.Handler.ServeHTTP(w, req)
+		return w
+	}
+
+	create := `{"name":"Artifact Check","owner":"ops","generator_kind":"pdf","dataset_name":"orders",` +
+		`"template":{"title":"Artifact Check","sections":[{"id":"s1","title":"Orders","kind":"table",` +
+		`"query":"select 1","description":"","config":{}}]},` +
+		`"schedule":{"cadence":"manual","timezone":"UTC","enabled":false},"recipients":[],"active":true}`
+	w := do("POST", "/api/v1/reports/definitions", create)
+	if w.Code != http.StatusCreated {
+		t.Fatalf("create status=%d body=%s", w.Code, w.Body.String())
+	}
+	var def handlers.ReportDefinition
+	if err := json.Unmarshal(w.Body.Bytes(), &def); err != nil {
+		t.Fatal(err)
+	}
+
+	w = do("POST", "/api/v1/reports/definitions/"+def.ID+"/generate", "")
+	if w.Code != http.StatusOK {
+		t.Fatalf("generate status=%d body=%s", w.Code, w.Body.String())
+	}
+	var exec handlers.ReportExecution
+	if err := json.Unmarshal(w.Body.Bytes(), &exec); err != nil {
+		t.Fatal(err)
+	}
+	if exec.Artifact.SizeBytes == 0 || exec.Artifact.Checksum == "" {
+		t.Fatalf("generate did not populate real artifact metadata: %+v", exec.Artifact)
+	}
+
+	w = do("GET", "/api/v1/reports/executions/"+exec.ID+"/artifact", "")
+	if w.Code != http.StatusOK {
+		t.Fatalf("artifact status=%d body=%s", w.Code, w.Body.String())
+	}
+	body := w.Body.Bytes()
+	if !bytes.HasPrefix(body, []byte("%PDF-")) {
+		t.Fatal("artifact endpoint did not stream a PDF file")
+	}
+	if int64(len(body)) != exec.Artifact.SizeBytes {
+		t.Fatalf("artifact size %d does not match recorded %d", len(body), exec.Artifact.SizeBytes)
+	}
+	if ct := w.Header().Get("Content-Type"); ct != "application/pdf" {
+		t.Fatalf("artifact content-type = %q, want application/pdf", ct)
+	}
+}
