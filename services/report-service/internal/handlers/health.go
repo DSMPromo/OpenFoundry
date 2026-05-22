@@ -16,3 +16,16 @@ func Health(serviceName, version string) http.HandlerFunc {
 		_ = json.NewEncoder(w).Encode(health.OK(serviceName, version))
 	}
 }
+
+// Ready handles GET /readyz. Unlike /healthz (liveness — the process is
+// running), readiness fails when the backing store is unreachable, so
+// Kubernetes keeps traffic off a pod whose database is down.
+func Ready(store ReportStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := store.Ping(r.Context()); err != nil {
+			writeError(w, http.StatusServiceUnavailable, "store unavailable")
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"status": "ready"})
+	}
+}

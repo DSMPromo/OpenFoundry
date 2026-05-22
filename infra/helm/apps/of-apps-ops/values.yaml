@@ -488,8 +488,9 @@ services:
     ports:
       - name: http
         containerPort: 8080
-    # TODO(report): add a dependency-aware readiness endpoint; /healthz
-    # only proves the process is up, not that Postgres is reachable.
+    probes:
+      readiness:
+        path: /readyz
     envSecrets:
       OF_JWT__SECRET:
         secretName: openfoundry-jwt

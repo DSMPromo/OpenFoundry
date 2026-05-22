@@ -52,6 +52,9 @@ type Repo struct{ Pool *pgxpool.Pool }
 
 func New(pool *pgxpool.Pool) *Repo { return &Repo{Pool: pool} }
 
+// Ping verifies the Postgres pool is reachable; it backs the /readyz probe.
+func (r *Repo) Ping(ctx context.Context) error { return r.Pool.Ping(ctx) }
+
 const definitionSelect = `SELECT id, name, description, owner, generator_kind, dataset_name,
 	template, schedule, recipients, tags, parameters, active, last_generated_at, created_at, updated_at
 	FROM report_definitions`
