@@ -23,6 +23,14 @@ type BuildRepository interface {
 	OpenBuild(ctx context.Context, args resolver.ResolveBuildArgs, buildID uuid.UUID) error
 	PersistResolvedBuild(ctx context.Context, resolved *models.ResolvedBuild) error
 	MarkBuildFailed(ctx context.Context, buildID uuid.UUID, reason string) error
+	// ClaimBuildIdempotency atomically reserves (subject, key) for buildID.
+	// It returns the build that owns the key: buildID when this caller won
+	// the claim (claimed=true), or the build id from an earlier identical
+	// request (claimed=false).
+	ClaimBuildIdempotency(ctx context.Context, subject, key string, buildID uuid.UUID) (owner uuid.UUID, claimed bool, err error)
+	// ReleaseBuildIdempotency drops a claim so a retry can re-attempt;
+	// called only when the claimed build failed to open.
+	ReleaseBuildIdempotency(ctx context.Context, subject, key string) error
 }
 
 type BuildLifecyclePorts struct {
@@ -86,7 +94,30 @@ func CreateBuild(w http.ResponseWriter, r *http.Request) {
 	}
 	args.BuildID = &buildID
 
+	// Idempotency: a retried POST carrying the same Idempotency-Key from
+	// the same caller returns the original build instead of opening a
+	// second one. libs/idempotency is a dedup-only primitive with no
+	// key->result mapping, so this uses a dedicated build_idempotency
+	// table to satisfy "the same key returns the same build".
+	idemKey := strings.TrimSpace(r.Header.Get("Idempotency-Key"))
+	idemSubject := ""
+	if idemKey != "" {
+		idemSubject = callerSubject(r)
+		owner, claimed, err := ports.Builds.ClaimBuildIdempotency(r.Context(), idemSubject, idemKey, buildID)
+		if err != nil {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "idempotency_claim_failed", "detail": err.Error()})
+			return
+		}
+		if !claimed {
+			writeJSON(w, http.StatusOK, map[string]any{"build_id": owner, "idempotent_replay": true})
+			return
+		}
+	}
+
 	if err := ports.Builds.OpenBuild(r.Context(), args, buildID); err != nil {
+		if idemKey != "" {
+			_ = ports.Builds.ReleaseBuildIdempotency(r.Context(), idemSubject, idemKey)
+		}
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "build_open_failed", "detail": err.Error()})
 		return
 	}
@@ -110,6 +141,15 @@ func CreateBuild(w http.ResponseWriter, r *http.Request) {
 		"job_count":           len(resolved.JobSpecs),
 		"output_transactions": resolved.OpenedTransactions,
 	})
+}
+
+// callerSubject returns the authenticated caller's subject. It scopes
+// idempotency keys so one caller's key cannot collide with another's.
+func callerSubject(r *http.Request) string {
+	if user, ok := authmw.AuthUserFromContext(r.Context()); ok && user.Claims != nil {
+		return user.Claims.Sub.String()
+	}
+	return "anonymous"
 }
 
 type dryRunResolveRequest struct {

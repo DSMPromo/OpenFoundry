@@ -46,6 +46,45 @@ func TestCreateBuildHappyPathWithFakes(t *testing.T) {
 	require.NotContains(t, rr.Body.String(), "not_implemented")
 }
 
+func TestCreateBuildIsIdempotentOnRepeatedKey(t *testing.T) {
+	jobSpecs := newHandlerJobSpecRepo()
+	versioning := newHandlerDatasetRepo()
+	locks := newHandlerLockRepo()
+	builds := &recordingBuildRepo{}
+	jobSpecs.add(handlerJobSpec("ri.spec.main", []string{"raw.users"}, []string{"out.users"}))
+	versioning.addBranch("raw.users", "master")
+	versioning.addBranch("out.users", "master")
+	restore := SetBuildLifecyclePorts(BuildLifecyclePorts{JobSpecs: jobSpecs, Versioning: versioning, Locks: locks, Builds: builds})
+	defer restore()
+
+	body := `{"pipeline_rid":"ri.pipeline.1","build_branch":"master","output_dataset_rids":["out.users"]}`
+	post := func() *http.Response {
+		req := httptest.NewRequest(http.MethodPost, "/api/v1/builds", bytes.NewReader([]byte(body)))
+		req.Header.Set("Idempotency-Key", "build-key-abc")
+		rr := httptest.NewRecorder()
+		CreateBuild(rr, req)
+		return rr.Result()
+	}
+
+	first := post()
+	defer first.Body.Close()
+	require.Equal(t, http.StatusAccepted, first.StatusCode)
+	var firstPayload map[string]any
+	require.NoError(t, json.NewDecoder(first.Body).Decode(&firstPayload))
+
+	second := post()
+	defer second.Body.Close()
+	require.Equal(t, http.StatusOK, second.StatusCode)
+	var secondPayload map[string]any
+	require.NoError(t, json.NewDecoder(second.Body).Decode(&secondPayload))
+
+	require.Equal(t, true, secondPayload["idempotent_replay"])
+	require.Equal(t, firstPayload["build_id"], secondPayload["build_id"])
+	// The repeated key must not open or persist a second build.
+	require.Equal(t, 1, builds.opened)
+	require.Equal(t, 1, builds.persisted)
+}
+
 func TestCreateBuildMissingJobSpec(t *testing.T) {
 	versioning := newHandlerDatasetRepo()
 	builds := &recordingBuildRepo{}
@@ -138,6 +177,7 @@ type recordingBuildRepo struct {
 	persisted int
 	failed    int
 	last      *models.ResolvedBuild
+	idem      map[string]uuid.UUID
 }
 
 func (r *recordingBuildRepo) OpenBuild(_ context.Context, _ resolver.ResolveBuildArgs, _ uuid.UUID) error {
@@ -153,6 +193,23 @@ func (r *recordingBuildRepo) PersistResolvedBuild(_ context.Context, resolved *m
 
 func (r *recordingBuildRepo) MarkBuildFailed(_ context.Context, _ uuid.UUID, _ string) error {
 	r.failed++
+	return nil
+}
+
+func (r *recordingBuildRepo) ClaimBuildIdempotency(_ context.Context, subject, key string, buildID uuid.UUID) (uuid.UUID, bool, error) {
+	if r.idem == nil {
+		r.idem = map[string]uuid.UUID{}
+	}
+	k := subject + "\x00" + key
+	if owner, ok := r.idem[k]; ok {
+		return owner, false, nil
+	}
+	r.idem[k] = buildID
+	return buildID, true, nil
+}
+
+func (r *recordingBuildRepo) ReleaseBuildIdempotency(_ context.Context, subject, key string) error {
+	delete(r.idem, subject+"\x00"+key)
 	return nil
 }
 

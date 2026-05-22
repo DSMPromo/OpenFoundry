@@ -18,12 +18,12 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	dispatchpkg "github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/dispatch"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/domain/executor"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/domain/resolver"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/handler"
 	livellogs "github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/logs"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/models"
-	dispatchpkg "github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/dispatch"
 )
 
 // DB is the pgx/pgxmock surface used by the repository. *pgxpool.Pool and
@@ -220,6 +220,35 @@ func (r *Repository) OpenBuild(ctx context.Context, args resolver.ResolveBuildAr
 	_, err := r.db.Exec(ctx, `INSERT INTO builds (id, pipeline_rid, build_branch, job_spec_fallback, target_dataset_rids, state, trigger_kind, force_build, requested_by, abort_policy)
 VALUES ($1,$2,$3,$4,$5,'BUILD_RESOLUTION',$6,$7,$8,$9)
 ON CONFLICT (id) DO NOTHING`, buildID, args.PipelineRID, args.BuildBranch, args.JobSpecFallback, uniqueStrings(args.OutputDatasetRIDs), args.TriggerKind, args.ForceBuild, args.RequestedBy, args.AbortPolicy)
+	return err
+}
+
+// ClaimBuildIdempotency implements handler.BuildRepository.
+func (r *Repository) ClaimBuildIdempotency(ctx context.Context, subject, key string, buildID uuid.UUID) (uuid.UUID, bool, error) {
+	var owner uuid.UUID
+	err := r.db.QueryRow(ctx,
+		`INSERT INTO build_idempotency (subject, idempotency_key, build_id) VALUES ($1,$2,$3)
+		 ON CONFLICT (subject, idempotency_key) DO NOTHING
+		 RETURNING build_id`, subject, key, buildID).Scan(&owner)
+	switch {
+	case err == nil:
+		return owner, true, nil
+	case errors.Is(err, pgx.ErrNoRows):
+		// Conflict: an earlier identical request already claimed the key.
+		if err := r.db.QueryRow(ctx,
+			`SELECT build_id FROM build_idempotency WHERE subject=$1 AND idempotency_key=$2`,
+			subject, key).Scan(&owner); err != nil {
+			return uuid.Nil, false, err
+		}
+		return owner, false, nil
+	default:
+		return uuid.Nil, false, err
+	}
+}
+
+// ReleaseBuildIdempotency implements handler.BuildRepository.
+func (r *Repository) ReleaseBuildIdempotency(ctx context.Context, subject, key string) error {
+	_, err := r.db.Exec(ctx, `DELETE FROM build_idempotency WHERE subject=$1 AND idempotency_key=$2`, subject, key)
 	return err
 }
 
