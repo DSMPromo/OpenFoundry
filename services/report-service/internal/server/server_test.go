@@ -246,3 +246,22 @@ func TestReportArtifactStreamsRenderedFile(t *testing.T) {
 		t.Fatalf("artifact content-type = %q, want application/pdf", ct)
 	}
 }
+
+func TestReadyzReportsStoreReachable(t *testing.T) {
+	cfg := &config.Config{}
+	cfg.Service.Name = "report-service"
+	cfg.Service.Version = "test"
+	cfg.JWT.Secret = "secret"
+	cfg.Server.Addr = "127.0.0.1:0"
+	srv, err := New(cfg, observability.NewMetrics(), nil, WithReportStore(handlers.NewMemoryReportStore()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// /readyz is public (no auth) — k8s probes do not send a JWT.
+	req := httptest.NewRequest("GET", "/readyz", nil)
+	w := httptest.NewRecorder()
+	srv.httpServer.Handler.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("/readyz status=%d body=%s", w.Code, w.Body.String())
+	}
+}

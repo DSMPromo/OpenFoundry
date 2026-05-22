@@ -191,6 +191,7 @@ type ReportStore interface {
 	SaveExecution(context.Context, ReportExecution) error
 	ListExecutions(context.Context, string) ([]ReportExecution, error)
 	GetExecution(context.Context, string) (*ReportExecution, error)
+	Ping(context.Context) error
 }
 
 type MemoryReportStore struct {
@@ -202,6 +203,9 @@ type MemoryReportStore struct {
 func NewMemoryReportStore() *MemoryReportStore {
 	return &MemoryReportStore{defs: map[string]ReportDefinition{}, execs: map[string]ReportExecution{}}
 }
+
+// Ping reports the in-memory store as always reachable.
+func (s *MemoryReportStore) Ping(context.Context) error { return nil }
 
 func (s *MemoryReportStore) ListDefinitions(context.Context) ([]ReportDefinition, error) {
 	s.mu.RLock()

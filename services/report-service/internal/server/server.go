@@ -86,6 +86,7 @@ func BuildRouter(cfg *config.Config, metrics *observability.Metrics, jwtCfg *aut
 	r.Use(chimw.Timeout(30 * time.Second))
 
 	r.Get("/healthz", handlers.Health(cfg.Service.Name, cfg.Service.Version))
+	r.Get("/readyz", handlers.Ready(store))
 	if metrics != nil {
 		r.Method(http.MethodGet, "/metrics", metrics.Handler())
 	}
