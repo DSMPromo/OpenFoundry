@@ -84,7 +84,7 @@ func TestSchedulerRunOnceGeneratesAndAdvances(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sched := NewScheduler(store, time.Minute, nil)
+	sched := NewScheduler(store, time.Minute, nil, nil)
 	sched.now = func() time.Time { return time.Date(2026, 5, 22, 12, 0, 0, 0, time.UTC) }
 	sched.RunOnce(context.Background())
 
