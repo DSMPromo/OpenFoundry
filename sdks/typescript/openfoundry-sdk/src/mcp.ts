@@ -2990,6 +2990,877 @@ export const OPENFOUNDRY_MCP_TOOLS: ReadonlyArray<OpenFoundryMcpTool> = [
     stability: "beta",
   },
   {
+    name: "openfoundry.vertex.centrality",
+    description: "Generated from `open_foundry.vertex` RPC `Centrality` in service `TraversalService`.",
+    operationId: "open_foundry.vertex.TraversalService.Centrality",
+    method: "POST",
+    path: "/api/v1/vertex/centrality",
+    namespace: "vertex",
+    namespaceMember: "centrality",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/CentralityRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.createannotation",
+    description: "Generated from `open_foundry.vertex` RPC `CreateAnnotation` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.CreateAnnotation",
+    method: "POST",
+    path: "/api/v1/vertex/create-annotation",
+    namespace: "vertex",
+    namespaceMember: "createannotation",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/CreateAnnotationRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.createderivedpropertybinding",
+    description: "Generated from `open_foundry.vertex` RPC `CreateDerivedPropertyBinding` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.CreateDerivedPropertyBinding",
+    method: "POST",
+    path: "/api/v1/vertex/create-derived-property-binding",
+    namespace: "vertex",
+    namespaceMember: "createderivedpropertybinding",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/CreateDerivedPropertyBindingRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.creategraph",
+    description: "Generated from `open_foundry.vertex` RPC `CreateGraph` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.CreateGraph",
+    method: "POST",
+    path: "/api/v1/vertex/create-graph",
+    namespace: "vertex",
+    namespaceMember: "creategraph",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/CreateGraphRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.creategraphversion",
+    description: "Generated from `open_foundry.vertex` RPC `CreateGraphVersion` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.CreateGraphVersion",
+    method: "POST",
+    path: "/api/v1/vertex/create-graph-version",
+    namespace: "vertex",
+    namespaceMember: "creategraphversion",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/CreateGraphVersionRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.createscenario",
+    description: "Generated from `open_foundry.vertex` RPC `CreateScenario` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.CreateScenario",
+    method: "POST",
+    path: "/api/v1/vertex/create-scenario",
+    namespace: "vertex",
+    namespaceMember: "createscenario",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/CreateScenarioRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.createsearcharound",
+    description: "Generated from `open_foundry.vertex` RPC `CreateSearchAround` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.CreateSearchAround",
+    method: "POST",
+    path: "/api/v1/vertex/create-search-around",
+    namespace: "vertex",
+    namespaceMember: "createsearcharound",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/CreateSearchAroundRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.deleteannotation",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteAnnotation` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.DeleteAnnotation",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-annotation",
+    namespace: "vertex",
+    namespaceMember: "deleteannotation",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.deletederivedpropertybinding",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteDerivedPropertyBinding` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.DeleteDerivedPropertyBinding",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-derived-property-binding",
+    namespace: "vertex",
+    namespaceMember: "deletederivedpropertybinding",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.deletegraph",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteGraph` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.DeleteGraph",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-graph",
+    namespace: "vertex",
+    namespaceMember: "deletegraph",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.deletescenario",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteScenario` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.DeleteScenario",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-scenario",
+    namespace: "vertex",
+    namespaceMember: "deletescenario",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.deletesearcharound",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteSearchAround` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.DeleteSearchAround",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-search-around",
+    namespace: "vertex",
+    namespaceMember: "deletesearcharound",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.diffscenario",
+    description: "Generated from `open_foundry.vertex` RPC `DiffScenario` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.DiffScenario",
+    method: "POST",
+    path: "/api/v1/vertex/diff-scenario",
+    namespace: "vertex",
+    namespaceMember: "diffscenario",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/DiffScenarioRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.executesearcharound",
+    description: "Generated from `open_foundry.vertex` RPC `ExecuteSearchAround` in service `TraversalService`.",
+    operationId: "open_foundry.vertex.TraversalService.ExecuteSearchAround",
+    method: "POST",
+    path: "/api/v1/vertex/execute-search-around",
+    namespace: "vertex",
+    namespaceMember: "executesearcharound",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/ExecuteSearchAroundRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.expandneighbors",
+    description: "Generated from `open_foundry.vertex` RPC `ExpandNeighbors` in service `TraversalService`.",
+    operationId: "open_foundry.vertex.TraversalService.ExpandNeighbors",
+    method: "POST",
+    path: "/api/v1/vertex/expand-neighbors",
+    namespace: "vertex",
+    namespaceMember: "expandneighbors",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/ExpandNeighborsRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.findpaths",
+    description: "Generated from `open_foundry.vertex` RPC `FindPaths` in service `TraversalService`.",
+    operationId: "open_foundry.vertex.TraversalService.FindPaths",
+    method: "POST",
+    path: "/api/v1/vertex/find-paths",
+    namespace: "vertex",
+    namespaceMember: "findpaths",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/FindPathsRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.forkgraph",
+    description: "Generated from `open_foundry.vertex` RPC `ForkGraph` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.ForkGraph",
+    method: "POST",
+    path: "/api/v1/vertex/fork-graph",
+    namespace: "vertex",
+    namespaceMember: "forkgraph",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/ForkGraphRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.getgraph",
+    description: "Generated from `open_foundry.vertex` RPC `GetGraph` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.GetGraph",
+    method: "GET",
+    path: "/api/v1/vertex/get-graph",
+    namespace: "vertex",
+    namespaceMember: "getgraph",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.getgraphversion",
+    description: "Generated from `open_foundry.vertex` RPC `GetGraphVersion` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.GetGraphVersion",
+    method: "GET",
+    path: "/api/v1/vertex/get-graph-version",
+    namespace: "vertex",
+    namespaceMember: "getgraphversion",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "graph_id": {
+                "$ref": "#/components/schemas/Uuid"
+              },
+              "version": {
+                "format": "int32",
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.getscenario",
+    description: "Generated from `open_foundry.vertex` RPC `GetScenario` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.GetScenario",
+    method: "GET",
+    path: "/api/v1/vertex/get-scenario",
+    namespace: "vertex",
+    namespaceMember: "getscenario",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.getsearcharound",
+    description: "Generated from `open_foundry.vertex` RPC `GetSearchAround` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.GetSearchAround",
+    method: "GET",
+    path: "/api/v1/vertex/get-search-around",
+    namespace: "vertex",
+    namespaceMember: "getsearcharound",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.histogram",
+    description: "Generated from `open_foundry.vertex` RPC `Histogram` in service `TraversalService`.",
+    operationId: "open_foundry.vertex.TraversalService.Histogram",
+    method: "POST",
+    path: "/api/v1/vertex/histogram",
+    namespace: "vertex",
+    namespaceMember: "histogram",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/HistogramRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.linksummary",
+    description: "Generated from `open_foundry.vertex` RPC `LinkSummary` in service `TraversalService`.",
+    operationId: "open_foundry.vertex.TraversalService.LinkSummary",
+    method: "POST",
+    path: "/api/v1/vertex/link-summary",
+    namespace: "vertex",
+    namespaceMember: "linksummary",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/LinkSummaryRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.listannotations",
+    description: "Generated from `open_foundry.vertex` RPC `ListAnnotations` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.ListAnnotations",
+    method: "GET",
+    path: "/api/v1/vertex/list-annotations",
+    namespace: "vertex",
+    namespaceMember: "listannotations",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "graph_id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.listderivedpropertybindings",
+    description: "Generated from `open_foundry.vertex` RPC `ListDerivedPropertyBindings` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.ListDerivedPropertyBindings",
+    method: "GET",
+    path: "/api/v1/vertex/list-derived-property-bindings",
+    namespace: "vertex",
+    namespaceMember: "listderivedpropertybindings",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "object_type_id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.listgraphversions",
+    description: "Generated from `open_foundry.vertex` RPC `ListGraphVersions` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.ListGraphVersions",
+    method: "GET",
+    path: "/api/v1/vertex/list-graph-versions",
+    namespace: "vertex",
+    namespaceMember: "listgraphversions",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "graph_id": {
+                "$ref": "#/components/schemas/Uuid"
+              },
+              "pagination": {
+                "$ref": "#/components/schemas/PageRequest"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.listgraphs",
+    description: "Generated from `open_foundry.vertex` RPC `ListGraphs` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.ListGraphs",
+    method: "GET",
+    path: "/api/v1/vertex/list-graphs",
+    namespace: "vertex",
+    namespaceMember: "listgraphs",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "pagination": {
+                "$ref": "#/components/schemas/PageRequest"
+              },
+              "project_id": {
+                "$ref": "#/components/schemas/Uuid"
+              },
+              "search": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.listscenarios",
+    description: "Generated from `open_foundry.vertex` RPC `ListScenarios` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.ListScenarios",
+    method: "GET",
+    path: "/api/v1/vertex/list-scenarios",
+    namespace: "vertex",
+    namespaceMember: "listscenarios",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "graph_id": {
+                "$ref": "#/components/schemas/Uuid"
+              },
+              "pagination": {
+                "$ref": "#/components/schemas/PageRequest"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.listsearcharounds",
+    description: "Generated from `open_foundry.vertex` RPC `ListSearchArounds` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.ListSearchArounds",
+    method: "GET",
+    path: "/api/v1/vertex/list-search-arounds",
+    namespace: "vertex",
+    namespaceMember: "listsearcharounds",
+    inputSchema:
+      {
+        "properties": {
+          "query": {
+            "properties": {
+              "pagination": {
+                "$ref": "#/components/schemas/PageRequest"
+              },
+              "project_id": {
+                "$ref": "#/components/schemas/Uuid"
+              },
+              "search": {
+                "type": "string"
+              },
+              "starting_object_type_id": {
+                "$ref": "#/components/schemas/Uuid"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.promotescenariotoactions",
+    description: "Generated from `open_foundry.vertex` RPC `PromoteScenarioToActions` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.PromoteScenarioToActions",
+    method: "POST",
+    path: "/api/v1/vertex/promote-scenario-to-actions",
+    namespace: "vertex",
+    namespaceMember: "promotescenariotoactions",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/PromoteScenarioRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.updateannotation",
+    description: "Generated from `open_foundry.vertex` RPC `UpdateAnnotation` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.UpdateAnnotation",
+    method: "PATCH",
+    path: "/api/v1/vertex/update-annotation",
+    namespace: "vertex",
+    namespaceMember: "updateannotation",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/UpdateAnnotationRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.updategraph",
+    description: "Generated from `open_foundry.vertex` RPC `UpdateGraph` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.UpdateGraph",
+    method: "PATCH",
+    path: "/api/v1/vertex/update-graph",
+    namespace: "vertex",
+    namespaceMember: "updategraph",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/UpdateGraphRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.updatescenario",
+    description: "Generated from `open_foundry.vertex` RPC `UpdateScenario` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.UpdateScenario",
+    method: "PATCH",
+    path: "/api/v1/vertex/update-scenario",
+    namespace: "vertex",
+    namespaceMember: "updatescenario",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/UpdateScenarioRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.vertex.updatesearcharound",
+    description: "Generated from `open_foundry.vertex` RPC `UpdateSearchAround` in service `VertexService`.",
+    operationId: "open_foundry.vertex.VertexService.UpdateSearchAround",
+    method: "PATCH",
+    path: "/api/v1/vertex/update-search-around",
+    namespace: "vertex",
+    namespaceMember: "updatesearcharound",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/UpdateSearchAroundRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
     name: "openfoundry.adminV2.getcontrolpanel",
     description: "Curated REST overlay for `rest.admin.v2.getControlPanel`.",
     operationId: "rest.admin.v2.getControlPanel",

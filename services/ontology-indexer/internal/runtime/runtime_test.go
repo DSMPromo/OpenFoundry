@@ -23,6 +23,7 @@ import (
 )
 
 type fakeReader struct {
+	mu        sync.Mutex
 	topics    []string
 	messages  []KafkaMessage
 	committed []KafkaMessage
@@ -31,23 +32,48 @@ type fakeReader struct {
 }
 
 func (r *fakeReader) Subscribe(_ context.Context, topics []string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	r.topics = append([]string(nil), topics...)
 	return nil
 }
+
 func (r *fakeReader) FetchMessage(ctx context.Context) (KafkaMessage, error) {
+	r.mu.Lock()
 	if len(r.messages) == 0 {
+		r.mu.Unlock()
 		<-ctx.Done()
 		return KafkaMessage{}, ctx.Err()
 	}
 	msg := r.messages[0]
 	r.messages = r.messages[1:]
-	return msg, r.fetchErr
+	err := r.fetchErr
+	r.mu.Unlock()
+	return msg, err
 }
+
 func (r *fakeReader) CommitMessages(_ context.Context, msgs ...KafkaMessage) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	r.committed = append(r.committed, msgs...)
 	return nil
 }
-func (r *fakeReader) Close() error { r.closed = true; return nil }
+
+func (r *fakeReader) Close() error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.closed = true
+	return nil
+}
+
+// committedCount returns len(committed) under the lock, so concurrent
+// Eventually pollers can read it safely while RunWith* commits from a
+// goroutine.
+func (r *fakeReader) committedCount() int {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return len(r.committed)
+}
 
 type fakeBackend struct {
 	mu       sync.Mutex
@@ -60,6 +86,7 @@ type fakeBackend struct {
 func (b *fakeBackend) Search(context.Context, repos.SearchQuery, repos.ReadConsistency) (repos.PagedResult[repos.SearchHit], error) {
 	return repos.PagedResult[repos.SearchHit]{}, nil
 }
+
 func (b *fakeBackend) Index(_ context.Context, doc repos.IndexDoc) error {
 	if b.err != nil {
 		b.mu.Lock()
@@ -72,6 +99,7 @@ func (b *fakeBackend) Index(_ context.Context, doc repos.IndexDoc) error {
 	b.indexed = append(b.indexed, doc)
 	return nil
 }
+
 func (b *fakeBackend) Delete(_ context.Context, tenant repos.TenantId, id repos.ObjectId) (bool, error) {
 	if b.err != nil {
 		b.mu.Lock()
@@ -84,9 +112,11 @@ func (b *fakeBackend) Delete(_ context.Context, tenant repos.TenantId, id repos.
 	b.deleted = append(b.deleted, id)
 	return true, nil
 }
+
 func (b *fakeBackend) SearchVector(context.Context, repos.VectorQuery, repos.ReadConsistency) ([]repos.SearchHit, error) {
 	return nil, repos.ErrVectorSearchUnsupported()
 }
+
 func (b *fakeBackend) BulkIndex(ctx context.Context, docs []repos.IndexDoc) (repos.BulkOutcome, error) {
 	return repos.DefaultBulkIndex(ctx, b, docs)
 }
@@ -142,7 +172,7 @@ func TestRunWithReaderHappyPathFakeReaderAndBackend(t *testing.T) {
 
 	done := make(chan error, 1)
 	go func() { done <- RunWithReader(ctx, cfg, discardLog(), reader, backend) }()
-	require.Eventually(t, func() bool { return len(reader.committed) == 1 }, time.Second, 10*time.Millisecond)
+	require.Eventually(t, func() bool { return reader.committedCount() == 1 }, time.Second, 10*time.Millisecond)
 	cancel()
 	require.NoError(t, <-done)
 	assert.Equal(t, SubscribeTopics, reader.topics)
@@ -164,7 +194,7 @@ func TestRunWithReaderObjectUpsertCommitsAfterIndex(t *testing.T) {
 
 	done := make(chan error, 1)
 	go func() { done <- RunWithReader(ctx, cfg, discardLog(), reader, backend) }()
-	require.Eventually(t, func() bool { return len(reader.committed) == 1 }, time.Second, 10*time.Millisecond)
+	require.Eventually(t, func() bool { return reader.committedCount() == 1 }, time.Second, 10*time.Millisecond)
 	cancel()
 	require.NoError(t, <-done)
 	require.Len(t, backend.indexed, 1)
@@ -184,7 +214,7 @@ func TestRunWithReaderObjectDeleteCommitsAfterDelete(t *testing.T) {
 	defer cancel()
 	done := make(chan error, 1)
 	go func() { done <- RunWithReader(ctx, cfg, discardLog(), reader, backend) }()
-	require.Eventually(t, func() bool { return len(reader.committed) == 1 }, time.Second, 10*time.Millisecond)
+	require.Eventually(t, func() bool { return reader.committedCount() == 1 }, time.Second, 10*time.Millisecond)
 	cancel()
 	require.NoError(t, <-done)
 	assert.Equal(t, []repos.ObjectId{"obj-1"}, backend.deleted)
@@ -202,7 +232,7 @@ func TestRunWithReaderLinkChangeIndexesLinkDocument(t *testing.T) {
 	defer cancel()
 	done := make(chan error, 1)
 	go func() { done <- RunWithReader(ctx, cfg, discardLog(), reader, backend) }()
-	require.Eventually(t, func() bool { return len(reader.committed) == 1 }, time.Second, 10*time.Millisecond)
+	require.Eventually(t, func() bool { return reader.committedCount() == 1 }, time.Second, 10*time.Millisecond)
 	cancel()
 	require.NoError(t, <-done)
 	require.Len(t, backend.indexed, 1)
@@ -219,7 +249,7 @@ func TestRunWithReaderMalformedJSONSkipsAndCommits(t *testing.T) {
 	defer cancel()
 	done := make(chan error, 1)
 	go func() { done <- RunWithReader(ctx, cfg, discardLog(), reader, backend) }()
-	require.Eventually(t, func() bool { return len(reader.committed) == 1 }, time.Second, 10*time.Millisecond)
+	require.Eventually(t, func() bool { return reader.committedCount() == 1 }, time.Second, 10*time.Millisecond)
 	cancel()
 	require.NoError(t, <-done)
 	assert.Empty(t, backend.indexed)
@@ -250,7 +280,7 @@ func TestRunWithReaderSkipsDuplicateAndStaleVersions(t *testing.T) {
 	defer cancel()
 	done := make(chan error, 1)
 	go func() { done <- RunWithReader(ctx, cfg, discardLog(), reader, backend) }()
-	require.Eventually(t, func() bool { return len(reader.committed) == 3 }, time.Second, 10*time.Millisecond)
+	require.Eventually(t, func() bool { return reader.committedCount() == 3 }, time.Second, 10*time.Millisecond)
 	cancel()
 	require.NoError(t, <-done)
 	require.Len(t, backend.indexed, 1)
@@ -272,7 +302,7 @@ func TestRunWithOptionsRetriesThenPublishesDLQAndCommits(t *testing.T) {
 	defer cancel()
 	done := make(chan error, 1)
 	go func() { done <- RunWithOptions(ctx, cfg, discardLog(), reader, backend, dlq) }()
-	require.Eventually(t, func() bool { return len(reader.committed) == 1 }, time.Second, 10*time.Millisecond)
+	require.Eventually(t, func() bool { return reader.committedCount() == 1 }, time.Second, 10*time.Millisecond)
 	cancel()
 	require.NoError(t, <-done)
 	assert.Equal(t, 2, backend.failures)
@@ -281,11 +311,13 @@ func TestRunWithOptionsRetriesThenPublishesDLQAndCommits(t *testing.T) {
 	assert.Equal(t, []byte("acme/obj-1"), dlq.messages[0].key)
 }
 
-type fakeDLQ struct{ messages []dlqMessage }
-type dlqMessage struct {
-	topic        string
-	key, payload []byte
-}
+type (
+	fakeDLQ    struct{ messages []dlqMessage }
+	dlqMessage struct {
+		topic        string
+		key, payload []byte
+	}
+)
 
 func (d *fakeDLQ) Publish(_ context.Context, topic string, key, payload []byte, _ *databus.OpenLineageHeaders) error {
 	d.messages = append(d.messages, dlqMessage{topic: topic, key: append([]byte(nil), key...), payload: append([]byte(nil), payload...)})
@@ -329,7 +361,7 @@ func TestRunWithOptionsAndTrackerRecordsPerTypeStats(t *testing.T) {
 	defer cancel()
 	done := make(chan error, 1)
 	go func() { done <- RunWithOptionsAndTracker(ctx, cfg, discardLog(), reader, backend, nil, tracker) }()
-	require.Eventually(t, func() bool { return len(reader.committed) == 3 }, time.Second, 10*time.Millisecond)
+	require.Eventually(t, func() bool { return reader.committedCount() == 3 }, time.Second, 10*time.Millisecond)
 	cancel()
 	require.NoError(t, <-done)
 
@@ -400,7 +432,7 @@ func TestRunWithReaderRoutesObjectTypeEventsToSchemaSync(t *testing.T) {
 	defer cancel()
 	done := make(chan error, 1)
 	go func() { done <- RunWithReader(ctx, cfg, discardLog(), reader, backend) }()
-	require.Eventually(t, func() bool { return len(reader.committed) == 1 }, time.Second, 10*time.Millisecond)
+	require.Eventually(t, func() bool { return reader.committedCount() == 1 }, time.Second, 10*time.Millisecond)
 	cancel()
 	require.NoError(t, <-done)
 	assert.Equal(t, []string{"Aircraft"}, backend.registered)

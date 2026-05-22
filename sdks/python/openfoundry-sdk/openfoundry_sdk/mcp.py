@@ -472,6 +472,142 @@ MCP_TOOL_REGISTRY: list[dict[str, Any]] = [
         "operation_id": "open_foundry.marketplace.v1.MarketplaceProductService.Uninstall",
     },
     {
+        "name": "openfoundry.vertex.centrality",
+        "operation_id": "open_foundry.vertex.TraversalService.Centrality",
+    },
+    {
+        "name": "openfoundry.vertex.createannotation",
+        "operation_id": "open_foundry.vertex.VertexService.CreateAnnotation",
+    },
+    {
+        "name": "openfoundry.vertex.createderivedpropertybinding",
+        "operation_id": "open_foundry.vertex.VertexService.CreateDerivedPropertyBinding",
+    },
+    {
+        "name": "openfoundry.vertex.creategraph",
+        "operation_id": "open_foundry.vertex.VertexService.CreateGraph",
+    },
+    {
+        "name": "openfoundry.vertex.creategraphversion",
+        "operation_id": "open_foundry.vertex.VertexService.CreateGraphVersion",
+    },
+    {
+        "name": "openfoundry.vertex.createscenario",
+        "operation_id": "open_foundry.vertex.VertexService.CreateScenario",
+    },
+    {
+        "name": "openfoundry.vertex.createsearcharound",
+        "operation_id": "open_foundry.vertex.VertexService.CreateSearchAround",
+    },
+    {
+        "name": "openfoundry.vertex.deleteannotation",
+        "operation_id": "open_foundry.vertex.VertexService.DeleteAnnotation",
+    },
+    {
+        "name": "openfoundry.vertex.deletederivedpropertybinding",
+        "operation_id": "open_foundry.vertex.VertexService.DeleteDerivedPropertyBinding",
+    },
+    {
+        "name": "openfoundry.vertex.deletegraph",
+        "operation_id": "open_foundry.vertex.VertexService.DeleteGraph",
+    },
+    {
+        "name": "openfoundry.vertex.deletescenario",
+        "operation_id": "open_foundry.vertex.VertexService.DeleteScenario",
+    },
+    {
+        "name": "openfoundry.vertex.deletesearcharound",
+        "operation_id": "open_foundry.vertex.VertexService.DeleteSearchAround",
+    },
+    {
+        "name": "openfoundry.vertex.diffscenario",
+        "operation_id": "open_foundry.vertex.VertexService.DiffScenario",
+    },
+    {
+        "name": "openfoundry.vertex.executesearcharound",
+        "operation_id": "open_foundry.vertex.TraversalService.ExecuteSearchAround",
+    },
+    {
+        "name": "openfoundry.vertex.expandneighbors",
+        "operation_id": "open_foundry.vertex.TraversalService.ExpandNeighbors",
+    },
+    {
+        "name": "openfoundry.vertex.findpaths",
+        "operation_id": "open_foundry.vertex.TraversalService.FindPaths",
+    },
+    {
+        "name": "openfoundry.vertex.forkgraph",
+        "operation_id": "open_foundry.vertex.VertexService.ForkGraph",
+    },
+    {
+        "name": "openfoundry.vertex.getgraph",
+        "operation_id": "open_foundry.vertex.VertexService.GetGraph",
+    },
+    {
+        "name": "openfoundry.vertex.getgraphversion",
+        "operation_id": "open_foundry.vertex.VertexService.GetGraphVersion",
+    },
+    {
+        "name": "openfoundry.vertex.getscenario",
+        "operation_id": "open_foundry.vertex.VertexService.GetScenario",
+    },
+    {
+        "name": "openfoundry.vertex.getsearcharound",
+        "operation_id": "open_foundry.vertex.VertexService.GetSearchAround",
+    },
+    {
+        "name": "openfoundry.vertex.histogram",
+        "operation_id": "open_foundry.vertex.TraversalService.Histogram",
+    },
+    {
+        "name": "openfoundry.vertex.linksummary",
+        "operation_id": "open_foundry.vertex.TraversalService.LinkSummary",
+    },
+    {
+        "name": "openfoundry.vertex.listannotations",
+        "operation_id": "open_foundry.vertex.VertexService.ListAnnotations",
+    },
+    {
+        "name": "openfoundry.vertex.listderivedpropertybindings",
+        "operation_id": "open_foundry.vertex.VertexService.ListDerivedPropertyBindings",
+    },
+    {
+        "name": "openfoundry.vertex.listgraphversions",
+        "operation_id": "open_foundry.vertex.VertexService.ListGraphVersions",
+    },
+    {
+        "name": "openfoundry.vertex.listgraphs",
+        "operation_id": "open_foundry.vertex.VertexService.ListGraphs",
+    },
+    {
+        "name": "openfoundry.vertex.listscenarios",
+        "operation_id": "open_foundry.vertex.VertexService.ListScenarios",
+    },
+    {
+        "name": "openfoundry.vertex.listsearcharounds",
+        "operation_id": "open_foundry.vertex.VertexService.ListSearchArounds",
+    },
+    {
+        "name": "openfoundry.vertex.promotescenariotoactions",
+        "operation_id": "open_foundry.vertex.VertexService.PromoteScenarioToActions",
+    },
+    {
+        "name": "openfoundry.vertex.updateannotation",
+        "operation_id": "open_foundry.vertex.VertexService.UpdateAnnotation",
+    },
+    {
+        "name": "openfoundry.vertex.updategraph",
+        "operation_id": "open_foundry.vertex.VertexService.UpdateGraph",
+    },
+    {
+        "name": "openfoundry.vertex.updatescenario",
+        "operation_id": "open_foundry.vertex.VertexService.UpdateScenario",
+    },
+    {
+        "name": "openfoundry.vertex.updatesearcharound",
+        "operation_id": "open_foundry.vertex.VertexService.UpdateSearchAround",
+    },
+    {
         "name": "openfoundry.adminV2.getcontrolpanel",
         "operation_id": "rest.admin.v2.getControlPanel",
     },

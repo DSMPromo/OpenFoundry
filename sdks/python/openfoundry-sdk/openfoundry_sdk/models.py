@@ -84,6 +84,17 @@ class AdminUsersListResponse:
     items: list[UserResponse] | None = None
 
 @dataclass(slots=True)
+class Annotation:
+    author_id: Uuid | None = None
+    created_at: str | None = None
+    geometry_json: str | None = None
+    graph_id: Uuid | None = None
+    id: Uuid | None = None
+    kind: AnnotationKind | None = None
+    text: str | None = None
+    updated_at: str | None = None
+
+@dataclass(slots=True)
 class ApiError:
     code: str | None = None
     details: dict[str, Any] | None = None
@@ -205,6 +216,22 @@ class CellOutput:
     output_type: str | None = None
 
 @dataclass(slots=True)
+class CentralityRequest:
+    branch_context: str | None = None
+    measures: list[CentralityMeasure] | None = None
+    object_refs: list[ObjectRef] | None = None
+
+@dataclass(slots=True)
+class CentralityResponse:
+    scores: list[CentralityScore] | None = None
+
+@dataclass(slots=True)
+class CentralityScore:
+    measure: CentralityMeasure | None = None
+    ref: ObjectRef | None = None
+    value: float | None = None
+
+@dataclass(slots=True)
 class Column:
     data_type: str | None = None
     name: str | None = None
@@ -251,6 +278,20 @@ class ControlPanelSettings:
     updated_by: str | None = None
 
 @dataclass(slots=True)
+class Cost:
+    budget_exceeded: bool | None = None
+    cpu_seconds: float | None = None
+    indices_hit: list[str] | None = None
+    rows_scanned: int | None = None
+
+@dataclass(slots=True)
+class CreateAnnotationRequest:
+    geometry_json: str | None = None
+    graph_id: Uuid | None = None
+    kind: AnnotationKind | None = None
+    text: str | None = None
+
+@dataclass(slots=True)
 class CreateBranchRequest:
     as_root: Empty | None = None
     dataset_rid: str | None = None
@@ -278,6 +319,31 @@ class CreateDatasetRequest:
     format: DatasetFormat | None = None
     name: str | None = None
     tags: list[str] | None = None
+
+@dataclass(slots=True)
+class CreateDerivedPropertyBindingRequest:
+    description: str | None = None
+    display_name: str | None = None
+    function_rid: str | None = None
+    object_type_id: Uuid | None = None
+    property_name: str | None = None
+    return_type: ParamType | None = None
+
+@dataclass(slots=True)
+class CreateGraphRequest:
+    branch_context: str | None = None
+    description: str | None = None
+    markings: list[str] | None = None
+    model_rid: str | None = None
+    organizations: list[str] | None = None
+    project_id: Uuid | None = None
+    seed_object_refs: list[str] | None = None
+    title: str | None = None
+
+@dataclass(slots=True)
+class CreateGraphVersionRequest:
+    changelog: str | None = None
+    graph_id: Uuid | None = None
 
 @dataclass(slots=True)
 class CreateGroupRequest:
@@ -365,6 +431,14 @@ class CreateRoleRequest:
     permission_ids: list[str] | None = None
 
 @dataclass(slots=True)
+class CreateScenarioRequest:
+    branch_context: str | None = None
+    description: str | None = None
+    edits: list[StagedEdit] | None = None
+    graph_id: Uuid | None = None
+    name: str | None = None
+
+@dataclass(slots=True)
 class CreateScheduleRequest:
     description: str | None = None
     name: str | None = None
@@ -372,6 +446,15 @@ class CreateScheduleRequest:
     project_rid: str | None = None
     target: ScheduleTarget | None = None
     trigger: Trigger | None = None
+
+@dataclass(slots=True)
+class CreateSearchAroundRequest:
+    description: str | None = None
+    parameters: list[SearchAroundParameter] | None = None
+    project_id: Uuid | None = None
+    starting_object_type_id: Uuid | None = None
+    steps: list[SearchAroundStep] | None = None
+    title: str | None = None
 
 @dataclass(slots=True)
 class CreateSessionRequest:
@@ -429,6 +512,14 @@ class DecimalParams:
     scale: int | None = None
 
 @dataclass(slots=True)
+class DeleteAnnotationRequest:
+    id: Uuid | None = None
+
+@dataclass(slots=True)
+class DeleteAnnotationResponse:
+    deleted: bool | None = None
+
+@dataclass(slots=True)
 class DeleteConnectionRequest:
     id: Uuid | None = None
 
@@ -443,6 +534,22 @@ class DeleteDatasetRequest:
 @dataclass(slots=True)
 class DeleteDatasetResponse:
     pass
+
+@dataclass(slots=True)
+class DeleteDerivedPropertyBindingRequest:
+    id: Uuid | None = None
+
+@dataclass(slots=True)
+class DeleteDerivedPropertyBindingResponse:
+    deleted: bool | None = None
+
+@dataclass(slots=True)
+class DeleteGraphRequest:
+    id: Uuid | None = None
+
+@dataclass(slots=True)
+class DeleteGraphResponse:
+    deleted: bool | None = None
 
 @dataclass(slots=True)
 class DeleteLinkTypeRequest:
@@ -507,12 +614,45 @@ class DeleteSavedQueryResponse:
     pass
 
 @dataclass(slots=True)
+class DeleteScenarioRequest:
+    id: Uuid | None = None
+
+@dataclass(slots=True)
+class DeleteScenarioResponse:
+    deleted: bool | None = None
+
+@dataclass(slots=True)
 class DeleteScheduleRequest:
     rid: str | None = None
 
 @dataclass(slots=True)
 class DeleteScheduleResponse:
     pass
+
+@dataclass(slots=True)
+class DeleteSearchAroundRequest:
+    id: Uuid | None = None
+
+@dataclass(slots=True)
+class DeleteSearchAroundResponse:
+    deleted: bool | None = None
+
+@dataclass(slots=True)
+class DerivedPropertyBinding:
+    created_at: str | None = None
+    description: str | None = None
+    display_name: str | None = None
+    function_rid: str | None = None
+    id: Uuid | None = None
+    object_type_id: Uuid | None = None
+    owner_id: Uuid | None = None
+    property_name: str | None = None
+    return_type: ParamType | None = None
+    updated_at: str | None = None
+
+@dataclass(slots=True)
+class DiffScenarioRequest:
+    id: Uuid | None = None
 
 @dataclass(slots=True)
 class DisableModelRequest:
@@ -617,6 +757,35 @@ class ExecuteQueryRequest:
     sql: str | None = None
 
 @dataclass(slots=True)
+class ExecuteSearchAroundRequest:
+    inline: InlineSearchAround | None = None
+    saved_search_around_id: Uuid | None = None
+
+@dataclass(slots=True)
+class ExecuteSearchAroundResponse:
+    cost: Cost | None = None
+    groups: list[ResultGroup] | None = None
+
+@dataclass(slots=True)
+class ExpandNeighborsRequest:
+    branch_context: str | None = None
+    cursor: str | None = None
+    direction: Direction | None = None
+    filters: list[SearchAroundFilter] | None = None
+    limit: int | None = None
+    link_type_id: Uuid | None = None
+    object_id: str | None = None
+    object_type_id: Uuid | None = None
+
+@dataclass(slots=True)
+class ExpandNeighborsResponse:
+    hidden_count: int | None = None
+    items: list[ObjectRef] | None = None
+    next_cursor: str | None = None
+    total: int | None = None
+    total_is_estimate: bool | None = None
+
+@dataclass(slots=True)
 class ExplainQueryRequest:
     sql: str | None = None
 
@@ -685,6 +854,23 @@ class FilesystemSections:
     views: int | None = None
 
 @dataclass(slots=True)
+class FindPathsRequest:
+    branch_context: str | None = None
+    end: ObjectRef | None = None
+    k: int | None = None
+    max_hops: int | None = None
+    start: ObjectRef | None = None
+
+@dataclass(slots=True)
+class FindPathsResponse:
+    paths: list[Path] | None = None
+
+@dataclass(slots=True)
+class ForkGraphRequest:
+    id: Uuid | None = None
+    new_title: str | None = None
+
+@dataclass(slots=True)
 class GeneratePresignedDownloadUrlRequest:
     expires_in_seconds: int | None = None
     media_item_rid: str | None = None
@@ -709,6 +895,15 @@ class GetDatasetRequest:
 @dataclass(slots=True)
 class GetFullLineageRequest:
     pass
+
+@dataclass(slots=True)
+class GetGraphRequest:
+    id: Uuid | None = None
+
+@dataclass(slots=True)
+class GetGraphVersionRequest:
+    graph_id: Uuid | None = None
+    version: int | None = None
 
 @dataclass(slots=True)
 class GetIngestJobRequest:
@@ -756,6 +951,10 @@ class GetRunRequest:
     id: Uuid | None = None
 
 @dataclass(slots=True)
+class GetScenarioRequest:
+    id: Uuid | None = None
+
+@dataclass(slots=True)
 class GetScheduleRequest:
     rid: str | None = None
 
@@ -764,12 +963,45 @@ class GetScheduleRunRequest:
     rid: str | None = None
 
 @dataclass(slots=True)
+class GetSearchAroundRequest:
+    id: Uuid | None = None
+
+@dataclass(slots=True)
 class GetVersionsRequest:
     dataset_id: Uuid | None = None
 
 @dataclass(slots=True)
 class GetVersionsResponse:
     versions: list[DatasetVersion] | None = None
+
+@dataclass(slots=True)
+class Graph:
+    branch_context: str | None = None
+    created_at: str | None = None
+    description: str | None = None
+    id: Uuid | None = None
+    layer_configuration_json: str | None = None
+    layout_state_json: str | None = None
+    markings: list[str] | None = None
+    model_rid: str | None = None
+    organizations: list[str] | None = None
+    owner_id: Uuid | None = None
+    project_id: Uuid | None = None
+    rid: str | None = None
+    seed_object_refs: list[str] | None = None
+    timeline_state_json: str | None = None
+    title: str | None = None
+    updated_at: str | None = None
+
+@dataclass(slots=True)
+class GraphVersion:
+    author_id: Uuid | None = None
+    changelog: str | None = None
+    created_at: str | None = None
+    graph_id: Uuid | None = None
+    id: Uuid | None = None
+    snapshot_json: str | None = None
+    version: int | None = None
 
 @dataclass(slots=True)
 class GroupResponse:
@@ -792,6 +1024,30 @@ class HealthCheckResponse:
 @dataclass(slots=True)
 class HealthCheckTarget:
     check_rid: str | None = None
+
+@dataclass(slots=True)
+class HistogramBucket:
+    count: int | None = None
+    value_json: str | None = None
+
+@dataclass(slots=True)
+class HistogramFacet:
+    buckets: list[HistogramBucket] | None = None
+    n: int | None = None
+    numeric: NumericSummary | None = None
+    object_type_id: Uuid | None = None
+    property: str | None = None
+    uniq: int | None = None
+
+@dataclass(slots=True)
+class HistogramRequest:
+    branch_context: str | None = None
+    object_refs: list[ObjectRef] | None = None
+    properties: list[str] | None = None
+
+@dataclass(slots=True)
+class HistogramResponse:
+    facets: list[HistogramFacet] | None = None
 
 @dataclass(slots=True)
 class IncrementalConfig:
@@ -831,6 +1087,12 @@ class IngestJob:
     status: IngestJobStatus | None = None
     table_name: str | None = None
     target_dataset_id: Uuid | None = None
+
+@dataclass(slots=True)
+class InlineSearchAround:
+    parameters: list[SearchAroundParameter] | None = None
+    starting_object_type_id: Uuid | None = None
+    steps: list[SearchAroundStep] | None = None
 
 @dataclass(slots=True)
 class InputSpec:
@@ -921,6 +1183,25 @@ class LineageNode:
     dataset_id: Uuid | None = None
 
 @dataclass(slots=True)
+class LinkSummaryEntry:
+    count: int | None = None
+    count_is_estimate: bool | None = None
+    direction: Direction | None = None
+    display_name: str | None = None
+    link_type_id: Uuid | None = None
+    target_object_type_id: Uuid | None = None
+
+@dataclass(slots=True)
+class LinkSummaryRequest:
+    branch_context: str | None = None
+    object_id: str | None = None
+    object_type_id: Uuid | None = None
+
+@dataclass(slots=True)
+class LinkSummaryResponse:
+    entries: list[LinkSummaryEntry] | None = None
+
+@dataclass(slots=True)
 class LinkType:
     cardinality: str | None = None
     created_at: str | None = None
@@ -954,6 +1235,14 @@ class ListAccessPatternsResponse:
     patterns: list[AccessPattern] | None = None
 
 @dataclass(slots=True)
+class ListAnnotationsRequest:
+    graph_id: Uuid | None = None
+
+@dataclass(slots=True)
+class ListAnnotationsResponse:
+    items: list[Annotation] | None = None
+
+@dataclass(slots=True)
 class ListConnectionsRequest:
     pagination: PageRequest | None = None
 
@@ -971,6 +1260,35 @@ class ListDatasetsRequest:
 @dataclass(slots=True)
 class ListDatasetsResponse:
     datasets: list[Dataset] | None = None
+    pagination: PageResponse | None = None
+
+@dataclass(slots=True)
+class ListDerivedPropertyBindingsRequest:
+    object_type_id: Uuid | None = None
+
+@dataclass(slots=True)
+class ListDerivedPropertyBindingsResponse:
+    items: list[DerivedPropertyBinding] | None = None
+
+@dataclass(slots=True)
+class ListGraphVersionsRequest:
+    graph_id: Uuid | None = None
+    pagination: PageRequest | None = None
+
+@dataclass(slots=True)
+class ListGraphVersionsResponse:
+    items: list[GraphVersion] | None = None
+    pagination: PageResponse | None = None
+
+@dataclass(slots=True)
+class ListGraphsRequest:
+    pagination: PageRequest | None = None
+    project_id: Uuid | None = None
+    search: str | None = None
+
+@dataclass(slots=True)
+class ListGraphsResponse:
+    items: list[Graph] | None = None
     pagination: PageResponse | None = None
 
 @dataclass(slots=True)
@@ -1131,6 +1449,16 @@ class ListSavedQueriesResponse:
     queries: list[SavedQuery] | None = None
 
 @dataclass(slots=True)
+class ListScenariosRequest:
+    graph_id: Uuid | None = None
+    pagination: PageRequest | None = None
+
+@dataclass(slots=True)
+class ListScenariosResponse:
+    items: list[Scenario] | None = None
+    pagination: PageResponse | None = None
+
+@dataclass(slots=True)
 class ListScheduleRunsRequest:
     limit: int | None = None
     offset: int | None = None
@@ -1154,6 +1482,18 @@ class ListSchedulesRequest:
 class ListSchedulesResponse:
     pagination: PageResponse | None = None
     schedules: list[Schedule] | None = None
+
+@dataclass(slots=True)
+class ListSearchAroundsRequest:
+    pagination: PageRequest | None = None
+    project_id: Uuid | None = None
+    search: str | None = None
+    starting_object_type_id: Uuid | None = None
+
+@dataclass(slots=True)
+class ListSearchAroundsResponse:
+    items: list[SearchAround] | None = None
+    pagination: PageResponse | None = None
 
 @dataclass(slots=True)
 class ListSessionsRequest:
@@ -1267,6 +1607,14 @@ class Notebook:
     updated_at: str | None = None
 
 @dataclass(slots=True)
+class NumericSummary:
+    avg: float | None = None
+    max: float | None = None
+    min: float | None = None
+    n: int | None = None
+    sum: float | None = None
+
+@dataclass(slots=True)
 class ObjectInstance:
     created_at: str | None = None
     created_by: str | None = None
@@ -1276,6 +1624,13 @@ class ObjectInstance:
     organization_id: str | None = None
     properties: Struct | None = None
     updated_at: str | None = None
+
+@dataclass(slots=True)
+class ObjectRef:
+    display_label: str | None = None
+    object_id: str | None = None
+    object_type_id: Uuid | None = None
+    properties_json: str | None = None
 
 @dataclass(slots=True)
 class ObjectType:
@@ -1330,6 +1685,17 @@ class PageResponse:
     per_page: int | None = None
     total: int | None = None
     total_pages: int | None = None
+
+@dataclass(slots=True)
+class Path:
+    edges: list[PathEdge] | None = None
+    nodes: list[ObjectRef] | None = None
+    weight: float | None = None
+
+@dataclass(slots=True)
+class PathEdge:
+    direction: Direction | None = None
+    link_type_id: Uuid | None = None
 
 @dataclass(slots=True)
 class Permission:
@@ -1462,6 +1828,15 @@ class ProductVersion:
     rid: str | None = None
     signature: str | None = None
     version: str | None = None
+
+@dataclass(slots=True)
+class PromoteScenarioRequest:
+    id: Uuid | None = None
+    target_branch: bool | None = None
+
+@dataclass(slots=True)
+class PromoteScenarioResponse:
+    action_invocation_ids: list[Uuid] | None = None
 
 @dataclass(slots=True)
 class Property:
@@ -1612,6 +1987,12 @@ class ResourceRef:
     type: ResourceType | None = None
 
 @dataclass(slots=True)
+class ResultGroup:
+    items: list[ObjectRef] | None = None
+    object_type_id: Uuid | None = None
+    total: int | None = None
+
+@dataclass(slots=True)
 class Role:
     description: str | None = None
     id: Uuid | None = None
@@ -1673,6 +2054,28 @@ class SavedQuery:
     updated_at: str | None = None
 
 @dataclass(slots=True)
+class Scenario:
+    author_id: Uuid | None = None
+    branch_context: str | None = None
+    created_at: str | None = None
+    description: str | None = None
+    edits: list[StagedEdit] | None = None
+    graph_id: Uuid | None = None
+    id: Uuid | None = None
+    name: str | None = None
+    updated_at: str | None = None
+
+@dataclass(slots=True)
+class ScenarioDiff:
+    added_count: int | None = None
+    changed_edge_count: int | None = None
+    changed_node_count: int | None = None
+    impacted_object_refs: list[str] | None = None
+    metrics_json: str | None = None
+    removed_count: int | None = None
+    scenario_id: Uuid | None = None
+
+@dataclass(slots=True)
 class Schedule:
     created_at: str | None = None
     description: str | None = None
@@ -1712,6 +2115,42 @@ class Schema:
     file_format: FileFormat | None = None
 
 @dataclass(slots=True)
+class SearchAround:
+    created_at: str | None = None
+    description: str | None = None
+    id: Uuid | None = None
+    owner_id: Uuid | None = None
+    parameters: list[SearchAroundParameter] | None = None
+    project_id: Uuid | None = None
+    rid: str | None = None
+    starting_object_type_id: Uuid | None = None
+    steps: list[SearchAroundStep] | None = None
+    title: str | None = None
+    updated_at: str | None = None
+
+@dataclass(slots=True)
+class SearchAroundFilter:
+    literal_json: str | None = None
+    op: FilterOp | None = None
+    parameter_ref: str | None = None
+    property: str | None = None
+
+@dataclass(slots=True)
+class SearchAroundParameter:
+    default_value_json: str | None = None
+    description: str | None = None
+    name: str | None = None
+    required: bool | None = None
+    type: ParamType | None = None
+
+@dataclass(slots=True)
+class SearchAroundStep:
+    direction: Direction | None = None
+    filters: list[SearchAroundFilter] | None = None
+    ordinal: int | None = None
+    relation_id: Uuid | None = None
+
+@dataclass(slots=True)
 class SearchObjectsRequest:
     object_type_id: str | None = None
     pagination: PageRequest | None = None
@@ -1731,6 +2170,15 @@ class Session:
     notebook_id: str | None = None
     started_by: str | None = None
     status: str | None = None
+
+@dataclass(slots=True)
+class StagedEdit:
+    action_id: Uuid | None = None
+    kind: EditKind | None = None
+    new_value_json: str | None = None
+    old_value_json: str | None = None
+    property_name: str | None = None
+    target_ref: str | None = None
 
 @dataclass(slots=True)
 class StopSessionRequest:
@@ -1859,6 +2307,12 @@ class UninstallRequest:
     installation_rid: str | None = None
 
 @dataclass(slots=True)
+class UpdateAnnotationRequest:
+    geometry_json: str | None = None
+    id: Uuid | None = None
+    text: str | None = None
+
+@dataclass(slots=True)
 class UpdateCellRequest:
     cell_id: str | None = None
     cell_type: str | None = None
@@ -1888,6 +2342,18 @@ class UpdateDatasetRequest:
     id: Uuid | None = None
     name: str | None = None
     tags: list[str] | None = None
+
+@dataclass(slots=True)
+class UpdateGraphRequest:
+    branch_context: str | None = None
+    description: str | None = None
+    id: Uuid | None = None
+    layer_configuration_json: str | None = None
+    layout_state_json: str | None = None
+    model_rid: str | None = None
+    seed_object_refs: list[str] | None = None
+    timeline_state_json: str | None = None
+    title: str | None = None
 
 @dataclass(slots=True)
 class UpdateGroupRequest:
@@ -1931,6 +2397,13 @@ class UpdateRoleRequest:
     permission_ids: list[str] | None = None
 
 @dataclass(slots=True)
+class UpdateScenarioRequest:
+    description: str | None = None
+    edits: list[StagedEdit] | None = None
+    id: Uuid | None = None
+    name: str | None = None
+
+@dataclass(slots=True)
 class UpdateScheduleRequest:
     change_comment: str | None = None
     description: str | None = None
@@ -1940,6 +2413,14 @@ class UpdateScheduleRequest:
     rid: str | None = None
     target: ScheduleTarget | None = None
     trigger: Trigger | None = None
+
+@dataclass(slots=True)
+class UpdateSearchAroundRequest:
+    description: str | None = None
+    id: Uuid | None = None
+    parameters: list[SearchAroundParameter] | None = None
+    steps: list[SearchAroundStep] | None = None
+    title: str | None = None
 
 @dataclass(slots=True)
 class UpdateUserRequest:

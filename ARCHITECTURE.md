@@ -7,7 +7,7 @@ links below.
 ## Stack at a glance
 
 - **Backend:** Go (single module rooted at `github.com/openfoundry/openfoundry-go`)
-  with 50 service directories under [`services/`](services/) and 36
+  with 51 service directories under [`services/`](services/) and 38
   shared libraries under [`libs/`](libs/). Treat
   [`docs/reference/repository-layout.md`](docs/reference/repository-layout.md)
   as the code-first inventory source for service/library counts and roles.

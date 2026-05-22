@@ -39,14 +39,14 @@ func StarterPack(events []models.AuditEvent) models.AuditMonitoringStarterPack {
 
 func starterQueries() []models.AuditMonitoringQuery {
 	return []models.AuditMonitoringQuery{
-		{"admin_changes", "Admin changes", "Permission, user, group, and marking changes.", []string{"managementPermissions", "managementUsers", "managementGroups", "managementMarkings"}, `time >= now() - 24h AND categories intersects ["managementPermissions","managementUsers","managementGroups","managementMarkings"]`},
-		{"permission_grants", "Permission grants", "Resource permission changes and grants.", []string{"managementPermissions"}, `time >= now() - 7d AND categories contains "managementPermissions"`},
-		{"marking_changes", "Marking changes", "Mandatory-control and marking administration.", []string{"managementMarkings"}, `time >= now() - 7d AND categories contains "managementMarkings"`},
-		{"failed_access", "Failed access", "Denied auth checks and failed data loads.", []string{"authenticationCheck", "dataLoad"}, `time >= now() - 24h AND (status = "denied" OR outcome in ["error","unauthorized"])`},
-		{"egress_use", "Network egress use", "Network egress policy use and lifecycle.", []string{"networkEgress"}, `time >= now() - 24h AND categories contains "networkEgress"`},
-		{"export_events", "Data exports", "Exports to files, external systems, and egress routes.", []string{"dataExport"}, `time >= now() - 24h AND categories contains "dataExport"`},
-		{"token_creation", "Token creation", "Token generation and management activity.", []string{"tokenGeneration", "managementTokens"}, `time >= now() - 24h AND categories intersects ["tokenGeneration","managementTokens"]`},
-		{"anomalous_activity", "Anomalous activity", "Critical events, sensitive labels, and high-risk export sequences.", []string{"dataLoad", "dataExport"}, `time >= now() - 24h AND (severity in ["high","critical"] OR labels contains "contains-sensitive-data")`},
+		{ID: "admin_changes", Title: "Admin changes", Description: "Permission, user, group, and marking changes.", Categories: []string{"managementPermissions", "managementUsers", "managementGroups", "managementMarkings"}, Query: `time >= now() - 24h AND categories intersects ["managementPermissions","managementUsers","managementGroups","managementMarkings"]`},
+		{ID: "permission_grants", Title: "Permission grants", Description: "Resource permission changes and grants.", Categories: []string{"managementPermissions"}, Query: `time >= now() - 7d AND categories contains "managementPermissions"`},
+		{ID: "marking_changes", Title: "Marking changes", Description: "Mandatory-control and marking administration.", Categories: []string{"managementMarkings"}, Query: `time >= now() - 7d AND categories contains "managementMarkings"`},
+		{ID: "failed_access", Title: "Failed access", Description: "Denied auth checks and failed data loads.", Categories: []string{"authenticationCheck", "dataLoad"}, Query: `time >= now() - 24h AND (status = "denied" OR outcome in ["error","unauthorized"])`},
+		{ID: "egress_use", Title: "Network egress use", Description: "Network egress policy use and lifecycle.", Categories: []string{"networkEgress"}, Query: `time >= now() - 24h AND categories contains "networkEgress"`},
+		{ID: "export_events", Title: "Data exports", Description: "Exports to files, external systems, and egress routes.", Categories: []string{"dataExport"}, Query: `time >= now() - 24h AND categories contains "dataExport"`},
+		{ID: "token_creation", Title: "Token creation", Description: "Token generation and management activity.", Categories: []string{"tokenGeneration", "managementTokens"}, Query: `time >= now() - 24h AND categories intersects ["tokenGeneration","managementTokens"]`},
+		{ID: "anomalous_activity", Title: "Anomalous activity", Description: "Critical events, sensitive labels, and high-risk export sequences.", Categories: []string{"dataLoad", "dataExport"}, Query: `time >= now() - 24h AND (severity in ["high","critical"] OR labels contains "contains-sensitive-data")`},
 	}
 }
 

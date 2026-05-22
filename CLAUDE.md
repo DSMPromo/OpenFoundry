@@ -14,8 +14,8 @@ from this tree but its vocabulary still leaks into docs.
 
 ```
 apps/web/        React 19 + Vite + TypeScript frontend
-services/        50 service directories (current inventory: docs/reference/repository-layout.md)
-libs/            36 shared Go libraries (kernels, observability, auth, …)
+services/        51 service directories (current inventory: docs/reference/repository-layout.md)
+libs/            38 shared Go libraries (kernels, observability, auth, …)
 proto/           Source-of-truth .proto files (Go code generated to libs/proto-gen/)
 sdks/            Generated client SDKs (TS/Python/Java)
 infra/           Helm charts, ArgoCD, Terraform, runbooks

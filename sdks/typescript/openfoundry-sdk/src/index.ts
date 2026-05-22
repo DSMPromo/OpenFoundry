@@ -112,6 +112,17 @@ export interface AdminUsersListResponse {
   items?: Array<UserResponse>;
 }
 
+export interface Annotation {
+  author_id?: Uuid;
+  created_at?: string;
+  geometry_json?: string;
+  graph_id?: Uuid;
+  id?: Uuid;
+  kind?: AnnotationKind;
+  text?: string;
+  updated_at?: string;
+}
+
 export interface ApiError {
   code?: string;
   details?: Record<string, unknown>;
@@ -231,6 +242,22 @@ export interface CellOutput {
   output_type?: string;
 }
 
+export interface CentralityRequest {
+  branch_context?: string;
+  measures?: Array<CentralityMeasure>;
+  object_refs?: Array<ObjectRef>;
+}
+
+export interface CentralityResponse {
+  scores?: Array<CentralityScore>;
+}
+
+export interface CentralityScore {
+  measure?: CentralityMeasure;
+  ref?: ObjectRef;
+  value?: number;
+}
+
 export interface Column {
   data_type?: string;
   name?: string;
@@ -276,6 +303,20 @@ export interface ControlPanelSettings {
   updated_by?: string;
 }
 
+export interface Cost {
+  budget_exceeded?: boolean;
+  cpu_seconds?: number;
+  indices_hit?: Array<string>;
+  rows_scanned?: number;
+}
+
+export interface CreateAnnotationRequest {
+  geometry_json?: string;
+  graph_id?: Uuid;
+  kind?: AnnotationKind;
+  text?: string;
+}
+
 export interface CreateBranchRequest {
   as_root?: Empty;
   dataset_rid?: string;
@@ -303,6 +344,31 @@ export interface CreateDatasetRequest {
   format?: DatasetFormat;
   name?: string;
   tags?: Array<string>;
+}
+
+export interface CreateDerivedPropertyBindingRequest {
+  description?: string;
+  display_name?: string;
+  function_rid?: string;
+  object_type_id?: Uuid;
+  property_name?: string;
+  return_type?: ParamType;
+}
+
+export interface CreateGraphRequest {
+  branch_context?: string;
+  description?: string;
+  markings?: Array<string>;
+  model_rid?: string;
+  organizations?: Array<string>;
+  project_id?: Uuid;
+  seed_object_refs?: Array<string>;
+  title?: string;
+}
+
+export interface CreateGraphVersionRequest {
+  changelog?: string;
+  graph_id?: Uuid;
 }
 
 export interface CreateGroupRequest {
@@ -390,6 +456,14 @@ export interface CreateRoleRequest {
   permission_ids?: Array<string>;
 }
 
+export interface CreateScenarioRequest {
+  branch_context?: string;
+  description?: string;
+  edits?: Array<StagedEdit>;
+  graph_id?: Uuid;
+  name?: string;
+}
+
 export interface CreateScheduleRequest {
   description?: string;
   name?: string;
@@ -397,6 +471,15 @@ export interface CreateScheduleRequest {
   project_rid?: string;
   target?: ScheduleTarget;
   trigger?: Trigger;
+}
+
+export interface CreateSearchAroundRequest {
+  description?: string;
+  parameters?: Array<SearchAroundParameter>;
+  project_id?: Uuid;
+  starting_object_type_id?: Uuid;
+  steps?: Array<SearchAroundStep>;
+  title?: string;
 }
 
 export interface CreateSessionRequest {
@@ -454,6 +537,14 @@ export interface DecimalParams {
   scale?: number;
 }
 
+export interface DeleteAnnotationRequest {
+  id?: Uuid;
+}
+
+export interface DeleteAnnotationResponse {
+  deleted?: boolean;
+}
+
 export interface DeleteConnectionRequest {
   id?: Uuid;
 }
@@ -466,6 +557,22 @@ export interface DeleteDatasetRequest {
 }
 
 export interface DeleteDatasetResponse {
+}
+
+export interface DeleteDerivedPropertyBindingRequest {
+  id?: Uuid;
+}
+
+export interface DeleteDerivedPropertyBindingResponse {
+  deleted?: boolean;
+}
+
+export interface DeleteGraphRequest {
+  id?: Uuid;
+}
+
+export interface DeleteGraphResponse {
+  deleted?: boolean;
 }
 
 export interface DeleteLinkTypeRequest {
@@ -524,11 +631,44 @@ export interface DeleteSavedQueryRequest {
 export interface DeleteSavedQueryResponse {
 }
 
+export interface DeleteScenarioRequest {
+  id?: Uuid;
+}
+
+export interface DeleteScenarioResponse {
+  deleted?: boolean;
+}
+
 export interface DeleteScheduleRequest {
   rid?: string;
 }
 
 export interface DeleteScheduleResponse {
+}
+
+export interface DeleteSearchAroundRequest {
+  id?: Uuid;
+}
+
+export interface DeleteSearchAroundResponse {
+  deleted?: boolean;
+}
+
+export interface DerivedPropertyBinding {
+  created_at?: string;
+  description?: string;
+  display_name?: string;
+  function_rid?: string;
+  id?: Uuid;
+  object_type_id?: Uuid;
+  owner_id?: Uuid;
+  property_name?: string;
+  return_type?: ParamType;
+  updated_at?: string;
+}
+
+export interface DiffScenarioRequest {
+  id?: Uuid;
 }
 
 export interface DisableModelRequest {
@@ -631,6 +771,35 @@ export interface ExecuteQueryRequest {
   sql?: string;
 }
 
+export interface ExecuteSearchAroundRequest {
+  inline?: InlineSearchAround;
+  saved_search_around_id?: Uuid;
+}
+
+export interface ExecuteSearchAroundResponse {
+  cost?: Cost;
+  groups?: Array<ResultGroup>;
+}
+
+export interface ExpandNeighborsRequest {
+  branch_context?: string;
+  cursor?: string;
+  direction?: Direction;
+  filters?: Array<SearchAroundFilter>;
+  limit?: number;
+  link_type_id?: Uuid;
+  object_id?: string;
+  object_type_id?: Uuid;
+}
+
+export interface ExpandNeighborsResponse {
+  hidden_count?: number;
+  items?: Array<ObjectRef>;
+  next_cursor?: string;
+  total?: number;
+  total_is_estimate?: boolean;
+}
+
 export interface ExplainQueryRequest {
   sql?: string;
 }
@@ -699,6 +868,23 @@ export interface FilesystemSections {
   views?: number;
 }
 
+export interface FindPathsRequest {
+  branch_context?: string;
+  end?: ObjectRef;
+  k?: number;
+  max_hops?: number;
+  start?: ObjectRef;
+}
+
+export interface FindPathsResponse {
+  paths?: Array<Path>;
+}
+
+export interface ForkGraphRequest {
+  id?: Uuid;
+  new_title?: string;
+}
+
 export interface GeneratePresignedDownloadUrlRequest {
   expires_in_seconds?: number;
   media_item_rid?: string;
@@ -722,6 +908,15 @@ export interface GetDatasetRequest {
 }
 
 export interface GetFullLineageRequest {
+}
+
+export interface GetGraphRequest {
+  id?: Uuid;
+}
+
+export interface GetGraphVersionRequest {
+  graph_id?: Uuid;
+  version?: number;
 }
 
 export interface GetIngestJobRequest {
@@ -768,6 +963,10 @@ export interface GetRunRequest {
   id?: Uuid;
 }
 
+export interface GetScenarioRequest {
+  id?: Uuid;
+}
+
 export interface GetScheduleRequest {
   rid?: string;
 }
@@ -776,12 +975,45 @@ export interface GetScheduleRunRequest {
   rid?: string;
 }
 
+export interface GetSearchAroundRequest {
+  id?: Uuid;
+}
+
 export interface GetVersionsRequest {
   dataset_id?: Uuid;
 }
 
 export interface GetVersionsResponse {
   versions?: Array<DatasetVersion>;
+}
+
+export interface Graph {
+  branch_context?: string;
+  created_at?: string;
+  description?: string;
+  id?: Uuid;
+  layer_configuration_json?: string;
+  layout_state_json?: string;
+  markings?: Array<string>;
+  model_rid?: string;
+  organizations?: Array<string>;
+  owner_id?: Uuid;
+  project_id?: Uuid;
+  rid?: string;
+  seed_object_refs?: Array<string>;
+  timeline_state_json?: string;
+  title?: string;
+  updated_at?: string;
+}
+
+export interface GraphVersion {
+  author_id?: Uuid;
+  changelog?: string;
+  created_at?: string;
+  graph_id?: Uuid;
+  id?: Uuid;
+  snapshot_json?: string;
+  version?: number;
 }
 
 export interface GroupResponse {
@@ -803,6 +1035,30 @@ export interface HealthCheckResponse {
 
 export interface HealthCheckTarget {
   check_rid?: string;
+}
+
+export interface HistogramBucket {
+  count?: number;
+  value_json?: string;
+}
+
+export interface HistogramFacet {
+  buckets?: Array<HistogramBucket>;
+  n?: number;
+  numeric?: NumericSummary;
+  object_type_id?: Uuid;
+  property?: string;
+  uniq?: number;
+}
+
+export interface HistogramRequest {
+  branch_context?: string;
+  object_refs?: Array<ObjectRef>;
+  properties?: Array<string>;
+}
+
+export interface HistogramResponse {
+  facets?: Array<HistogramFacet>;
 }
 
 export interface IncrementalConfig {
@@ -842,6 +1098,12 @@ export interface IngestJob {
   status?: IngestJobStatus;
   table_name?: string;
   target_dataset_id?: Uuid;
+}
+
+export interface InlineSearchAround {
+  parameters?: Array<SearchAroundParameter>;
+  starting_object_type_id?: Uuid;
+  steps?: Array<SearchAroundStep>;
 }
 
 export interface InputSpec {
@@ -932,6 +1194,25 @@ export interface LineageNode {
   dataset_id?: Uuid;
 }
 
+export interface LinkSummaryEntry {
+  count?: number;
+  count_is_estimate?: boolean;
+  direction?: Direction;
+  display_name?: string;
+  link_type_id?: Uuid;
+  target_object_type_id?: Uuid;
+}
+
+export interface LinkSummaryRequest {
+  branch_context?: string;
+  object_id?: string;
+  object_type_id?: Uuid;
+}
+
+export interface LinkSummaryResponse {
+  entries?: Array<LinkSummaryEntry>;
+}
+
 export interface LinkType {
   cardinality?: string;
   created_at?: string;
@@ -965,6 +1246,14 @@ export interface ListAccessPatternsResponse {
   patterns?: Array<AccessPattern>;
 }
 
+export interface ListAnnotationsRequest {
+  graph_id?: Uuid;
+}
+
+export interface ListAnnotationsResponse {
+  items?: Array<Annotation>;
+}
+
 export interface ListConnectionsRequest {
   pagination?: PageRequest;
 }
@@ -982,6 +1271,35 @@ export interface ListDatasetsRequest {
 
 export interface ListDatasetsResponse {
   datasets?: Array<Dataset>;
+  pagination?: PageResponse;
+}
+
+export interface ListDerivedPropertyBindingsRequest {
+  object_type_id?: Uuid;
+}
+
+export interface ListDerivedPropertyBindingsResponse {
+  items?: Array<DerivedPropertyBinding>;
+}
+
+export interface ListGraphVersionsRequest {
+  graph_id?: Uuid;
+  pagination?: PageRequest;
+}
+
+export interface ListGraphVersionsResponse {
+  items?: Array<GraphVersion>;
+  pagination?: PageResponse;
+}
+
+export interface ListGraphsRequest {
+  pagination?: PageRequest;
+  project_id?: Uuid;
+  search?: string;
+}
+
+export interface ListGraphsResponse {
+  items?: Array<Graph>;
   pagination?: PageResponse;
 }
 
@@ -1141,6 +1459,16 @@ export interface ListSavedQueriesResponse {
   queries?: Array<SavedQuery>;
 }
 
+export interface ListScenariosRequest {
+  graph_id?: Uuid;
+  pagination?: PageRequest;
+}
+
+export interface ListScenariosResponse {
+  items?: Array<Scenario>;
+  pagination?: PageResponse;
+}
+
 export interface ListScheduleRunsRequest {
   limit?: number;
   offset?: number;
@@ -1164,6 +1492,18 @@ export interface ListSchedulesRequest {
 export interface ListSchedulesResponse {
   pagination?: PageResponse;
   schedules?: Array<Schedule>;
+}
+
+export interface ListSearchAroundsRequest {
+  pagination?: PageRequest;
+  project_id?: Uuid;
+  search?: string;
+  starting_object_type_id?: Uuid;
+}
+
+export interface ListSearchAroundsResponse {
+  items?: Array<SearchAround>;
+  pagination?: PageResponse;
 }
 
 export interface ListSessionsRequest {
@@ -1277,6 +1617,14 @@ export interface Notebook {
   updated_at?: string;
 }
 
+export interface NumericSummary {
+  avg?: number;
+  max?: number;
+  min?: number;
+  n?: number;
+  sum?: number;
+}
+
 export interface ObjectInstance {
   created_at?: string;
   created_by?: string;
@@ -1286,6 +1634,13 @@ export interface ObjectInstance {
   organization_id?: string;
   properties?: Struct;
   updated_at?: string;
+}
+
+export interface ObjectRef {
+  display_label?: string;
+  object_id?: string;
+  object_type_id?: Uuid;
+  properties_json?: string;
 }
 
 export interface ObjectType {
@@ -1340,6 +1695,17 @@ export interface PageResponse {
   per_page?: number;
   total?: number;
   total_pages?: number;
+}
+
+export interface Path {
+  edges?: Array<PathEdge>;
+  nodes?: Array<ObjectRef>;
+  weight?: number;
+}
+
+export interface PathEdge {
+  direction?: Direction;
+  link_type_id?: Uuid;
 }
 
 export interface Permission {
@@ -1472,6 +1838,15 @@ export interface ProductVersion {
   rid?: string;
   signature?: string;
   version?: string;
+}
+
+export interface PromoteScenarioRequest {
+  id?: Uuid;
+  target_branch?: boolean;
+}
+
+export interface PromoteScenarioResponse {
+  action_invocation_ids?: Array<Uuid>;
 }
 
 export interface Property {
@@ -1621,6 +1996,12 @@ export interface ResourceRef {
   type?: ResourceType;
 }
 
+export interface ResultGroup {
+  items?: Array<ObjectRef>;
+  object_type_id?: Uuid;
+  total?: number;
+}
+
 export interface Role {
   description?: string;
   id?: Uuid;
@@ -1682,6 +2063,28 @@ export interface SavedQuery {
   updated_at?: string;
 }
 
+export interface Scenario {
+  author_id?: Uuid;
+  branch_context?: string;
+  created_at?: string;
+  description?: string;
+  edits?: Array<StagedEdit>;
+  graph_id?: Uuid;
+  id?: Uuid;
+  name?: string;
+  updated_at?: string;
+}
+
+export interface ScenarioDiff {
+  added_count?: number;
+  changed_edge_count?: number;
+  changed_node_count?: number;
+  impacted_object_refs?: Array<string>;
+  metrics_json?: string;
+  removed_count?: number;
+  scenario_id?: Uuid;
+}
+
 export interface Schedule {
   created_at?: string;
   description?: string;
@@ -1721,6 +2124,42 @@ export interface Schema {
   file_format?: FileFormat;
 }
 
+export interface SearchAround {
+  created_at?: string;
+  description?: string;
+  id?: Uuid;
+  owner_id?: Uuid;
+  parameters?: Array<SearchAroundParameter>;
+  project_id?: Uuid;
+  rid?: string;
+  starting_object_type_id?: Uuid;
+  steps?: Array<SearchAroundStep>;
+  title?: string;
+  updated_at?: string;
+}
+
+export interface SearchAroundFilter {
+  literal_json?: string;
+  op?: FilterOp;
+  parameter_ref?: string;
+  property?: string;
+}
+
+export interface SearchAroundParameter {
+  default_value_json?: string;
+  description?: string;
+  name?: string;
+  required?: boolean;
+  type?: ParamType;
+}
+
+export interface SearchAroundStep {
+  direction?: Direction;
+  filters?: Array<SearchAroundFilter>;
+  ordinal?: number;
+  relation_id?: Uuid;
+}
+
 export interface SearchObjectsRequest {
   object_type_id?: string;
   pagination?: PageRequest;
@@ -1740,6 +2179,15 @@ export interface Session {
   notebook_id?: string;
   started_by?: string;
   status?: string;
+}
+
+export interface StagedEdit {
+  action_id?: Uuid;
+  kind?: EditKind;
+  new_value_json?: string;
+  old_value_json?: string;
+  property_name?: string;
+  target_ref?: string;
 }
 
 export interface StopSessionRequest {
@@ -1868,6 +2316,12 @@ export interface UninstallRequest {
   installation_rid?: string;
 }
 
+export interface UpdateAnnotationRequest {
+  geometry_json?: string;
+  id?: Uuid;
+  text?: string;
+}
+
 export interface UpdateCellRequest {
   cell_id?: string;
   cell_type?: string;
@@ -1897,6 +2351,18 @@ export interface UpdateDatasetRequest {
   id?: Uuid;
   name?: string;
   tags?: Array<string>;
+}
+
+export interface UpdateGraphRequest {
+  branch_context?: string;
+  description?: string;
+  id?: Uuid;
+  layer_configuration_json?: string;
+  layout_state_json?: string;
+  model_rid?: string;
+  seed_object_refs?: Array<string>;
+  timeline_state_json?: string;
+  title?: string;
 }
 
 export interface UpdateGroupRequest {
@@ -1940,6 +2406,13 @@ export interface UpdateRoleRequest {
   permission_ids?: Array<string>;
 }
 
+export interface UpdateScenarioRequest {
+  description?: string;
+  edits?: Array<StagedEdit>;
+  id?: Uuid;
+  name?: string;
+}
+
 export interface UpdateScheduleRequest {
   change_comment?: string;
   description?: string;
@@ -1949,6 +2422,14 @@ export interface UpdateScheduleRequest {
   rid?: string;
   target?: ScheduleTarget;
   trigger?: Trigger;
+}
+
+export interface UpdateSearchAroundRequest {
+  description?: string;
+  id?: Uuid;
+  parameters?: Array<SearchAroundParameter>;
+  steps?: Array<SearchAroundStep>;
+  title?: string;
 }
 
 export interface UpdateUserRequest {
@@ -2008,9 +2489,13 @@ export interface WatchIngestJobRequest {
   poll_interval_ms?: number;
 }
 
+export type AnnotationKind = unknown;
+
 export type BuildState = unknown;
 
 export type Capability = unknown;
+
+export type CentralityMeasure = unknown;
 
 export type ConnectionStatus = string;
 
@@ -2020,6 +2505,10 @@ export type CronFlavor = unknown;
 
 export type DatasetFormat = string;
 
+export type Direction = unknown;
+
+export type EditKind = unknown;
+
 export type Empty = unknown;
 
 export type EventType = string;
@@ -2027,6 +2516,8 @@ export type EventType = string;
 export type FieldType = string;
 
 export type FileFormat = string;
+
+export type FilterOp = unknown;
 
 export type IngestJobStatus = string;
 
@@ -2039,6 +2530,8 @@ export type LinkDirection = unknown;
 export type MediaSetSchema = unknown;
 
 export type ObjectTypeBindingSyncMode = string;
+
+export type ParamType = string;
 
 export type PersistencePolicy = unknown;
 
@@ -3460,6 +3953,414 @@ export const OPENFOUNDRY_OPERATION_REGISTRY: ReadonlyArray<OpenFoundryOperationM
     mcpTool: "openfoundry.marketplaceV1.uninstall",
   },
   {
+    operationId: "open_foundry.vertex.TraversalService.Centrality",
+    method: "POST",
+    path: "/api/v1/vertex/centrality",
+    summary: "TraversalService Centrality",
+    description: "Generated from `open_foundry.vertex` RPC `Centrality` in service `TraversalService`.",
+    namespace: "vertex",
+    namespaceMember: "centrality",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.centrality",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.CreateAnnotation",
+    method: "POST",
+    path: "/api/v1/vertex/create-annotation",
+    summary: "VertexService CreateAnnotation",
+    description: "Generated from `open_foundry.vertex` RPC `CreateAnnotation` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "createannotation",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.createannotation",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.CreateDerivedPropertyBinding",
+    method: "POST",
+    path: "/api/v1/vertex/create-derived-property-binding",
+    summary: "VertexService CreateDerivedPropertyBinding",
+    description: "Generated from `open_foundry.vertex` RPC `CreateDerivedPropertyBinding` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "createderivedpropertybinding",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.createderivedpropertybinding",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.CreateGraph",
+    method: "POST",
+    path: "/api/v1/vertex/create-graph",
+    summary: "VertexService CreateGraph",
+    description: "Generated from `open_foundry.vertex` RPC `CreateGraph` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "creategraph",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.creategraph",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.CreateGraphVersion",
+    method: "POST",
+    path: "/api/v1/vertex/create-graph-version",
+    summary: "VertexService CreateGraphVersion",
+    description: "Generated from `open_foundry.vertex` RPC `CreateGraphVersion` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "creategraphversion",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.creategraphversion",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.CreateScenario",
+    method: "POST",
+    path: "/api/v1/vertex/create-scenario",
+    summary: "VertexService CreateScenario",
+    description: "Generated from `open_foundry.vertex` RPC `CreateScenario` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "createscenario",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.createscenario",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.CreateSearchAround",
+    method: "POST",
+    path: "/api/v1/vertex/create-search-around",
+    summary: "VertexService CreateSearchAround",
+    description: "Generated from `open_foundry.vertex` RPC `CreateSearchAround` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "createsearcharound",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.createsearcharound",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.DeleteAnnotation",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-annotation",
+    summary: "VertexService DeleteAnnotation",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteAnnotation` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "deleteannotation",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.deleteannotation",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.DeleteDerivedPropertyBinding",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-derived-property-binding",
+    summary: "VertexService DeleteDerivedPropertyBinding",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteDerivedPropertyBinding` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "deletederivedpropertybinding",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.deletederivedpropertybinding",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.DeleteGraph",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-graph",
+    summary: "VertexService DeleteGraph",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteGraph` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "deletegraph",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.deletegraph",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.DeleteScenario",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-scenario",
+    summary: "VertexService DeleteScenario",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteScenario` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "deletescenario",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.deletescenario",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.DeleteSearchAround",
+    method: "DELETE",
+    path: "/api/v1/vertex/delete-search-around",
+    summary: "VertexService DeleteSearchAround",
+    description: "Generated from `open_foundry.vertex` RPC `DeleteSearchAround` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "deletesearcharound",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.deletesearcharound",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.DiffScenario",
+    method: "POST",
+    path: "/api/v1/vertex/diff-scenario",
+    summary: "VertexService DiffScenario",
+    description: "Generated from `open_foundry.vertex` RPC `DiffScenario` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "diffscenario",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.diffscenario",
+  },
+  {
+    operationId: "open_foundry.vertex.TraversalService.ExecuteSearchAround",
+    method: "POST",
+    path: "/api/v1/vertex/execute-search-around",
+    summary: "TraversalService ExecuteSearchAround",
+    description: "Generated from `open_foundry.vertex` RPC `ExecuteSearchAround` in service `TraversalService`.",
+    namespace: "vertex",
+    namespaceMember: "executesearcharound",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.executesearcharound",
+  },
+  {
+    operationId: "open_foundry.vertex.TraversalService.ExpandNeighbors",
+    method: "POST",
+    path: "/api/v1/vertex/expand-neighbors",
+    summary: "TraversalService ExpandNeighbors",
+    description: "Generated from `open_foundry.vertex` RPC `ExpandNeighbors` in service `TraversalService`.",
+    namespace: "vertex",
+    namespaceMember: "expandneighbors",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.expandneighbors",
+  },
+  {
+    operationId: "open_foundry.vertex.TraversalService.FindPaths",
+    method: "POST",
+    path: "/api/v1/vertex/find-paths",
+    summary: "TraversalService FindPaths",
+    description: "Generated from `open_foundry.vertex` RPC `FindPaths` in service `TraversalService`.",
+    namespace: "vertex",
+    namespaceMember: "findpaths",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.findpaths",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.ForkGraph",
+    method: "POST",
+    path: "/api/v1/vertex/fork-graph",
+    summary: "VertexService ForkGraph",
+    description: "Generated from `open_foundry.vertex` RPC `ForkGraph` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "forkgraph",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.forkgraph",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.GetGraph",
+    method: "GET",
+    path: "/api/v1/vertex/get-graph",
+    summary: "VertexService GetGraph",
+    description: "Generated from `open_foundry.vertex` RPC `GetGraph` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "getgraph",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.getgraph",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.GetGraphVersion",
+    method: "GET",
+    path: "/api/v1/vertex/get-graph-version",
+    summary: "VertexService GetGraphVersion",
+    description: "Generated from `open_foundry.vertex` RPC `GetGraphVersion` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "getgraphversion",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.getgraphversion",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.GetScenario",
+    method: "GET",
+    path: "/api/v1/vertex/get-scenario",
+    summary: "VertexService GetScenario",
+    description: "Generated from `open_foundry.vertex` RPC `GetScenario` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "getscenario",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.getscenario",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.GetSearchAround",
+    method: "GET",
+    path: "/api/v1/vertex/get-search-around",
+    summary: "VertexService GetSearchAround",
+    description: "Generated from `open_foundry.vertex` RPC `GetSearchAround` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "getsearcharound",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.getsearcharound",
+  },
+  {
+    operationId: "open_foundry.vertex.TraversalService.Histogram",
+    method: "POST",
+    path: "/api/v1/vertex/histogram",
+    summary: "TraversalService Histogram",
+    description: "Generated from `open_foundry.vertex` RPC `Histogram` in service `TraversalService`.",
+    namespace: "vertex",
+    namespaceMember: "histogram",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.histogram",
+  },
+  {
+    operationId: "open_foundry.vertex.TraversalService.LinkSummary",
+    method: "POST",
+    path: "/api/v1/vertex/link-summary",
+    summary: "TraversalService LinkSummary",
+    description: "Generated from `open_foundry.vertex` RPC `LinkSummary` in service `TraversalService`.",
+    namespace: "vertex",
+    namespaceMember: "linksummary",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.linksummary",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.ListAnnotations",
+    method: "GET",
+    path: "/api/v1/vertex/list-annotations",
+    summary: "VertexService ListAnnotations",
+    description: "Generated from `open_foundry.vertex` RPC `ListAnnotations` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "listannotations",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.listannotations",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.ListDerivedPropertyBindings",
+    method: "GET",
+    path: "/api/v1/vertex/list-derived-property-bindings",
+    summary: "VertexService ListDerivedPropertyBindings",
+    description: "Generated from `open_foundry.vertex` RPC `ListDerivedPropertyBindings` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "listderivedpropertybindings",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.listderivedpropertybindings",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.ListGraphVersions",
+    method: "GET",
+    path: "/api/v1/vertex/list-graph-versions",
+    summary: "VertexService ListGraphVersions",
+    description: "Generated from `open_foundry.vertex` RPC `ListGraphVersions` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "listgraphversions",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.listgraphversions",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.ListGraphs",
+    method: "GET",
+    path: "/api/v1/vertex/list-graphs",
+    summary: "VertexService ListGraphs",
+    description: "Generated from `open_foundry.vertex` RPC `ListGraphs` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "listgraphs",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.listgraphs",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.ListScenarios",
+    method: "GET",
+    path: "/api/v1/vertex/list-scenarios",
+    summary: "VertexService ListScenarios",
+    description: "Generated from `open_foundry.vertex` RPC `ListScenarios` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "listscenarios",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.listscenarios",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.ListSearchArounds",
+    method: "GET",
+    path: "/api/v1/vertex/list-search-arounds",
+    summary: "VertexService ListSearchArounds",
+    description: "Generated from `open_foundry.vertex` RPC `ListSearchArounds` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "listsearcharounds",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.listsearcharounds",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.PromoteScenarioToActions",
+    method: "POST",
+    path: "/api/v1/vertex/promote-scenario-to-actions",
+    summary: "VertexService PromoteScenarioToActions",
+    description: "Generated from `open_foundry.vertex` RPC `PromoteScenarioToActions` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "promotescenariotoactions",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.promotescenariotoactions",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.UpdateAnnotation",
+    method: "PATCH",
+    path: "/api/v1/vertex/update-annotation",
+    summary: "VertexService UpdateAnnotation",
+    description: "Generated from `open_foundry.vertex` RPC `UpdateAnnotation` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "updateannotation",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.updateannotation",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.UpdateGraph",
+    method: "PATCH",
+    path: "/api/v1/vertex/update-graph",
+    summary: "VertexService UpdateGraph",
+    description: "Generated from `open_foundry.vertex` RPC `UpdateGraph` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "updategraph",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.updategraph",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.UpdateScenario",
+    method: "PATCH",
+    path: "/api/v1/vertex/update-scenario",
+    summary: "VertexService UpdateScenario",
+    description: "Generated from `open_foundry.vertex` RPC `UpdateScenario` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "updatescenario",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.updatescenario",
+  },
+  {
+    operationId: "open_foundry.vertex.VertexService.UpdateSearchAround",
+    method: "PATCH",
+    path: "/api/v1/vertex/update-search-around",
+    summary: "VertexService UpdateSearchAround",
+    description: "Generated from `open_foundry.vertex` RPC `UpdateSearchAround` in service `VertexService`.",
+    namespace: "vertex",
+    namespaceMember: "updatesearcharound",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.vertex.updatesearcharound",
+  },
+  {
     operationId: "rest.admin.v2.getControlPanel",
     method: "GET",
     path: "/api/v2/admin/control-panel",
@@ -3909,6 +4810,43 @@ export class OpenFoundryClient {
     executeinlinefunction: (body: ExecuteInlineFunctionRequest, init: OpenFoundryRequestInit = {}) => this.runtimePythonruntimeExecuteinlinefunction(body, init),
     executenotebookcell: (body: ExecuteNotebookCellRequest, init: OpenFoundryRequestInit = {}) => this.runtimePythonruntimeExecutenotebookcell(body, init),
     executepipelinetransform: (body: ExecutePipelineTransformRequest, init: OpenFoundryRequestInit = {}) => this.runtimePythonruntimeExecutepipelinetransform(body, init),
+  } as const;
+
+  readonly vertex = {
+    centrality: (body: CentralityRequest, init: OpenFoundryRequestInit = {}) => this.vertexTraversalCentrality(body, init),
+    createannotation: (body: CreateAnnotationRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexCreateannotation(body, init),
+    createderivedpropertybinding: (body: CreateDerivedPropertyBindingRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexCreatederivedpropertybinding(body, init),
+    creategraph: (body: CreateGraphRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexCreategraph(body, init),
+    creategraphversion: (body: CreateGraphVersionRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexCreategraphversion(body, init),
+    createscenario: (body: CreateScenarioRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexCreatescenario(body, init),
+    createsearcharound: (body: CreateSearchAroundRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexCreatesearcharound(body, init),
+    deleteannotation: (query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexDeleteannotation(query, init),
+    deletederivedpropertybinding: (query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexDeletederivedpropertybinding(query, init),
+    deletegraph: (query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexDeletegraph(query, init),
+    deletescenario: (query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexDeletescenario(query, init),
+    deletesearcharound: (query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexDeletesearcharound(query, init),
+    diffscenario: (body: DiffScenarioRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexDiffscenario(body, init),
+    executesearcharound: (body: ExecuteSearchAroundRequest, init: OpenFoundryRequestInit = {}) => this.vertexTraversalExecutesearcharound(body, init),
+    expandneighbors: (body: ExpandNeighborsRequest, init: OpenFoundryRequestInit = {}) => this.vertexTraversalExpandneighbors(body, init),
+    findpaths: (body: FindPathsRequest, init: OpenFoundryRequestInit = {}) => this.vertexTraversalFindpaths(body, init),
+    forkgraph: (body: ForkGraphRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexForkgraph(body, init),
+    getgraph: (query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexGetgraph(query, init),
+    getgraphversion: (query: { graph_id?: Uuid; version?: number } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexGetgraphversion(query, init),
+    getscenario: (query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexGetscenario(query, init),
+    getsearcharound: (query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexGetsearcharound(query, init),
+    histogram: (body: HistogramRequest, init: OpenFoundryRequestInit = {}) => this.vertexTraversalHistogram(body, init),
+    linksummary: (body: LinkSummaryRequest, init: OpenFoundryRequestInit = {}) => this.vertexTraversalLinksummary(body, init),
+    listannotations: (query: { graph_id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexListannotations(query, init),
+    listderivedpropertybindings: (query: { object_type_id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexListderivedpropertybindings(query, init),
+    listgraphversions: (query: { graph_id?: Uuid; pagination?: PageRequest } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexListgraphversions(query, init),
+    listgraphs: (query: { pagination?: PageRequest; project_id?: Uuid; search?: string } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexListgraphs(query, init),
+    listscenarios: (query: { graph_id?: Uuid; pagination?: PageRequest } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexListscenarios(query, init),
+    listsearcharounds: (query: { pagination?: PageRequest; project_id?: Uuid; search?: string; starting_object_type_id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.vertexVertexListsearcharounds(query, init),
+    promotescenariotoactions: (body: PromoteScenarioRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexPromotescenariotoactions(body, init),
+    updateannotation: (body: UpdateAnnotationRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexUpdateannotation(body, init),
+    updategraph: (body: UpdateGraphRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexUpdategraph(body, init),
+    updatescenario: (body: UpdateScenarioRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexUpdatescenario(body, init),
+    updatesearcharound: (body: UpdateSearchAroundRequest, init: OpenFoundryRequestInit = {}) => this.vertexVertexUpdatesearcharound(body, init),
   } as const;
 
   async authRbacAssignrole(body: AssignRoleRequest, init: OpenFoundryRequestInit = {}): Promise<AssignRoleResponse> {
@@ -4375,6 +5313,142 @@ export class OpenFoundryClient {
     return this.request<Installation>("POST", "/api/v1/v1/uninstall", undefined, undefined, body, init);
   }
 
+  async vertexTraversalCentrality(body: CentralityRequest, init: OpenFoundryRequestInit = {}): Promise<CentralityResponse> {
+    return this.request<CentralityResponse>("POST", "/api/v1/vertex/centrality", undefined, undefined, body, init);
+  }
+
+  async vertexVertexCreateannotation(body: CreateAnnotationRequest, init: OpenFoundryRequestInit = {}): Promise<Annotation> {
+    return this.request<Annotation>("POST", "/api/v1/vertex/create-annotation", undefined, undefined, body, init);
+  }
+
+  async vertexVertexCreatederivedpropertybinding(body: CreateDerivedPropertyBindingRequest, init: OpenFoundryRequestInit = {}): Promise<DerivedPropertyBinding> {
+    return this.request<DerivedPropertyBinding>("POST", "/api/v1/vertex/create-derived-property-binding", undefined, undefined, body, init);
+  }
+
+  async vertexVertexCreategraph(body: CreateGraphRequest, init: OpenFoundryRequestInit = {}): Promise<Graph> {
+    return this.request<Graph>("POST", "/api/v1/vertex/create-graph", undefined, undefined, body, init);
+  }
+
+  async vertexVertexCreategraphversion(body: CreateGraphVersionRequest, init: OpenFoundryRequestInit = {}): Promise<GraphVersion> {
+    return this.request<GraphVersion>("POST", "/api/v1/vertex/create-graph-version", undefined, undefined, body, init);
+  }
+
+  async vertexVertexCreatescenario(body: CreateScenarioRequest, init: OpenFoundryRequestInit = {}): Promise<Scenario> {
+    return this.request<Scenario>("POST", "/api/v1/vertex/create-scenario", undefined, undefined, body, init);
+  }
+
+  async vertexVertexCreatesearcharound(body: CreateSearchAroundRequest, init: OpenFoundryRequestInit = {}): Promise<SearchAround> {
+    return this.request<SearchAround>("POST", "/api/v1/vertex/create-search-around", undefined, undefined, body, init);
+  }
+
+  async vertexVertexDeleteannotation(query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<DeleteAnnotationResponse> {
+    return this.request<DeleteAnnotationResponse>("DELETE", "/api/v1/vertex/delete-annotation", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexDeletederivedpropertybinding(query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<DeleteDerivedPropertyBindingResponse> {
+    return this.request<DeleteDerivedPropertyBindingResponse>("DELETE", "/api/v1/vertex/delete-derived-property-binding", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexDeletegraph(query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<DeleteGraphResponse> {
+    return this.request<DeleteGraphResponse>("DELETE", "/api/v1/vertex/delete-graph", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexDeletescenario(query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<DeleteScenarioResponse> {
+    return this.request<DeleteScenarioResponse>("DELETE", "/api/v1/vertex/delete-scenario", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexDeletesearcharound(query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<DeleteSearchAroundResponse> {
+    return this.request<DeleteSearchAroundResponse>("DELETE", "/api/v1/vertex/delete-search-around", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexDiffscenario(body: DiffScenarioRequest, init: OpenFoundryRequestInit = {}): Promise<ScenarioDiff> {
+    return this.request<ScenarioDiff>("POST", "/api/v1/vertex/diff-scenario", undefined, undefined, body, init);
+  }
+
+  async vertexTraversalExecutesearcharound(body: ExecuteSearchAroundRequest, init: OpenFoundryRequestInit = {}): Promise<ExecuteSearchAroundResponse> {
+    return this.request<ExecuteSearchAroundResponse>("POST", "/api/v1/vertex/execute-search-around", undefined, undefined, body, init);
+  }
+
+  async vertexTraversalExpandneighbors(body: ExpandNeighborsRequest, init: OpenFoundryRequestInit = {}): Promise<ExpandNeighborsResponse> {
+    return this.request<ExpandNeighborsResponse>("POST", "/api/v1/vertex/expand-neighbors", undefined, undefined, body, init);
+  }
+
+  async vertexTraversalFindpaths(body: FindPathsRequest, init: OpenFoundryRequestInit = {}): Promise<FindPathsResponse> {
+    return this.request<FindPathsResponse>("POST", "/api/v1/vertex/find-paths", undefined, undefined, body, init);
+  }
+
+  async vertexVertexForkgraph(body: ForkGraphRequest, init: OpenFoundryRequestInit = {}): Promise<Graph> {
+    return this.request<Graph>("POST", "/api/v1/vertex/fork-graph", undefined, undefined, body, init);
+  }
+
+  async vertexVertexGetgraph(query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<Graph> {
+    return this.request<Graph>("GET", "/api/v1/vertex/get-graph", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexGetgraphversion(query: { graph_id?: Uuid; version?: number } = {}, init: OpenFoundryRequestInit = {}): Promise<GraphVersion> {
+    return this.request<GraphVersion>("GET", "/api/v1/vertex/get-graph-version", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexGetscenario(query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<Scenario> {
+    return this.request<Scenario>("GET", "/api/v1/vertex/get-scenario", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexGetsearcharound(query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<SearchAround> {
+    return this.request<SearchAround>("GET", "/api/v1/vertex/get-search-around", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexTraversalHistogram(body: HistogramRequest, init: OpenFoundryRequestInit = {}): Promise<HistogramResponse> {
+    return this.request<HistogramResponse>("POST", "/api/v1/vertex/histogram", undefined, undefined, body, init);
+  }
+
+  async vertexTraversalLinksummary(body: LinkSummaryRequest, init: OpenFoundryRequestInit = {}): Promise<LinkSummaryResponse> {
+    return this.request<LinkSummaryResponse>("POST", "/api/v1/vertex/link-summary", undefined, undefined, body, init);
+  }
+
+  async vertexVertexListannotations(query: { graph_id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<ListAnnotationsResponse> {
+    return this.request<ListAnnotationsResponse>("GET", "/api/v1/vertex/list-annotations", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexListderivedpropertybindings(query: { object_type_id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<ListDerivedPropertyBindingsResponse> {
+    return this.request<ListDerivedPropertyBindingsResponse>("GET", "/api/v1/vertex/list-derived-property-bindings", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexListgraphversions(query: { graph_id?: Uuid; pagination?: PageRequest } = {}, init: OpenFoundryRequestInit = {}): Promise<ListGraphVersionsResponse> {
+    return this.request<ListGraphVersionsResponse>("GET", "/api/v1/vertex/list-graph-versions", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexListgraphs(query: { pagination?: PageRequest; project_id?: Uuid; search?: string } = {}, init: OpenFoundryRequestInit = {}): Promise<ListGraphsResponse> {
+    return this.request<ListGraphsResponse>("GET", "/api/v1/vertex/list-graphs", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexListscenarios(query: { graph_id?: Uuid; pagination?: PageRequest } = {}, init: OpenFoundryRequestInit = {}): Promise<ListScenariosResponse> {
+    return this.request<ListScenariosResponse>("GET", "/api/v1/vertex/list-scenarios", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexListsearcharounds(query: { pagination?: PageRequest; project_id?: Uuid; search?: string; starting_object_type_id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<ListSearchAroundsResponse> {
+    return this.request<ListSearchAroundsResponse>("GET", "/api/v1/vertex/list-search-arounds", undefined, query as OpenFoundryQuery, undefined, init);
+  }
+
+  async vertexVertexPromotescenariotoactions(body: PromoteScenarioRequest, init: OpenFoundryRequestInit = {}): Promise<PromoteScenarioResponse> {
+    return this.request<PromoteScenarioResponse>("POST", "/api/v1/vertex/promote-scenario-to-actions", undefined, undefined, body, init);
+  }
+
+  async vertexVertexUpdateannotation(body: UpdateAnnotationRequest, init: OpenFoundryRequestInit = {}): Promise<Annotation> {
+    return this.request<Annotation>("PATCH", "/api/v1/vertex/update-annotation", undefined, undefined, body, init);
+  }
+
+  async vertexVertexUpdategraph(body: UpdateGraphRequest, init: OpenFoundryRequestInit = {}): Promise<Graph> {
+    return this.request<Graph>("PATCH", "/api/v1/vertex/update-graph", undefined, undefined, body, init);
+  }
+
+  async vertexVertexUpdatescenario(body: UpdateScenarioRequest, init: OpenFoundryRequestInit = {}): Promise<Scenario> {
+    return this.request<Scenario>("PATCH", "/api/v1/vertex/update-scenario", undefined, undefined, body, init);
+  }
+
+  async vertexVertexUpdatesearcharound(body: UpdateSearchAroundRequest, init: OpenFoundryRequestInit = {}): Promise<SearchAround> {
+    return this.request<SearchAround>("PATCH", "/api/v1/vertex/update-search-around", undefined, undefined, body, init);
+  }
+
   async adminV2Getcontrolpanel(init: OpenFoundryRequestInit = {}): Promise<ControlPanelSettings> {
     return this.request<ControlPanelSettings>("GET", "/api/v2/admin/control-panel", undefined, undefined, undefined, init);
   }
@@ -4685,6 +5759,74 @@ export class OpenFoundryClient {
         return this.v1EventrouterSubscribe(this.resolveBodyInput(input) as any, init);
       case "open_foundry.marketplace.v1.MarketplaceProductService.Uninstall":
         return this.v1MarketplaceproductUninstall(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.TraversalService.Centrality":
+        return this.vertexTraversalCentrality(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.CreateAnnotation":
+        return this.vertexVertexCreateannotation(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.CreateDerivedPropertyBinding":
+        return this.vertexVertexCreatederivedpropertybinding(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.CreateGraph":
+        return this.vertexVertexCreategraph(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.CreateGraphVersion":
+        return this.vertexVertexCreategraphversion(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.CreateScenario":
+        return this.vertexVertexCreatescenario(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.CreateSearchAround":
+        return this.vertexVertexCreatesearcharound(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.DeleteAnnotation":
+        return this.vertexVertexDeleteannotation(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.DeleteDerivedPropertyBinding":
+        return this.vertexVertexDeletederivedpropertybinding(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.DeleteGraph":
+        return this.vertexVertexDeletegraph(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.DeleteScenario":
+        return this.vertexVertexDeletescenario(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.DeleteSearchAround":
+        return this.vertexVertexDeletesearcharound(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.DiffScenario":
+        return this.vertexVertexDiffscenario(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.TraversalService.ExecuteSearchAround":
+        return this.vertexTraversalExecutesearcharound(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.TraversalService.ExpandNeighbors":
+        return this.vertexTraversalExpandneighbors(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.TraversalService.FindPaths":
+        return this.vertexTraversalFindpaths(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.ForkGraph":
+        return this.vertexVertexForkgraph(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.GetGraph":
+        return this.vertexVertexGetgraph(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.GetGraphVersion":
+        return this.vertexVertexGetgraphversion(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.GetScenario":
+        return this.vertexVertexGetscenario(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.GetSearchAround":
+        return this.vertexVertexGetsearcharound(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.TraversalService.Histogram":
+        return this.vertexTraversalHistogram(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.TraversalService.LinkSummary":
+        return this.vertexTraversalLinksummary(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.ListAnnotations":
+        return this.vertexVertexListannotations(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.ListDerivedPropertyBindings":
+        return this.vertexVertexListderivedpropertybindings(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.ListGraphVersions":
+        return this.vertexVertexListgraphversions(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.ListGraphs":
+        return this.vertexVertexListgraphs(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.ListScenarios":
+        return this.vertexVertexListscenarios(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.ListSearchArounds":
+        return this.vertexVertexListsearcharounds(((input.query ?? {}) as any), init);
+      case "open_foundry.vertex.VertexService.PromoteScenarioToActions":
+        return this.vertexVertexPromotescenariotoactions(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.UpdateAnnotation":
+        return this.vertexVertexUpdateannotation(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.UpdateGraph":
+        return this.vertexVertexUpdategraph(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.UpdateScenario":
+        return this.vertexVertexUpdatescenario(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.vertex.VertexService.UpdateSearchAround":
+        return this.vertexVertexUpdatesearcharound(this.resolveBodyInput(input) as any, init);
       case "rest.admin.v2.getControlPanel":
         return this.adminV2Getcontrolpanel(init);
       case "rest.admin.v2.updateControlPanel":
