@@ -55,6 +55,23 @@ func New(pool *pgxpool.Pool) *Repo { return &Repo{Pool: pool} }
 // Ping verifies the Postgres pool is reachable; it backs the /readyz probe.
 func (r *Repo) Ping(ctx context.Context) error { return r.Pool.Ping(ctx) }
 
+// ClaimDue advances a definition's schedule via a compare-and-swap on
+// next_run_at, so a due report is claimed by exactly one replica.
+func (r *Repo) ClaimDue(ctx context.Context, id, expectedNextRunAt string, newSchedule handlers.ReportSchedule) (bool, error) {
+	scheduleJSON, err := json.Marshal(newSchedule)
+	if err != nil {
+		return false, err
+	}
+	tag, err := r.Pool.Exec(ctx,
+		`UPDATE report_definitions SET schedule = $3, updated_at = now()
+		 WHERE id = $1 AND schedule->>'next_run_at' = $2`,
+		id, expectedNextRunAt, scheduleJSON)
+	if err != nil {
+		return false, err
+	}
+	return tag.RowsAffected() > 0, nil
+}
+
 const definitionSelect = `SELECT id, name, description, owner, generator_kind, dataset_name,
 	template, schedule, recipients, tags, parameters, active, last_generated_at, created_at, updated_at
 	FROM report_definitions`
