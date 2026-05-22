@@ -479,21 +479,17 @@ services:
   # S8 / ADR-0030 (B21) — `product-distribution-service` merged →
   # `federation-product-exchange-service`. No Deployment renders here.
 
-  # S8.6 — `report-service` rescaffolded as a stub binary because the
-  # edge gateway still routes `/api/v1/reports*` to a dedicated upstream
-  # (router_table.go `u.Report` branch) and was returning 502s. The S8 /
-  # ADR-0030 (C4) retirement remains the long-term plan (domain moves
-  # into the absorbed `document-reporting` module in
-  # `notebook-runtime-service`); until that wiring lands, this Deployment
-  # serves a structured 501 envelope so the frontend renders a typed
-  # error instead.
+  # `report-service` backs the edge gateway's `/api/v1/reports*` routes
+  # (router_table.go `u.Report` branch). It owns report definitions and
+  # executions over Postgres and renders downloadable artifacts
+  # (PDF/Excel/CSV/HTML/PPTX) in-process — see services/report-service.
   report-service:
     replicas: 2
     ports:
       - name: http
         containerPort: 8080
-    # TODO(report): add a dependency-aware readiness endpoint before
-    # wiring live report storage; /healthz only proves the process is up.
+    # TODO(report): add a dependency-aware readiness endpoint; /healthz
+    # only proves the process is up, not that Postgres is reachable.
     envSecrets:
       OF_JWT__SECRET:
         secretName: openfoundry-jwt

@@ -15,12 +15,16 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+
+	"github.com/openfoundry/openfoundry-go/services/report-service/internal/generator"
 )
 
-type GeneratorKind string
-type ScheduleCadence string
-type SectionKind string
-type DistributionChannel string
+type (
+	GeneratorKind       string
+	ScheduleCadence     string
+	SectionKind         string
+	DistributionChannel string
+)
 
 const (
 	nowEngine = "openfoundry-report-local-v1"
@@ -198,6 +202,7 @@ type MemoryReportStore struct {
 func NewMemoryReportStore() *MemoryReportStore {
 	return &MemoryReportStore{defs: map[string]ReportDefinition{}, execs: map[string]ReportExecution{}}
 }
+
 func (s *MemoryReportStore) ListDefinitions(context.Context) ([]ReportDefinition, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -208,12 +213,14 @@ func (s *MemoryReportStore) ListDefinitions(context.Context) ([]ReportDefinition
 	sort.Slice(out, func(i, j int) bool { return out[i].UpdatedAt > out[j].UpdatedAt })
 	return out, nil
 }
+
 func (s *MemoryReportStore) CreateDefinition(_ context.Context, d ReportDefinition) (ReportDefinition, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.defs[d.ID] = d
 	return d, nil
 }
+
 func (s *MemoryReportStore) GetDefinition(_ context.Context, id string) (*ReportDefinition, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -223,6 +230,7 @@ func (s *MemoryReportStore) GetDefinition(_ context.Context, id string) (*Report
 	}
 	return &d, nil
 }
+
 func (s *MemoryReportStore) UpdateDefinition(ctx context.Context, id string, patch map[string]json.RawMessage) (ReportDefinition, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -235,6 +243,7 @@ func (s *MemoryReportStore) UpdateDefinition(ctx context.Context, id string, pat
 	s.defs[id] = d
 	return d, nil
 }
+
 func (s *MemoryReportStore) SaveExecution(_ context.Context, e ReportExecution) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -246,6 +255,7 @@ func (s *MemoryReportStore) SaveExecution(_ context.Context, e ReportExecution) 
 	}
 	return nil
 }
+
 func (s *MemoryReportStore) ListExecutions(_ context.Context, reportID string) ([]ReportExecution, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -258,6 +268,7 @@ func (s *MemoryReportStore) ListExecutions(_ context.Context, reportID string) (
 	sort.Slice(out, func(i, j int) bool { return out[i].GeneratedAt > out[j].GeneratedAt })
 	return out, nil
 }
+
 func (s *MemoryReportStore) GetExecution(_ context.Context, id string) (*ReportExecution, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -276,6 +287,7 @@ func NewReportsHandler(store ReportStore) *ReportsHandler {
 	}
 	return &ReportsHandler{Store: store}
 }
+
 func (h *ReportsHandler) Mount(r chi.Router) {
 	r.Get("/overview", h.Overview)
 	r.Get("/catalog", h.Catalog)
@@ -287,6 +299,7 @@ func (h *ReportsHandler) Mount(r chi.Router) {
 	r.Get("/schedules", h.Schedules)
 	r.Get("/executions/{id}", h.GetExecution)
 	r.Get("/executions/{id}/download", h.Download)
+	r.Get("/executions/{id}/artifact", h.Artifact)
 }
 
 func (h *ReportsHandler) Overview(w http.ResponseWriter, r *http.Request) {
@@ -326,9 +339,11 @@ func (h *ReportsHandler) Overview(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, ReportOverview{len(defs), active, n24, mix, latest})
 }
+
 func (h *ReportsHandler) Catalog(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, catalog())
 }
+
 func (h *ReportsHandler) ListDefinitions(w http.ResponseWriter, r *http.Request) {
 	defs, err := h.Store.ListDefinitions(r.Context())
 	if err != nil {
@@ -337,6 +352,7 @@ func (h *ReportsHandler) ListDefinitions(w http.ResponseWriter, r *http.Request)
 	}
 	writeJSON(w, 200, listResponse{Items: defs})
 }
+
 func (h *ReportsHandler) CreateDefinition(w http.ResponseWriter, r *http.Request) {
 	var d ReportDefinition
 	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
@@ -359,6 +375,7 @@ func (h *ReportsHandler) CreateDefinition(w http.ResponseWriter, r *http.Request
 	}
 	writeJSON(w, 201, out)
 }
+
 func (h *ReportsHandler) UpdateDefinition(w http.ResponseWriter, r *http.Request) {
 	var p map[string]json.RawMessage
 	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
@@ -392,6 +409,7 @@ func (h *ReportsHandler) UpdateDefinition(w http.ResponseWriter, r *http.Request
 	}
 	writeJSON(w, 200, out)
 }
+
 func (h *ReportsHandler) Generate(w http.ResponseWriter, r *http.Request) {
 	d, err := h.Store.GetDefinition(r.Context(), chi.URLParam(r, "id"))
 	if err != nil {
@@ -402,13 +420,18 @@ func (h *ReportsHandler) Generate(w http.ResponseWriter, r *http.Request) {
 		writeError(w, 404, "report definition not found")
 		return
 	}
-	e := buildExecution(*d)
+	e, err := buildExecution(*d)
+	if err != nil {
+		writeError(w, 500, err.Error())
+		return
+	}
 	if err := h.Store.SaveExecution(r.Context(), e); err != nil {
 		writeError(w, 500, err.Error())
 		return
 	}
 	writeJSON(w, 200, e)
 }
+
 func (h *ReportsHandler) History(w http.ResponseWriter, r *http.Request) {
 	out, err := h.Store.ListExecutions(r.Context(), chi.URLParam(r, "id"))
 	if err != nil {
@@ -417,6 +440,7 @@ func (h *ReportsHandler) History(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, listResponse{Items: out})
 }
+
 func (h *ReportsHandler) Schedules(w http.ResponseWriter, r *http.Request) {
 	defs, err := h.Store.ListDefinitions(r.Context())
 	if err != nil {
@@ -442,6 +466,7 @@ func (h *ReportsHandler) Schedules(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, b)
 }
+
 func (h *ReportsHandler) GetExecution(w http.ResponseWriter, r *http.Request) {
 	e, err := h.Store.GetExecution(r.Context(), chi.URLParam(r, "id"))
 	if err != nil {
@@ -454,6 +479,7 @@ func (h *ReportsHandler) GetExecution(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, e)
 }
+
 func (h *ReportsHandler) Download(w http.ResponseWriter, r *http.Request) {
 	e, err := h.Store.GetExecution(r.Context(), chi.URLParam(r, "id"))
 	if err != nil {
@@ -490,6 +516,7 @@ func defaults(d *ReportDefinition) {
 		d.Schedule.Cadence = "manual"
 	}
 }
+
 func ApplyDefinitionPatch(d *ReportDefinition, p map[string]json.RawMessage) {
 	for k, v := range p {
 		switch k {
@@ -519,6 +546,7 @@ func ApplyDefinitionPatch(d *ReportDefinition, p map[string]json.RawMessage) {
 	}
 	defaults(d)
 }
+
 func validateDefinition(d ReportDefinition) error {
 	if strings.TrimSpace(d.Name) == "" || strings.TrimSpace(d.Owner) == "" || strings.TrimSpace(d.DatasetName) == "" {
 		return errors.New("name, owner and dataset_name are required")
@@ -536,6 +564,7 @@ func validGenerator(g GeneratorKind) bool {
 	}
 	return false
 }
+
 func mime(g GeneratorKind) string {
 	switch g {
 	case "pdf":
@@ -550,33 +579,25 @@ func mime(g GeneratorKind) string {
 		return "text/html"
 	}
 }
+
 func ext(g GeneratorKind) string {
 	if g == "excel" {
 		return "xlsx"
 	}
 	return string(g)
 }
-func buildExecution(d ReportDefinition) ReportExecution {
+
+func buildExecution(d ReportDefinition) (ReportExecution, error) {
 	start := time.Now()
 	gen := start.UTC().Format(time.RFC3339Nano)
 	sections := make([]ReportPreviewSection, 0, len(d.Template.Sections))
-	rows := int64(0)
 	for _, s := range d.Template.Sections {
 		row := map[string]any{"dataset": d.DatasetName, "query": s.Query, "parameters": d.Parameters}
 		sections = append(sections, ReportPreviewSection{s.ID, s.Title, s.Kind, "Preview generated from report definition and parameters.", []map[string]any{row}})
-		rows++
 	}
 	if len(sections) == 0 {
 		sections = append(sections, ReportPreviewSection{"summary", "Summary", "narrative", "Preview generated from report definition and parameters.", []map[string]any{{"dataset": d.DatasetName, "parameters": d.Parameters}}})
-		rows = 1
 	}
-	payload, _ := json.Marshal(struct {
-		ID       string
-		At       string
-		Sections []ReportPreviewSection
-	}{d.ID, gen, sections})
-	sum := sha256.Sum256(payload)
-	checksum := hex.EncodeToString(sum[:])
 	id := uuid.NewString()
 	file := strings.ReplaceAll(strings.ToLower(d.Name), " ", "-") + "." + ext(d.GeneratorKind)
 	completed := time.Now().UTC().Format(time.RFC3339Nano)
@@ -584,16 +605,52 @@ func buildExecution(d ReportDefinition) ReportExecution {
 	for _, r := range d.Recipients {
 		dist = append(dist, DistributionResult{r.Channel, r.Target, "skipped", completed, "external distribution is not configured for manual local generation"})
 	}
-	return ReportExecution{ID: id, ReportID: d.ID, ReportName: d.Name, Status: "succeeded", GeneratorKind: d.GeneratorKind, TriggeredBy: "manual", GeneratedAt: gen, CompletedAt: &completed, Preview: ReportExecutionPreview{Headline: d.Template.Title, GeneratedFor: d.Owner, Engine: nowEngine, Highlights: []ReportPreviewHighlight{{"Dataset", d.DatasetName, "0"}, {"Sections", fmt.Sprint(len(sections)), "0"}}, Sections: sections}, Artifact: ReportArtifact{file, mime(d.GeneratorKind), int64(len(payload)), "of://reports/executions/" + id + "/artifact", checksum}, Distributions: dist, Metrics: ReportExecutionMetrics{time.Since(start).Milliseconds(), rows, int64(len(sections)), int64(len(d.Recipients))}}
+	e := ReportExecution{
+		ID: id, ReportID: d.ID, ReportName: d.Name, Status: "succeeded",
+		GeneratorKind: d.GeneratorKind, TriggeredBy: "manual", GeneratedAt: gen, CompletedAt: &completed,
+		Preview: ReportExecutionPreview{
+			Headline:     d.Template.Title,
+			GeneratedFor: d.Owner,
+			Engine:       nowEngine,
+			Highlights:   []ReportPreviewHighlight{{"Dataset", d.DatasetName, "0"}, {"Sections", fmt.Sprint(len(sections)), "0"}},
+			Sections:     sections,
+		},
+		Artifact: ReportArtifact{
+			FileName:   file,
+			MimeType:   mime(d.GeneratorKind),
+			StorageURL: "/api/v1/reports/executions/" + id + "/artifact",
+		},
+		Distributions: dist,
+	}
+	// Render the artifact now so the recorded size and checksum describe
+	// real bytes. The generator is deterministic, so the same bytes are
+	// reproduced when the artifact is downloaded.
+	data, err := generator.Render(string(d.GeneratorKind), reportDocument(e))
+	if err != nil {
+		return ReportExecution{}, fmt.Errorf("render %s artifact: %w", d.GeneratorKind, err)
+	}
+	sum := sha256.Sum256(data)
+	e.Artifact.SizeBytes = int64(len(data))
+	e.Artifact.Checksum = hex.EncodeToString(sum[:])
+	e.Metrics = ReportExecutionMetrics{
+		DurationMS:     time.Since(start).Milliseconds(),
+		RowCount:       int64(len(sections)),
+		SectionCount:   int64(len(sections)),
+		RecipientCount: int64(len(d.Recipients)),
+	}
+	return e, nil
 }
+
 func catalog() ReportCatalog {
-	return ReportCatalog{Generators: []GeneratorCatalogEntry{{"pdf", "PDF", nowEngine, []string{"pdf"}, []string{"preview", "artifact_metadata"}}, {"excel", "Excel", nowEngine, []string{"xlsx"}, []string{"preview", "artifact_metadata"}}, {"csv", "CSV", nowEngine, []string{"csv"}, []string{"preview", "artifact_metadata"}}, {"html", "HTML", nowEngine, []string{"html"}, []string{"preview", "artifact_metadata"}}, {"pptx", "PowerPoint", nowEngine, []string{"pptx"}, []string{"preview", "artifact_metadata"}}}, DeliveryChannels: []DistributionChannelCatalogEntry{{"email", "Email", "Email delivery requires a configured delivery worker.", []string{"target"}}, {"s3", "S3", "Object storage delivery requires configured storage credentials.", []string{"bucket", "prefix"}}, {"slack", "Slack", "Slack delivery requires an app webhook.", []string{"webhook"}}, {"teams", "Teams", "Teams delivery requires an app webhook.", []string{"webhook"}}, {"webhook", "Webhook", "Webhook delivery requires a configured outbound dispatcher.", []string{"url"}}}}
+	return ReportCatalog{Generators: []GeneratorCatalogEntry{{"pdf", "PDF", nowEngine, []string{"pdf"}, []string{"preview", "artifact_metadata", "artifact_download"}}, {"excel", "Excel", nowEngine, []string{"xlsx"}, []string{"preview", "artifact_metadata", "artifact_download"}}, {"csv", "CSV", nowEngine, []string{"csv"}, []string{"preview", "artifact_metadata", "artifact_download"}}, {"html", "HTML", nowEngine, []string{"html"}, []string{"preview", "artifact_metadata", "artifact_download"}}, {"pptx", "PowerPoint", nowEngine, []string{"pptx"}, []string{"preview", "artifact_metadata", "artifact_download"}}}, DeliveryChannels: []DistributionChannelCatalogEntry{{"email", "Email", "Email delivery requires a configured delivery worker.", []string{"target"}}, {"s3", "S3", "Object storage delivery requires configured storage credentials.", []string{"bucket", "prefix"}}, {"slack", "Slack", "Slack delivery requires an app webhook.", []string{"webhook"}}, {"teams", "Teams", "Teams delivery requires an app webhook.", []string{"webhook"}}, {"webhook", "Webhook", "Webhook delivery requires a configured outbound dispatcher.", []string{"url"}}}}
 }
+
 func writeJSON(w http.ResponseWriter, status int, body any) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(body)
 }
+
 func writeError(w http.ResponseWriter, status int, msg string) {
 	writeJSON(w, status, map[string]string{"error": msg})
 }
