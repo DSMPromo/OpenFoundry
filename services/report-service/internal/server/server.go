@@ -63,11 +63,12 @@ func New(cfg *config.Config, metrics *observability.Metrics, log *slog.Logger, o
 		WithIssuer(cfg.JWT.Issuer).
 		WithAudience(cfg.JWT.Audience)
 
-	r := BuildRouter(cfg, metrics, jwtCfg, store)
+	dist := handlers.NewDistributor()
+	r := BuildRouter(cfg, metrics, jwtCfg, store, dist)
 
 	var scheduler *handlers.Scheduler
 	if !cfg.Report.SchedulerDisabled {
-		scheduler = handlers.NewScheduler(store, 0, log)
+		scheduler = handlers.NewScheduler(store, 0, log, dist)
 	}
 
 	s := &Server{
@@ -84,7 +85,7 @@ func New(cfg *config.Config, metrics *observability.Metrics, log *slog.Logger, o
 	return s, nil
 }
 
-func BuildRouter(cfg *config.Config, metrics *observability.Metrics, jwtCfg *authmw.JWTConfig, store handlers.ReportStore) http.Handler {
+func BuildRouter(cfg *config.Config, metrics *observability.Metrics, jwtCfg *authmw.JWTConfig, store handlers.ReportStore, dist *handlers.Distributor) http.Handler {
 	r := chi.NewRouter()
 	r.Use(chimw.RequestID)
 	r.Use(chimw.RealIP)
@@ -98,7 +99,7 @@ func BuildRouter(cfg *config.Config, metrics *observability.Metrics, jwtCfg *aut
 		r.Method(http.MethodGet, "/metrics", metrics.Handler())
 	}
 
-	reports := handlers.NewReportsHandler(store)
+	reports := handlers.NewReportsHandler(store, dist)
 	api := r.With(authmw.Middleware(jwtCfg))
 	api.Route("/api/v1/reports", reports.Mount)
 	return r

@@ -302,13 +302,16 @@ func (s *MemoryReportStore) GetExecution(_ context.Context, id string) (*ReportE
 	return &e, nil
 }
 
-type ReportsHandler struct{ Store ReportStore }
+type ReportsHandler struct {
+	Store       ReportStore
+	distributor *Distributor
+}
 
-func NewReportsHandler(store ReportStore) *ReportsHandler {
+func NewReportsHandler(store ReportStore, dist *Distributor) *ReportsHandler {
 	if store == nil {
 		store = NewMemoryReportStore()
 	}
-	return &ReportsHandler{Store: store}
+	return &ReportsHandler{Store: store, distributor: dist}
 }
 
 func (h *ReportsHandler) Mount(r chi.Router) {
@@ -448,6 +451,7 @@ func (h *ReportsHandler) Generate(w http.ResponseWriter, r *http.Request) {
 		writeError(w, 500, err.Error())
 		return
 	}
+	AttachDistribution(r.Context(), h.distributor, &e, d.Recipients)
 	if err := h.Store.SaveExecution(r.Context(), e); err != nil {
 		writeError(w, 500, err.Error())
 		return

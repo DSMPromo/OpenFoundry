@@ -13,15 +13,16 @@ import (
 // compare-and-swap on its next_run_at, so exactly one replica generates
 // a given run.
 type Scheduler struct {
-	store    ReportStore
-	interval time.Duration
-	log      *slog.Logger
-	now      func() time.Time
+	store       ReportStore
+	interval    time.Duration
+	log         *slog.Logger
+	now         func() time.Time
+	distributor *Distributor
 }
 
 // NewScheduler builds a Scheduler. A non-positive interval defaults to
 // one minute.
-func NewScheduler(store ReportStore, interval time.Duration, log *slog.Logger) *Scheduler {
+func NewScheduler(store ReportStore, interval time.Duration, log *slog.Logger, dist *Distributor) *Scheduler {
 	if interval <= 0 {
 		interval = time.Minute
 	}
@@ -29,10 +30,11 @@ func NewScheduler(store ReportStore, interval time.Duration, log *slog.Logger) *
 		log = slog.Default()
 	}
 	return &Scheduler{
-		store:    store,
-		interval: interval,
-		log:      log,
-		now:      func() time.Time { return time.Now().UTC() },
+		store:       store,
+		interval:    interval,
+		log:         log,
+		now:         func() time.Time { return time.Now().UTC() },
+		distributor: dist,
 	}
 }
 
@@ -97,6 +99,7 @@ func (s *Scheduler) runDue(ctx context.Context, d ReportDefinition, dueNextRunAt
 		return err
 	}
 	e.TriggeredBy = "schedule"
+	AttachDistribution(ctx, s.distributor, &e, d.Recipients)
 	if err := s.store.SaveExecution(ctx, e); err != nil {
 		return err
 	}
