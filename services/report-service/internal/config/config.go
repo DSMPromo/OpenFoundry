@@ -41,7 +41,8 @@ type Config struct {
 	} `koanf:"database"`
 
 	Report struct {
-		AllowMemoryStore bool `koanf:"allow_memory_store"`
+		AllowMemoryStore  bool `koanf:"allow_memory_store"`
+		SchedulerDisabled bool `koanf:"scheduler_disabled"`
 	} `koanf:"report"`
 
 	Environment string `koanf:"environment"`

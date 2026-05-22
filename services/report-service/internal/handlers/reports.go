@@ -191,6 +191,7 @@ type ReportStore interface {
 	SaveExecution(context.Context, ReportExecution) error
 	ListExecutions(context.Context, string) ([]ReportExecution, error)
 	GetExecution(context.Context, string) (*ReportExecution, error)
+	ClaimDue(ctx context.Context, id, expectedNextRunAt string, newSchedule ReportSchedule) (bool, error)
 	Ping(context.Context) error
 }
 
@@ -206,6 +207,24 @@ func NewMemoryReportStore() *MemoryReportStore {
 
 // Ping reports the in-memory store as always reachable.
 func (s *MemoryReportStore) Ping(context.Context) error { return nil }
+
+// ClaimDue advances a definition's schedule only while its next_run_at
+// still matches expectedNextRunAt, so a due report is claimed once.
+func (s *MemoryReportStore) ClaimDue(_ context.Context, id, expectedNextRunAt string, newSchedule ReportSchedule) (bool, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	d, ok := s.defs[id]
+	if !ok {
+		return false, nil
+	}
+	if d.Schedule.NextRunAt == nil || *d.Schedule.NextRunAt != expectedNextRunAt {
+		return false, nil
+	}
+	d.Schedule = newSchedule
+	d.UpdatedAt = time.Now().UTC().Format(time.RFC3339Nano)
+	s.defs[id] = d
+	return true, nil
+}
 
 func (s *MemoryReportStore) ListDefinitions(context.Context) ([]ReportDefinition, error) {
 	s.mu.RLock()

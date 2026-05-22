@@ -27,6 +27,7 @@ type Server struct {
 	cfg        *config.Config
 	log        *slog.Logger
 	pool       *pgxpool.Pool
+	scheduler  *handlers.Scheduler
 }
 
 type Option func(*options)
@@ -64,10 +65,16 @@ func New(cfg *config.Config, metrics *observability.Metrics, log *slog.Logger, o
 
 	r := BuildRouter(cfg, metrics, jwtCfg, store)
 
+	var scheduler *handlers.Scheduler
+	if !cfg.Report.SchedulerDisabled {
+		scheduler = handlers.NewScheduler(store, 0, log)
+	}
+
 	s := &Server{
-		cfg:  cfg,
-		log:  log,
-		pool: pool,
+		cfg:       cfg,
+		log:       log,
+		pool:      pool,
+		scheduler: scheduler,
 		httpServer: &http.Server{
 			Addr:              cfg.Server.Addr,
 			Handler:           r,
@@ -128,6 +135,10 @@ func allowMemoryStore(cfg *config.Config) bool {
 }
 
 func (s *Server) Run(ctx context.Context) error {
+	if s.scheduler != nil {
+		go s.scheduler.Run(ctx)
+		s.log.Info("report scheduler started")
+	}
 	errCh := make(chan error, 1)
 	go func() {
 		s.log.Info("listening", slog.String("addr", s.cfg.Server.Addr))
