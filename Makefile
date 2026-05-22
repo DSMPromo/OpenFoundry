@@ -12,6 +12,7 @@ PKG            := ./...
 BIN_DIR        := bin
 export PATH    := $(PWD)/$(BIN_DIR):$(PATH)
 COVERAGE_FILE  := coverage.out
+SQLC_VERSION   ?= 1.27.0
 
 SERVICES       := $(notdir $(wildcard services/*))
 LIBS           := $(notdir $(wildcard libs/*))
@@ -32,13 +33,29 @@ help: ## Show this help.
 # Toolchain bootstrap
 # ---------------------------------------------------------------------------
 .PHONY: tools
-tools: ## Install pinned dev tools (buf, golangci-lint, sqlc, etc.) into ./bin.
+tools: tools-sqlc ## Install pinned dev tools (buf, golangci-lint, sqlc, gofumpt) into ./bin.
 	@mkdir -p $(BIN_DIR)
 	GOBIN=$(PWD)/$(BIN_DIR) $(GO) install github.com/bufbuild/buf/cmd/buf@v1.47.2
 	GOBIN=$(PWD)/$(BIN_DIR) $(GO) install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2
-	GOBIN=$(PWD)/$(BIN_DIR) $(GO) install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.27.0
 	GOBIN=$(PWD)/$(BIN_DIR) $(GO) install mvdan.cc/gofumpt@latest
 	@echo "Tools installed to $(PWD)/$(BIN_DIR). Add it to your PATH."
+
+# sqlc bundles a cgo parser (pganalyze/pg_query_go) that fails to
+# compile against recent macOS SDKs, so it is installed from the pinned
+# prebuilt release binary rather than `go install`. The prebuilt path
+# behaves identically on Linux and macOS.
+.PHONY: tools-sqlc
+tools-sqlc: ## Install the pinned sqlc release binary into ./bin.
+	@mkdir -p $(BIN_DIR)
+	@if [ -x "$(BIN_DIR)/sqlc" ] && "$(BIN_DIR)/sqlc" version 2>/dev/null | grep -q "v$(SQLC_VERSION)"; then \
+		echo "sqlc v$(SQLC_VERSION) already present in $(BIN_DIR)"; \
+	else \
+		os=$$(uname -s | tr 'A-Z' 'a-z'); arch=$$(uname -m); \
+		case "$$arch" in x86_64) arch=amd64 ;; aarch64|arm64) arch=arm64 ;; esac; \
+		url="https://github.com/sqlc-dev/sqlc/releases/download/v$(SQLC_VERSION)/sqlc_$(SQLC_VERSION)_$${os}_$${arch}.tar.gz"; \
+		echo ">>> installing sqlc v$(SQLC_VERSION) ($${os}/$${arch}) from prebuilt release"; \
+		curl -fsSL "$$url" | tar -xzf - -C $(BIN_DIR) sqlc; \
+	fi
 
 # ---------------------------------------------------------------------------
 # Code generation
