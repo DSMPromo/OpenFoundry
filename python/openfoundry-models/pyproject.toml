@@ -1,0 +1,25 @@
+# pyproject for openfoundry-models — the model adapter SDK.
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openfoundry-models"
+version = "0.1.0"
+description = "Model adapter SDK for OpenFoundry — package, version and serve models behind a stable contract."
+requires-python = ">=3.10"
+dependencies = []
+
+# Framework adapters import their library lazily; install the matching
+# extra to use one. The core package itself has no runtime dependency.
+[project.optional-dependencies]
+sklearn = ["scikit-learn>=1.3", "joblib>=1.3"]
+xgboost = ["xgboost>=2.0"]
+pytorch = ["torch>=2.1"]
+huggingface = ["transformers>=4.40"]
+dev = ["pytest>=7.4"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["openfoundry_models*"]
