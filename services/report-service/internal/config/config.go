@@ -45,6 +45,30 @@ type Config struct {
 		SchedulerDisabled bool `koanf:"scheduler_disabled"`
 	} `koanf:"report"`
 
+	// SMTP is the outbound mail relay used by the Distributor for the
+	// `email` recipient channel. An empty Host disables email delivery
+	// and the Distributor records every email recipient as skipped.
+	SMTP struct {
+		Host     string `koanf:"host"`
+		Port     int    `koanf:"port"`
+		Username string `koanf:"username"`
+		Password string `koanf:"password"`
+		From     string `koanf:"from"`
+	} `koanf:"smtp"`
+
+	// S3 is the object store used by the Distributor for the `s3`
+	// recipient channel. An empty Region disables object-store
+	// delivery and the Distributor records every s3 recipient as
+	// skipped. Endpoint + PathStyle let operators point at any
+	// S3-compatible service (Ceph RGW, Minio, …).
+	S3 struct {
+		Endpoint        string `koanf:"endpoint"`
+		Region          string `koanf:"region"`
+		AccessKeyID     string `koanf:"access_key_id"`
+		SecretAccessKey string `koanf:"secret_access_key"`
+		PathStyle       bool   `koanf:"path_style"`
+	} `koanf:"s3"`
+
 	Environment string `koanf:"environment"`
 	Milestone   string `koanf:"milestone"`
 }
