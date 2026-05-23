@@ -22,6 +22,12 @@ func TestRouteSmokeMountsPipelineBuilderRoutes(t *testing.T) {
 
 	assertRoutesMounted(t, server.BuildRouter(cfg, nil), []routeSmokeCase{
 		{http.MethodGet, "/api/v1/pipelines/transforms/catalog"},
+		{http.MethodPost, "/api/v1/pipelines/compile-transform"},
+		{http.MethodPost, "/api/v1/pipelines/validate-transform"},
+		{http.MethodPost, "/api/v1/pipelines/preview-transform"},
+		{http.MethodPost, "/api/v1/pipelines/register-python-transform"},
+		{http.MethodPost, "/api/v1/pipelines/register-sql-transform"},
+		{http.MethodPost, "/api/v1/pipelines/register-pipeline-builder-graph"},
 		{http.MethodPost, "/api/v1/pipelines/_validate"},
 		{http.MethodPost, "/api/v1/pipelines/_schema-guidance"},
 		{http.MethodPost, "/api/v1/pipelines/geospatial/gpx/parse"},

@@ -43,7 +43,7 @@ class OpenFoundryClient:
         self.notebook = _OperationNamespace(createnotebook=self.notebook_notebook_createnotebook, createsession=self.notebook_kernel_createsession, deletenotebook=self.notebook_notebook_deletenotebook, getnotebook=self.notebook_notebook_getnotebook, listnotebooks=self.notebook_notebook_listnotebooks, listsessions=self.notebook_kernel_listsessions, stopsession=self.notebook_kernel_stopsession, updatenotebook=self.notebook_notebook_updatenotebook)
         self.ontology = _OperationNamespace(binddataset=self.ontology_ontology_binddataset, createlinktype=self.ontology_ontology_createlinktype, createobject=self.ontology_ontologyobject_createobject, createobjecttype=self.ontology_ontology_createobjecttype, createproperty=self.ontology_ontology_createproperty, deletelinktype=self.ontology_ontology_deletelinktype, deleteobject=self.ontology_ontologyobject_deleteobject, deleteobjecttype=self.ontology_ontology_deleteobjecttype, getobject=self.ontology_ontologyobject_getobject, getobjecttype=self.ontology_ontology_getobjecttype, listlinktypes=self.ontology_ontology_listlinktypes, listobjecttypes=self.ontology_ontology_listobjecttypes, listobjects=self.ontology_ontologyobject_listobjects, listproperties=self.ontology_ontology_listproperties, materializebinding=self.ontology_ontology_materializebinding, searchobjects=self.ontology_ontologyobject_searchobjects, traverselinks=self.ontology_ontologyobject_traverselinks, unbinddataset=self.ontology_ontology_unbinddataset, updateobject=self.ontology_ontologyobject_updateobject, updateobjecttype=self.ontology_ontology_updateobjecttype)
         self.openfoundryStreamingRouterV1 = _OperationNamespace(publish=self.v1_eventrouter_publish, subscribe=self.v1_eventrouter_subscribe)
-        self.pipeline = _OperationNamespace(createpipeline=self.pipeline_pipeline_createpipeline, createschedule=self.pipeline_schedule_createschedule, deletepipeline=self.pipeline_pipeline_deletepipeline, deleteschedule=self.pipeline_schedule_deleteschedule, getdatasetlineage=self.pipeline_lineage_getdatasetlineage, getfulllineage=self.pipeline_lineage_getfulllineage, getpipeline=self.pipeline_pipeline_getpipeline, getrun=self.pipeline_scheduleruns_getrun, getschedule=self.pipeline_schedule_getschedule, listpipelines=self.pipeline_pipeline_listpipelines, listruns=self.pipeline_scheduleruns_listruns, listschedules=self.pipeline_schedule_listschedules, previewnextfires=self.pipeline_schedule_previewnextfires, recordlineage=self.pipeline_lineage_recordlineage, runschedulenow=self.pipeline_schedule_runschedulenow, triggerrun=self.pipeline_pipeline_triggerrun, updatepipeline=self.pipeline_pipeline_updatepipeline, updateschedule=self.pipeline_schedule_updateschedule)
+        self.pipeline = _OperationNamespace(compiletransform=self.pipeline_transform_compiletransform, createpipeline=self.pipeline_pipeline_createpipeline, createschedule=self.pipeline_schedule_createschedule, deletepipeline=self.pipeline_pipeline_deletepipeline, deleteschedule=self.pipeline_schedule_deleteschedule, getdatasetlineage=self.pipeline_lineage_getdatasetlineage, getfulllineage=self.pipeline_lineage_getfulllineage, getpipeline=self.pipeline_pipeline_getpipeline, getrun=self.pipeline_scheduleruns_getrun, getschedule=self.pipeline_schedule_getschedule, listpipelines=self.pipeline_pipeline_listpipelines, listruns=self.pipeline_scheduleruns_listruns, listschedules=self.pipeline_schedule_listschedules, previewnextfires=self.pipeline_schedule_previewnextfires, previewtransform=self.pipeline_transform_previewtransform, recordlineage=self.pipeline_lineage_recordlineage, registerpipelinebuildergraph=self.pipeline_transform_registerpipelinebuildergraph, registerpythontransform=self.pipeline_transform_registerpythontransform, registersqltransform=self.pipeline_transform_registersqltransform, runschedulenow=self.pipeline_schedule_runschedulenow, triggerrun=self.pipeline_pipeline_triggerrun, updatepipeline=self.pipeline_pipeline_updatepipeline, updateschedule=self.pipeline_schedule_updateschedule, validatetransform=self.pipeline_transform_validatetransform)
         self.query = _OperationNamespace(deletesavedquery=self.query_query_deletesavedquery, executequery=self.query_query_executequery, explainquery=self.query_query_explainquery, listsavedqueries=self.query_query_listsavedqueries, savequery=self.query_query_savequery)
         self.runtime = _OperationNamespace(dropsession=self.runtime_pythonruntime_dropsession, ensuresession=self.runtime_pythonruntime_ensuresession, executeinlinefunction=self.runtime_pythonruntime_executeinlinefunction, executenotebookcell=self.runtime_pythonruntime_executenotebookcell, executepipelinetransform=self.runtime_pythonruntime_executepipelinetransform)
         self.vertex = _OperationNamespace(centrality=self.vertex_traversal_centrality, createannotation=self.vertex_vertex_createannotation, createderivedpropertybinding=self.vertex_vertex_createderivedpropertybinding, creategraph=self.vertex_vertex_creategraph, creategraphversion=self.vertex_vertex_creategraphversion, createscenario=self.vertex_vertex_createscenario, createsearcharound=self.vertex_vertex_createsearcharound, deleteannotation=self.vertex_vertex_deleteannotation, deletederivedpropertybinding=self.vertex_vertex_deletederivedpropertybinding, deletegraph=self.vertex_vertex_deletegraph, deletescenario=self.vertex_vertex_deletescenario, deletesearcharound=self.vertex_vertex_deletesearcharound, diffscenario=self.vertex_vertex_diffscenario, executesearcharound=self.vertex_traversal_executesearcharound, expandneighbors=self.vertex_traversal_expandneighbors, findpaths=self.vertex_traversal_findpaths, forkgraph=self.vertex_vertex_forkgraph, getgraph=self.vertex_vertex_getgraph, getgraphversion=self.vertex_vertex_getgraphversion, getscenario=self.vertex_vertex_getscenario, getsearcharound=self.vertex_vertex_getsearcharound, histogram=self.vertex_traversal_histogram, linksummary=self.vertex_traversal_linksummary, listannotations=self.vertex_vertex_listannotations, listderivedpropertybindings=self.vertex_vertex_listderivedpropertybindings, listgraphversions=self.vertex_vertex_listgraphversions, listgraphs=self.vertex_vertex_listgraphs, listscenarios=self.vertex_vertex_listscenarios, listsearcharounds=self.vertex_vertex_listsearcharounds, promotescenariotoactions=self.vertex_vertex_promotescenariotoactions, updateannotation=self.vertex_vertex_updateannotation, updategraph=self.vertex_vertex_updategraph, updatescenario=self.vertex_vertex_updatescenario, updatesearcharound=self.vertex_vertex_updatesearcharound)
@@ -261,6 +261,9 @@ class OpenFoundryClient:
     def ontology_ontology_updateobjecttype(self, body: models.UpdateObjectTypeRequest, headers: Mapping[str, str] | None = None) -> Any:
         return self._request("PATCH", "/api/v1/ontology/update-object-type", None, None, body, headers=headers)
 
+    def pipeline_transform_compiletransform(self, body: models.CompileTransformRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/pipelines/compile-transform", None, None, body, headers=headers)
+
     def pipeline_pipeline_createpipeline(self, body: models.CreatePipelineRequest, headers: Mapping[str, str] | None = None) -> Any:
         return self._request("POST", "/api/v1/pipelines/create-pipeline", None, None, body, headers=headers)
 
@@ -300,8 +303,20 @@ class OpenFoundryClient:
     def pipeline_schedule_previewnextfires(self, body: models.PreviewNextFiresRequest, headers: Mapping[str, str] | None = None) -> Any:
         return self._request("POST", "/api/v1/pipelines/preview-next-fires", None, None, body, headers=headers)
 
+    def pipeline_transform_previewtransform(self, body: models.PreviewTransformRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/pipelines/preview-transform", None, None, body, headers=headers)
+
     def pipeline_lineage_recordlineage(self, body: models.RecordLineageRequest, headers: Mapping[str, str] | None = None) -> Any:
         return self._request("POST", "/api/v1/pipelines/record-lineage", None, None, body, headers=headers)
+
+    def pipeline_transform_registerpipelinebuildergraph(self, body: models.RegisterPipelineBuilderGraphRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/pipelines/register-pipeline-builder-graph", None, None, body, headers=headers)
+
+    def pipeline_transform_registerpythontransform(self, body: models.RegisterPythonTransformRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/pipelines/register-python-transform", None, None, body, headers=headers)
+
+    def pipeline_transform_registersqltransform(self, body: models.RegisterSqlTransformRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/pipelines/register-sql-transform", None, None, body, headers=headers)
 
     def pipeline_schedule_runschedulenow(self, body: models.RunScheduleNowRequest, headers: Mapping[str, str] | None = None) -> Any:
         return self._request("POST", "/api/v1/pipelines/run-schedule-now", None, None, body, headers=headers)
@@ -314,6 +329,9 @@ class OpenFoundryClient:
 
     def pipeline_schedule_updateschedule(self, body: models.UpdateScheduleRequest, headers: Mapping[str, str] | None = None) -> Any:
         return self._request("PATCH", "/api/v1/pipelines/update-schedule", None, None, body, headers=headers)
+
+    def pipeline_transform_validatetransform(self, body: models.ValidateTransformRequest, headers: Mapping[str, str] | None = None) -> Any:
+        return self._request("POST", "/api/v1/pipelines/validate-transform", None, None, body, headers=headers)
 
     def query_query_deletesavedquery(self, id: Uuid | None = None, headers: Mapping[str, str] | None = None) -> Any:
         return self._request("DELETE", "/api/v1/queries/delete-saved-query", None, {"id": id}, None, headers=headers)
@@ -699,6 +717,8 @@ class OpenFoundryClient:
                 return self.ontology_ontologyobject_updateobject(payload.get('body', payload), headers=headers)
             case "open_foundry.ontology.OntologyService.UpdateObjectType":
                 return self.ontology_ontology_updateobjecttype(payload.get('body', payload), headers=headers)
+            case "open_foundry.pipeline.TransformService.CompileTransform":
+                return self.pipeline_transform_compiletransform(payload.get('body', payload), headers=headers)
             case "open_foundry.pipeline.PipelineService.CreatePipeline":
                 return self.pipeline_pipeline_createpipeline(payload.get('body', payload), headers=headers)
             case "open_foundry.pipeline.ScheduleService.CreateSchedule":
@@ -725,8 +745,16 @@ class OpenFoundryClient:
                 return self.pipeline_schedule_listschedules((payload.get('query') or {}).get("include_paused"), (payload.get('query') or {}).get("owner"), (payload.get('query') or {}).get("pagination"), (payload.get('query') or {}).get("project_rid"), (payload.get('query') or {}).get("query"), headers=headers)
             case "open_foundry.pipeline.ScheduleService.PreviewNextFires":
                 return self.pipeline_schedule_previewnextfires(payload.get('body', payload), headers=headers)
+            case "open_foundry.pipeline.TransformService.PreviewTransform":
+                return self.pipeline_transform_previewtransform(payload.get('body', payload), headers=headers)
             case "open_foundry.pipeline.LineageService.RecordLineage":
                 return self.pipeline_lineage_recordlineage(payload.get('body', payload), headers=headers)
+            case "open_foundry.pipeline.TransformService.RegisterPipelineBuilderGraph":
+                return self.pipeline_transform_registerpipelinebuildergraph(payload.get('body', payload), headers=headers)
+            case "open_foundry.pipeline.TransformService.RegisterPythonTransform":
+                return self.pipeline_transform_registerpythontransform(payload.get('body', payload), headers=headers)
+            case "open_foundry.pipeline.TransformService.RegisterSqlTransform":
+                return self.pipeline_transform_registersqltransform(payload.get('body', payload), headers=headers)
             case "open_foundry.pipeline.ScheduleService.RunScheduleNow":
                 return self.pipeline_schedule_runschedulenow(payload.get('body', payload), headers=headers)
             case "open_foundry.pipeline.PipelineService.TriggerRun":
@@ -735,6 +763,8 @@ class OpenFoundryClient:
                 return self.pipeline_pipeline_updatepipeline(payload.get('body', payload), headers=headers)
             case "open_foundry.pipeline.ScheduleService.UpdateSchedule":
                 return self.pipeline_schedule_updateschedule(payload.get('body', payload), headers=headers)
+            case "open_foundry.pipeline.TransformService.ValidateTransform":
+                return self.pipeline_transform_validatetransform(payload.get('body', payload), headers=headers)
             case "open_foundry.query.QueryService.DeleteSavedQuery":
                 return self.query_query_deletesavedquery((payload.get('query') or {}).get("id"), headers=headers)
             case "open_foundry.query.QueryService.ExecuteQuery":

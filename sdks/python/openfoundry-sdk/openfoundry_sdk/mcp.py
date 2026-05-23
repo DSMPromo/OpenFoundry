@@ -284,6 +284,10 @@ MCP_TOOL_REGISTRY: list[dict[str, Any]] = [
         "operation_id": "open_foundry.ontology.OntologyService.UpdateObjectType",
     },
     {
+        "name": "openfoundry.pipeline.compiletransform",
+        "operation_id": "open_foundry.pipeline.TransformService.CompileTransform",
+    },
+    {
         "name": "openfoundry.pipeline.createpipeline",
         "operation_id": "open_foundry.pipeline.PipelineService.CreatePipeline",
     },
@@ -336,8 +340,24 @@ MCP_TOOL_REGISTRY: list[dict[str, Any]] = [
         "operation_id": "open_foundry.pipeline.ScheduleService.PreviewNextFires",
     },
     {
+        "name": "openfoundry.pipeline.previewtransform",
+        "operation_id": "open_foundry.pipeline.TransformService.PreviewTransform",
+    },
+    {
         "name": "openfoundry.pipeline.recordlineage",
         "operation_id": "open_foundry.pipeline.LineageService.RecordLineage",
+    },
+    {
+        "name": "openfoundry.pipeline.registerpipelinebuildergraph",
+        "operation_id": "open_foundry.pipeline.TransformService.RegisterPipelineBuilderGraph",
+    },
+    {
+        "name": "openfoundry.pipeline.registerpythontransform",
+        "operation_id": "open_foundry.pipeline.TransformService.RegisterPythonTransform",
+    },
+    {
+        "name": "openfoundry.pipeline.registersqltransform",
+        "operation_id": "open_foundry.pipeline.TransformService.RegisterSqlTransform",
     },
     {
         "name": "openfoundry.pipeline.runschedulenow",
@@ -354,6 +374,10 @@ MCP_TOOL_REGISTRY: list[dict[str, Any]] = [
     {
         "name": "openfoundry.pipeline.updateschedule",
         "operation_id": "open_foundry.pipeline.ScheduleService.UpdateSchedule",
+    },
+    {
+        "name": "openfoundry.pipeline.validatetransform",
+        "operation_id": "open_foundry.pipeline.TransformService.ValidateTransform",
     },
     {
         "name": "openfoundry.query.deletesavedquery",
