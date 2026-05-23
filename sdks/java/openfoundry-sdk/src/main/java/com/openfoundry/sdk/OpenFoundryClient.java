@@ -488,6 +488,12 @@ public final class OpenFoundryClient {
         return request("PATCH", "/api/v1/ontology/update-object-type", pathParams, queryParams, bodyJson);
     }
 
+    public String pipelineTransformCompiletransform(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/pipelines/compile-transform", pathParams, queryParams, bodyJson);
+    }
+
     public String pipelinePipelineCreatepipeline(String bodyJson) throws IOException, InterruptedException {
         Map<String, Object> pathParams = Map.of();
         Map<String, Object> queryParams = Map.of();
@@ -583,10 +589,34 @@ public final class OpenFoundryClient {
         return request("POST", "/api/v1/pipelines/preview-next-fires", pathParams, queryParams, bodyJson);
     }
 
+    public String pipelineTransformPreviewtransform(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/pipelines/preview-transform", pathParams, queryParams, bodyJson);
+    }
+
     public String pipelineLineageRecordlineage(String bodyJson) throws IOException, InterruptedException {
         Map<String, Object> pathParams = Map.of();
         Map<String, Object> queryParams = Map.of();
         return request("POST", "/api/v1/pipelines/record-lineage", pathParams, queryParams, bodyJson);
+    }
+
+    public String pipelineTransformRegisterpipelinebuildergraph(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/pipelines/register-pipeline-builder-graph", pathParams, queryParams, bodyJson);
+    }
+
+    public String pipelineTransformRegisterpythontransform(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/pipelines/register-python-transform", pathParams, queryParams, bodyJson);
+    }
+
+    public String pipelineTransformRegistersqltransform(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/pipelines/register-sql-transform", pathParams, queryParams, bodyJson);
     }
 
     public String pipelineScheduleRunschedulenow(String bodyJson) throws IOException, InterruptedException {
@@ -611,6 +641,12 @@ public final class OpenFoundryClient {
         Map<String, Object> pathParams = Map.of();
         Map<String, Object> queryParams = Map.of();
         return request("PATCH", "/api/v1/pipelines/update-schedule", pathParams, queryParams, bodyJson);
+    }
+
+    public String pipelineTransformValidatetransform(String bodyJson) throws IOException, InterruptedException {
+        Map<String, Object> pathParams = Map.of();
+        Map<String, Object> queryParams = Map.of();
+        return request("POST", "/api/v1/pipelines/validate-transform", pathParams, queryParams, bodyJson);
     }
 
     public String queryQueryDeletesavedquery(String id) throws IOException, InterruptedException {

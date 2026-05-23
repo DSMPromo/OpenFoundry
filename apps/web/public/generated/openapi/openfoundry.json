@@ -3788,6 +3788,57 @@
         "x-openfoundry-stability": "beta"
       }
     },
+    "/api/v1/pipelines/compile-transform": {
+      "post": {
+        "summary": "TransformService CompileTransform",
+        "description": "Generated from `open_foundry.pipeline` RPC `CompileTransform` in service `TransformService`.",
+        "operationId": "open_foundry.pipeline.TransformService.CompileTransform",
+        "tags": [
+          "open_foundry.pipeline"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompileTransformRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompileTransformResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "pipeline",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.pipeline.compiletransform",
+        "x-openfoundry-stability": "beta"
+      }
+    },
     "/api/v1/pipelines/create-pipeline": {
       "post": {
         "summary": "PipelineService CreatePipeline",
@@ -4524,6 +4575,57 @@
         "x-openfoundry-stability": "beta"
       }
     },
+    "/api/v1/pipelines/preview-transform": {
+      "post": {
+        "summary": "TransformService PreviewTransform",
+        "description": "Generated from `open_foundry.pipeline` RPC `PreviewTransform` in service `TransformService`.",
+        "operationId": "open_foundry.pipeline.TransformService.PreviewTransform",
+        "tags": [
+          "open_foundry.pipeline"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewTransformRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewTransformResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "pipeline",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.pipeline.previewtransform",
+        "x-openfoundry-stability": "beta"
+      }
+    },
     "/api/v1/pipelines/record-lineage": {
       "post": {
         "summary": "LineageService RecordLineage",
@@ -4572,6 +4674,159 @@
         "x-openfoundry-sdk-namespace": "pipeline",
         "x-openfoundry-api-version": "v1",
         "x-openfoundry-mcp-tool": "openfoundry.pipeline.recordlineage",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/pipelines/register-pipeline-builder-graph": {
+      "post": {
+        "summary": "TransformService RegisterPipelineBuilderGraph",
+        "description": "Generated from `open_foundry.pipeline` RPC `RegisterPipelineBuilderGraph` in service `TransformService`.",
+        "operationId": "open_foundry.pipeline.TransformService.RegisterPipelineBuilderGraph",
+        "tags": [
+          "open_foundry.pipeline"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterPipelineBuilderGraphRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineBuilderGraphSaved"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "pipeline",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.pipeline.registerpipelinebuildergraph",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/pipelines/register-python-transform": {
+      "post": {
+        "summary": "TransformService RegisterPythonTransform",
+        "description": "Generated from `open_foundry.pipeline` RPC `RegisterPythonTransform` in service `TransformService`.",
+        "operationId": "open_foundry.pipeline.TransformService.RegisterPythonTransform",
+        "tags": [
+          "open_foundry.pipeline"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterPythonTransformRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transform"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "pipeline",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.pipeline.registerpythontransform",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/pipelines/register-sql-transform": {
+      "post": {
+        "summary": "TransformService RegisterSqlTransform",
+        "description": "Generated from `open_foundry.pipeline` RPC `RegisterSqlTransform` in service `TransformService`.",
+        "operationId": "open_foundry.pipeline.TransformService.RegisterSqlTransform",
+        "tags": [
+          "open_foundry.pipeline"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterSqlTransformRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transform"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "pipeline",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.pipeline.registersqltransform",
         "x-openfoundry-stability": "beta"
       }
     },
@@ -4776,6 +5031,57 @@
         "x-openfoundry-sdk-namespace": "pipeline",
         "x-openfoundry-api-version": "v1",
         "x-openfoundry-mcp-tool": "openfoundry.pipeline.updateschedule",
+        "x-openfoundry-stability": "beta"
+      }
+    },
+    "/api/v1/pipelines/validate-transform": {
+      "post": {
+        "summary": "TransformService ValidateTransform",
+        "description": "Generated from `open_foundry.pipeline` RPC `ValidateTransform` in service `TransformService`.",
+        "operationId": "open_foundry.pipeline.TransformService.ValidateTransform",
+        "tags": [
+          "open_foundry.pipeline"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateTransformRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateTransformResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Structured error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-openfoundry-sdk-namespace": "pipeline",
+        "x-openfoundry-api-version": "v1",
+        "x-openfoundry-mcp-tool": "openfoundry.pipeline.validatetransform",
         "x-openfoundry-stability": "beta"
       }
     },
@@ -9594,6 +9900,40 @@
           }
         }
       },
+      "CompileTransformRequest": {
+        "type": "object",
+        "properties": {
+          "config_json": {
+            "type": "string"
+          },
+          "language": {
+            "$ref": "#/components/schemas/TransformLanguage"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "CompileTransformResponse": {
+        "type": "object",
+        "properties": {
+          "compiled": {
+            "type": "boolean"
+          },
+          "compiled_form": {
+            "type": "string"
+          },
+          "deferred": {
+            "type": "boolean"
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationDiagnostic"
+            }
+          }
+        }
+      },
       "CompoundTrigger": {
         "type": "object",
         "properties": {}
@@ -13467,6 +13807,21 @@
           }
         }
       },
+      "PipelineBuilderGraphSaved": {
+        "type": "object",
+        "properties": {
+          "draft_updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "graph_json": {
+            "type": "string"
+          },
+          "pipeline_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
       "PipelineNode": {
         "type": "object",
         "properties": {
@@ -13634,6 +13989,23 @@
           }
         }
       },
+      "PreviewColumn": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "values_json": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "PreviewDataRequest": {
         "type": "object",
         "properties": {
@@ -13692,6 +14064,74 @@
               "type": "string",
               "format": "date-time"
             }
+          }
+        }
+      },
+      "PreviewSampleColumn": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "values_json": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PreviewTransformRequest": {
+        "type": "object",
+        "properties": {
+          "config_json": {
+            "type": "string"
+          },
+          "language": {
+            "$ref": "#/components/schemas/TransformLanguage"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sample_columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreviewSampleColumn"
+            }
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "PreviewTransformResponse": {
+        "type": "object",
+        "properties": {
+          "columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreviewColumn"
+            }
+          },
+          "deferred": {
+            "type": "boolean"
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationDiagnostic"
+            }
+          },
+          "previewed": {
+            "type": "boolean"
+          },
+          "row_count": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -14093,6 +14533,34 @@
           }
         }
       },
+      "RegisterPipelineBuilderGraphRequest": {
+        "type": "object",
+        "properties": {
+          "graph_json": {
+            "type": "string"
+          },
+          "pipeline_id": {
+            "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "RegisterPythonTransformRequest": {
+        "type": "object",
+        "properties": {
+          "config_json": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owner_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
       "RegisterRequest": {
         "type": "object",
         "properties": {
@@ -14112,6 +14580,23 @@
         "properties": {
           "user_id": {
             "$ref": "#/components/schemas/Uuid"
+          }
+        }
+      },
+      "RegisterSqlTransformRequest": {
+        "type": "object",
+        "properties": {
+          "config_json": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owner_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "source": {
+            "type": "string"
           }
         }
       },
@@ -14930,6 +15415,37 @@
           }
         }
       },
+      "Transform": {
+        "type": "object",
+        "properties": {
+          "config_json": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "language": {
+            "$ref": "#/components/schemas/TransformLanguage"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owner_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "source": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "TraverseLinksRequest": {
         "type": "object",
         "properties": {
@@ -15503,6 +16019,56 @@
         "properties": {
           "value": {
             "type": "string"
+          }
+        }
+      },
+      "ValidateTransformRequest": {
+        "type": "object",
+        "properties": {
+          "config_json": {
+            "type": "string"
+          },
+          "language": {
+            "$ref": "#/components/schemas/TransformLanguage"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidateTransformResponse": {
+        "type": "object",
+        "properties": {
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationDiagnostic"
+            }
+          },
+          "valid": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ValidationDiagnostic": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "column": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "line": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/ValidationSeverity"
           }
         }
       },

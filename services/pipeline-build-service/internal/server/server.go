@@ -52,12 +52,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	authmw "github.com/openfoundry/openfoundry-go/libs/auth-middleware"
 	"github.com/openfoundry/openfoundry-go/libs/capabilities"
 	probespkg "github.com/openfoundry/openfoundry-go/libs/capabilities/probes"
 	"github.com/openfoundry/openfoundry-go/libs/core-models/health"
 	"github.com/openfoundry/openfoundry-go/libs/observability"
-	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/config"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/handler"
@@ -151,6 +151,16 @@ func BuildRouterWithDeps(cfg *config.Config, m *observability.Metrics, deps Deps
 		api.Post("/pipelines/aip/generate", handler.PipelineAIPGenerate)
 		api.Get("/pipelines/transforms/catalog", handler.ListPipelineTransformCatalog)
 		api.Post("/pipelines/geospatial/gpx/parse", handler.ParseGPXUpload)
+		// TransformService — proto/pipeline/transform.proto. Compile,
+		// validate and preview are MVP linters today (response carries
+		// `deferred=true` until the full runtime is wired); Register*
+		// are full DB-backed implementations.
+		api.Post("/pipelines/compile-transform", handler.CompileTransform)
+		api.Post("/pipelines/validate-transform", handler.ValidateTransform)
+		api.Post("/pipelines/preview-transform", handler.PreviewTransform)
+		api.Post("/pipelines/register-python-transform", handler.RegisterPythonTransform)
+		api.Post("/pipelines/register-sql-transform", handler.RegisterSqlTransform)
+		api.Post("/pipelines/register-pipeline-builder-graph", handler.RegisterPipelineBuilderGraph)
 		api.Get("/pipelines/{id}", handler.GetPipeline)
 		api.Patch("/pipelines/{id}", handler.UpdatePipeline)
 		api.Put("/pipelines/{id}", handler.UpdatePipeline)

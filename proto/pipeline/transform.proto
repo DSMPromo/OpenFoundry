@@ -1,2 +1,194 @@
 syntax = "proto3";
 package open_foundry.pipeline;
+
+import "common/types.proto";
+import "google/protobuf/timestamp.proto";
+
+// Transforms are first-class authoring artifacts: a named bundle of
+// source (Python or SQL) + config that can be validated, previewed,
+// and later referenced from a pipeline node. They live in their own
+// table (services/pipeline-build-service/migrations/.._transforms.sql)
+// independent of any pipeline so they can be reused across pipelines
+// and previewed before being wired into a graph.
+//
+// The RPCs below mirror the Foundry "Compile / Validate / Preview"
+// authoring loop and the Pipeline Builder's two save paths
+// (per-language Register*Transform + RegisterPipelineBuilderGraph
+// for the visual canvas).
+service TransformService {
+  // Lints + structurally compiles a transform's source. The MVP
+  // returns syntactic/structural diagnostics only; deep type-checking
+  // and a real Python AST compile are tracked as follow-ups.
+  rpc CompileTransform(CompileTransformRequest) returns (CompileTransformResponse);
+
+  // Validates a transform's source against the same diagnostics as
+  // CompileTransform but skips the compiled-form output. Cheap to
+  // call from a draft editor as the user types.
+  rpc ValidateTransform(ValidateTransformRequest) returns (ValidateTransformResponse);
+
+  // Previews the transform against caller-supplied sample rows.
+  // Returns columns + rows when the lightweight runtime supports
+  // the language; otherwise returns a structured `deferred`
+  // response so clients know to retry once the runtime is wired.
+  rpc PreviewTransform(PreviewTransformRequest) returns (PreviewTransformResponse);
+
+  // Persists a Python transform in the `transforms` table. The
+  // returned Transform is fully populated (id, timestamps).
+  rpc RegisterPythonTransform(RegisterPythonTransformRequest) returns (Transform);
+
+  // Persists a SQL transform in the `transforms` table.
+  rpc RegisterSqlTransform(RegisterSqlTransformRequest) returns (Transform);
+
+  // Persists a Pipeline Builder visual graph into the named pipeline's
+  // `draft_dag`. The pipeline must already exist; create it first via
+  // CreatePipeline. The returned pipeline reflects the saved draft.
+  rpc RegisterPipelineBuilderGraph(RegisterPipelineBuilderGraphRequest) returns (PipelineBuilderGraphSaved);
+}
+
+// TransformLanguage is the source language the transform is written
+// in. Each language has its own validator, compiler, and runtime
+// dispatch inside pipeline-build-service.
+enum TransformLanguage {
+  TRANSFORM_LANGUAGE_UNSPECIFIED = 0;
+  TRANSFORM_LANGUAGE_PYTHON = 1;
+  TRANSFORM_LANGUAGE_SQL = 2;
+}
+
+// ValidationSeverity classifies a single diagnostic; clients render
+// errors red and warnings yellow.
+enum ValidationSeverity {
+  VALIDATION_SEVERITY_UNSPECIFIED = 0;
+  VALIDATION_SEVERITY_ERROR = 1;
+  VALIDATION_SEVERITY_WARNING = 2;
+}
+
+// Transform is the persisted artifact returned by Register* RPCs and
+// referenced from pipeline nodes via `transform_id` once published.
+message Transform {
+  open_foundry.common.Uuid id = 1;
+  string name = 2;
+  TransformLanguage language = 3;
+  // Raw source — Python module text or a SQL statement.
+  string source = 4;
+  // Free-form config (timeout_seconds, allowed_packages, output
+  // schema hints, …) serialized as a JSON string so the wire shape
+  // stays stable across languages.
+  string config_json = 5;
+  open_foundry.common.Uuid owner_id = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+// ValidationDiagnostic is one error or warning raised by the
+// validator. `line` / `column` are 1-indexed; 0 means "unknown".
+message ValidationDiagnostic {
+  ValidationSeverity severity = 1;
+  string code = 2;
+  string message = 3;
+  uint32 line = 4;
+  uint32 column = 5;
+}
+
+// CompileTransformRequest carries the source to compile. The
+// transform does NOT need to exist in the registry yet — the RPC
+// is callable from a draft editor.
+message CompileTransformRequest {
+  TransformLanguage language = 1;
+  string source = 2;
+  string config_json = 3;
+}
+
+// CompileTransformResponse reports whether compilation succeeded and,
+// when supported, the compiled form (e.g. a normalised SQL string or
+// a Python AST digest). `compiled` is false if any diagnostic has
+// ERROR severity.
+message CompileTransformResponse {
+  bool compiled = 1;
+  // True when the implementation has fully type-checked and lowered
+  // the source. False when the response is a structural-only stub.
+  bool deferred = 2;
+  repeated ValidationDiagnostic diagnostics = 3;
+  // Normalised source (e.g. canonical SQL, Python ast.dump). Empty
+  // when `deferred` is true.
+  string compiled_form = 4;
+}
+
+message ValidateTransformRequest {
+  TransformLanguage language = 1;
+  string source = 2;
+  string config_json = 3;
+}
+
+message ValidateTransformResponse {
+  bool valid = 1;
+  repeated ValidationDiagnostic diagnostics = 2;
+}
+
+// PreviewSampleColumn declares one column of the caller-supplied
+// sample rows. `values_json` carries one JSON-encoded cell per row
+// so numerics, strings, and nulls all share a wire shape.
+message PreviewSampleColumn {
+  string name = 1;
+  // Primitive column type: "string" | "int64" | "double" | "bool".
+  string type = 2;
+  repeated string values_json = 3;
+}
+
+message PreviewTransformRequest {
+  TransformLanguage language = 1;
+  string source = 2;
+  string config_json = 3;
+  repeated PreviewSampleColumn sample_columns = 4;
+  // Cap the preview at `limit` rows; the server clamps to [1, 500]
+  // mirroring the existing PreviewPipelineNode endpoint.
+  uint32 limit = 5;
+}
+
+message PreviewColumn {
+  string name = 1;
+  string type = 2;
+  repeated string values_json = 3;
+}
+
+message PreviewTransformResponse {
+  // True when the lightweight runtime returned a real preview.
+  bool previewed = 1;
+  // True when preview is structurally accepted but the runtime is
+  // not yet wired for this language — clients can retry later.
+  bool deferred = 2;
+  repeated PreviewColumn columns = 3;
+  uint32 row_count = 4;
+  repeated ValidationDiagnostic diagnostics = 5;
+}
+
+message RegisterPythonTransformRequest {
+  string name = 1;
+  string source = 2;
+  string config_json = 3;
+  open_foundry.common.Uuid owner_id = 4;
+}
+
+message RegisterSqlTransformRequest {
+  string name = 1;
+  string source = 2;
+  string config_json = 3;
+  open_foundry.common.Uuid owner_id = 4;
+}
+
+// RegisterPipelineBuilderGraphRequest carries the JSON-serialised
+// canvas graph the Pipeline Builder UI emits. The server writes it
+// to the pipeline's `draft_dag` column.
+message RegisterPipelineBuilderGraphRequest {
+  open_foundry.common.Uuid pipeline_id = 1;
+  // Visual graph as the canvas serialises it: nodes, edges, layout
+  // hints. Opaque to the server — round-tripped to draft_dag.
+  string graph_json = 2;
+}
+
+message PipelineBuilderGraphSaved {
+  open_foundry.common.Uuid pipeline_id = 1;
+  google.protobuf.Timestamp draft_updated_at = 2;
+  // Echo of the saved graph for clients that need optimistic
+  // reconciliation. Empty when the saved blob was rejected.
+  string graph_json = 3;
+}

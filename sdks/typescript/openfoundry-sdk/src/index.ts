@@ -272,6 +272,19 @@ export interface CommitTransactionRequest {
   transaction_rid?: string;
 }
 
+export interface CompileTransformRequest {
+  config_json?: string;
+  language?: TransformLanguage;
+  source?: string;
+}
+
+export interface CompileTransformResponse {
+  compiled?: boolean;
+  compiled_form?: string;
+  deferred?: boolean;
+  diagnostics?: Array<ValidationDiagnostic>;
+}
+
 export interface CompoundTrigger {
 }
 
@@ -1742,6 +1755,12 @@ export interface PipelineBuildTarget {
   pipeline_rid?: string;
 }
 
+export interface PipelineBuilderGraphSaved {
+  draft_updated_at?: string;
+  graph_json?: string;
+  pipeline_id?: Uuid;
+}
+
 export interface PipelineNode {
   config_json?: string;
   depends_on?: Array<string>;
@@ -1795,6 +1814,12 @@ export interface PresignedUrlResponse {
   url?: string;
 }
 
+export interface PreviewColumn {
+  name?: string;
+  type?: string;
+  values_json?: Array<string>;
+}
+
 export interface PreviewDataRequest {
   dataset_id?: Uuid;
   limit?: number;
@@ -1814,6 +1839,28 @@ export interface PreviewNextFiresRequest {
 
 export interface PreviewNextFiresResponse {
   fires?: Array<string>;
+}
+
+export interface PreviewSampleColumn {
+  name?: string;
+  type?: string;
+  values_json?: Array<string>;
+}
+
+export interface PreviewTransformRequest {
+  config_json?: string;
+  language?: TransformLanguage;
+  limit?: number;
+  sample_columns?: Array<PreviewSampleColumn>;
+  source?: string;
+}
+
+export interface PreviewTransformResponse {
+  columns?: Array<PreviewColumn>;
+  deferred?: boolean;
+  diagnostics?: Array<ValidationDiagnostic>;
+  previewed?: boolean;
+  row_count?: number;
 }
 
 export interface Product {
@@ -1965,6 +2012,18 @@ export interface RegisterModelRequest {
   provider?: Provider;
 }
 
+export interface RegisterPipelineBuilderGraphRequest {
+  graph_json?: string;
+  pipeline_id?: Uuid;
+}
+
+export interface RegisterPythonTransformRequest {
+  config_json?: string;
+  name?: string;
+  owner_id?: Uuid;
+  source?: string;
+}
+
 export interface RegisterRequest {
   email?: string;
   name?: string;
@@ -1973,6 +2032,13 @@ export interface RegisterRequest {
 
 export interface RegisterResponse {
   user_id?: Uuid;
+}
+
+export interface RegisterSqlTransformRequest {
+  config_json?: string;
+  name?: string;
+  owner_id?: Uuid;
+  source?: string;
 }
 
 export interface RegisterVirtualMediaItemRequest {
@@ -2278,6 +2344,17 @@ export interface Transaction {
   state?: TransactionState;
 }
 
+export interface Transform {
+  config_json?: string;
+  created_at?: string;
+  id?: Uuid;
+  language?: TransformLanguage;
+  name?: string;
+  owner_id?: Uuid;
+  source?: string;
+  updated_at?: string;
+}
+
 export interface TraverseLinksRequest {
   depth?: number;
   direction?: LinkDirection;
@@ -2484,6 +2561,25 @@ export interface Uuid {
   value?: string;
 }
 
+export interface ValidateTransformRequest {
+  config_json?: string;
+  language?: TransformLanguage;
+  source?: string;
+}
+
+export interface ValidateTransformResponse {
+  diagnostics?: Array<ValidationDiagnostic>;
+  valid?: boolean;
+}
+
+export interface ValidationDiagnostic {
+  code?: string;
+  column?: number;
+  line?: number;
+  message?: string;
+  severity?: ValidationSeverity;
+}
+
 export interface WatchIngestJobRequest {
   id?: Uuid;
   poll_interval_ms?: number;
@@ -2556,6 +2652,10 @@ export type Struct = unknown;
 export type TransactionPolicy = unknown;
 
 export type TransactionState = unknown;
+
+export type TransformLanguage = unknown;
+
+export type ValidationSeverity = unknown;
 
 export type Value = unknown;
 
@@ -3389,6 +3489,18 @@ export const OPENFOUNDRY_OPERATION_REGISTRY: ReadonlyArray<OpenFoundryOperationM
     mcpTool: "openfoundry.ontology.updateobjecttype",
   },
   {
+    operationId: "open_foundry.pipeline.TransformService.CompileTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/compile-transform",
+    summary: "TransformService CompileTransform",
+    description: "Generated from `open_foundry.pipeline` RPC `CompileTransform` in service `TransformService`.",
+    namespace: "pipeline",
+    namespaceMember: "compiletransform",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.pipeline.compiletransform",
+  },
+  {
     operationId: "open_foundry.pipeline.PipelineService.CreatePipeline",
     method: "POST",
     path: "/api/v1/pipelines/create-pipeline",
@@ -3545,6 +3657,18 @@ export const OPENFOUNDRY_OPERATION_REGISTRY: ReadonlyArray<OpenFoundryOperationM
     mcpTool: "openfoundry.pipeline.previewnextfires",
   },
   {
+    operationId: "open_foundry.pipeline.TransformService.PreviewTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/preview-transform",
+    summary: "TransformService PreviewTransform",
+    description: "Generated from `open_foundry.pipeline` RPC `PreviewTransform` in service `TransformService`.",
+    namespace: "pipeline",
+    namespaceMember: "previewtransform",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.pipeline.previewtransform",
+  },
+  {
     operationId: "open_foundry.pipeline.LineageService.RecordLineage",
     method: "POST",
     path: "/api/v1/pipelines/record-lineage",
@@ -3555,6 +3679,42 @@ export const OPENFOUNDRY_OPERATION_REGISTRY: ReadonlyArray<OpenFoundryOperationM
     apiVersion: "v1",
     stability: "beta",
     mcpTool: "openfoundry.pipeline.recordlineage",
+  },
+  {
+    operationId: "open_foundry.pipeline.TransformService.RegisterPipelineBuilderGraph",
+    method: "POST",
+    path: "/api/v1/pipelines/register-pipeline-builder-graph",
+    summary: "TransformService RegisterPipelineBuilderGraph",
+    description: "Generated from `open_foundry.pipeline` RPC `RegisterPipelineBuilderGraph` in service `TransformService`.",
+    namespace: "pipeline",
+    namespaceMember: "registerpipelinebuildergraph",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.pipeline.registerpipelinebuildergraph",
+  },
+  {
+    operationId: "open_foundry.pipeline.TransformService.RegisterPythonTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/register-python-transform",
+    summary: "TransformService RegisterPythonTransform",
+    description: "Generated from `open_foundry.pipeline` RPC `RegisterPythonTransform` in service `TransformService`.",
+    namespace: "pipeline",
+    namespaceMember: "registerpythontransform",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.pipeline.registerpythontransform",
+  },
+  {
+    operationId: "open_foundry.pipeline.TransformService.RegisterSqlTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/register-sql-transform",
+    summary: "TransformService RegisterSqlTransform",
+    description: "Generated from `open_foundry.pipeline` RPC `RegisterSqlTransform` in service `TransformService`.",
+    namespace: "pipeline",
+    namespaceMember: "registersqltransform",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.pipeline.registersqltransform",
   },
   {
     operationId: "open_foundry.pipeline.ScheduleService.RunScheduleNow",
@@ -3603,6 +3763,18 @@ export const OPENFOUNDRY_OPERATION_REGISTRY: ReadonlyArray<OpenFoundryOperationM
     apiVersion: "v1",
     stability: "beta",
     mcpTool: "openfoundry.pipeline.updateschedule",
+  },
+  {
+    operationId: "open_foundry.pipeline.TransformService.ValidateTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/validate-transform",
+    summary: "TransformService ValidateTransform",
+    description: "Generated from `open_foundry.pipeline` RPC `ValidateTransform` in service `TransformService`.",
+    namespace: "pipeline",
+    namespaceMember: "validatetransform",
+    apiVersion: "v1",
+    stability: "beta",
+    mcpTool: "openfoundry.pipeline.validatetransform",
   },
   {
     operationId: "open_foundry.query.QueryService.DeleteSavedQuery",
@@ -4776,6 +4948,7 @@ export class OpenFoundryClient {
   } as const;
 
   readonly pipeline = {
+    compiletransform: (body: CompileTransformRequest, init: OpenFoundryRequestInit = {}) => this.pipelineTransformCompiletransform(body, init),
     createpipeline: (body: CreatePipelineRequest, init: OpenFoundryRequestInit = {}) => this.pipelinePipelineCreatepipeline(body, init),
     createschedule: (body: CreateScheduleRequest, init: OpenFoundryRequestInit = {}) => this.pipelineScheduleCreateschedule(body, init),
     deletepipeline: (query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}) => this.pipelinePipelineDeletepipeline(query, init),
@@ -4789,11 +4962,16 @@ export class OpenFoundryClient {
     listruns: (query: { limit?: number; offset?: number; outcome?: RunOutcome; schedule_rid?: string } = {}, init: OpenFoundryRequestInit = {}) => this.pipelineSchedulerunsListruns(query, init),
     listschedules: (query: { include_paused?: boolean; owner?: string; pagination?: PageRequest; project_rid?: string; query?: string } = {}, init: OpenFoundryRequestInit = {}) => this.pipelineScheduleListschedules(query, init),
     previewnextfires: (body: PreviewNextFiresRequest, init: OpenFoundryRequestInit = {}) => this.pipelineSchedulePreviewnextfires(body, init),
+    previewtransform: (body: PreviewTransformRequest, init: OpenFoundryRequestInit = {}) => this.pipelineTransformPreviewtransform(body, init),
     recordlineage: (body: RecordLineageRequest, init: OpenFoundryRequestInit = {}) => this.pipelineLineageRecordlineage(body, init),
+    registerpipelinebuildergraph: (body: RegisterPipelineBuilderGraphRequest, init: OpenFoundryRequestInit = {}) => this.pipelineTransformRegisterpipelinebuildergraph(body, init),
+    registerpythontransform: (body: RegisterPythonTransformRequest, init: OpenFoundryRequestInit = {}) => this.pipelineTransformRegisterpythontransform(body, init),
+    registersqltransform: (body: RegisterSqlTransformRequest, init: OpenFoundryRequestInit = {}) => this.pipelineTransformRegistersqltransform(body, init),
     runschedulenow: (body: RunScheduleNowRequest, init: OpenFoundryRequestInit = {}) => this.pipelineScheduleRunschedulenow(body, init),
     triggerrun: (body: TriggerRunRequest, init: OpenFoundryRequestInit = {}) => this.pipelinePipelineTriggerrun(body, init),
     updatepipeline: (body: UpdatePipelineRequest, init: OpenFoundryRequestInit = {}) => this.pipelinePipelineUpdatepipeline(body, init),
     updateschedule: (body: UpdateScheduleRequest, init: OpenFoundryRequestInit = {}) => this.pipelineScheduleUpdateschedule(body, init),
+    validatetransform: (body: ValidateTransformRequest, init: OpenFoundryRequestInit = {}) => this.pipelineTransformValidatetransform(body, init),
   } as const;
 
   readonly query = {
@@ -5125,6 +5303,10 @@ export class OpenFoundryClient {
     return this.request<ObjectType>("PATCH", "/api/v1/ontology/update-object-type", undefined, undefined, body, init);
   }
 
+  async pipelineTransformCompiletransform(body: CompileTransformRequest, init: OpenFoundryRequestInit = {}): Promise<CompileTransformResponse> {
+    return this.request<CompileTransformResponse>("POST", "/api/v1/pipelines/compile-transform", undefined, undefined, body, init);
+  }
+
   async pipelinePipelineCreatepipeline(body: CreatePipelineRequest, init: OpenFoundryRequestInit = {}): Promise<Pipeline> {
     return this.request<Pipeline>("POST", "/api/v1/pipelines/create-pipeline", undefined, undefined, body, init);
   }
@@ -5177,8 +5359,24 @@ export class OpenFoundryClient {
     return this.request<PreviewNextFiresResponse>("POST", "/api/v1/pipelines/preview-next-fires", undefined, undefined, body, init);
   }
 
+  async pipelineTransformPreviewtransform(body: PreviewTransformRequest, init: OpenFoundryRequestInit = {}): Promise<PreviewTransformResponse> {
+    return this.request<PreviewTransformResponse>("POST", "/api/v1/pipelines/preview-transform", undefined, undefined, body, init);
+  }
+
   async pipelineLineageRecordlineage(body: RecordLineageRequest, init: OpenFoundryRequestInit = {}): Promise<RecordLineageResponse> {
     return this.request<RecordLineageResponse>("POST", "/api/v1/pipelines/record-lineage", undefined, undefined, body, init);
+  }
+
+  async pipelineTransformRegisterpipelinebuildergraph(body: RegisterPipelineBuilderGraphRequest, init: OpenFoundryRequestInit = {}): Promise<PipelineBuilderGraphSaved> {
+    return this.request<PipelineBuilderGraphSaved>("POST", "/api/v1/pipelines/register-pipeline-builder-graph", undefined, undefined, body, init);
+  }
+
+  async pipelineTransformRegisterpythontransform(body: RegisterPythonTransformRequest, init: OpenFoundryRequestInit = {}): Promise<Transform> {
+    return this.request<Transform>("POST", "/api/v1/pipelines/register-python-transform", undefined, undefined, body, init);
+  }
+
+  async pipelineTransformRegistersqltransform(body: RegisterSqlTransformRequest, init: OpenFoundryRequestInit = {}): Promise<Transform> {
+    return this.request<Transform>("POST", "/api/v1/pipelines/register-sql-transform", undefined, undefined, body, init);
   }
 
   async pipelineScheduleRunschedulenow(body: RunScheduleNowRequest, init: OpenFoundryRequestInit = {}): Promise<RunScheduleNowResponse> {
@@ -5195,6 +5393,10 @@ export class OpenFoundryClient {
 
   async pipelineScheduleUpdateschedule(body: UpdateScheduleRequest, init: OpenFoundryRequestInit = {}): Promise<Schedule> {
     return this.request<Schedule>("PATCH", "/api/v1/pipelines/update-schedule", undefined, undefined, body, init);
+  }
+
+  async pipelineTransformValidatetransform(body: ValidateTransformRequest, init: OpenFoundryRequestInit = {}): Promise<ValidateTransformResponse> {
+    return this.request<ValidateTransformResponse>("POST", "/api/v1/pipelines/validate-transform", undefined, undefined, body, init);
   }
 
   async queryQueryDeletesavedquery(query: { id?: Uuid } = {}, init: OpenFoundryRequestInit = {}): Promise<DeleteSavedQueryResponse> {
@@ -5665,6 +5867,8 @@ export class OpenFoundryClient {
         return this.ontologyOntologyobjectUpdateobject(this.resolveBodyInput(input) as any, init);
       case "open_foundry.ontology.OntologyService.UpdateObjectType":
         return this.ontologyOntologyUpdateobjecttype(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.pipeline.TransformService.CompileTransform":
+        return this.pipelineTransformCompiletransform(this.resolveBodyInput(input) as any, init);
       case "open_foundry.pipeline.PipelineService.CreatePipeline":
         return this.pipelinePipelineCreatepipeline(this.resolveBodyInput(input) as any, init);
       case "open_foundry.pipeline.ScheduleService.CreateSchedule":
@@ -5691,8 +5895,16 @@ export class OpenFoundryClient {
         return this.pipelineScheduleListschedules(((input.query ?? {}) as any), init);
       case "open_foundry.pipeline.ScheduleService.PreviewNextFires":
         return this.pipelineSchedulePreviewnextfires(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.pipeline.TransformService.PreviewTransform":
+        return this.pipelineTransformPreviewtransform(this.resolveBodyInput(input) as any, init);
       case "open_foundry.pipeline.LineageService.RecordLineage":
         return this.pipelineLineageRecordlineage(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.pipeline.TransformService.RegisterPipelineBuilderGraph":
+        return this.pipelineTransformRegisterpipelinebuildergraph(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.pipeline.TransformService.RegisterPythonTransform":
+        return this.pipelineTransformRegisterpythontransform(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.pipeline.TransformService.RegisterSqlTransform":
+        return this.pipelineTransformRegistersqltransform(this.resolveBodyInput(input) as any, init);
       case "open_foundry.pipeline.ScheduleService.RunScheduleNow":
         return this.pipelineScheduleRunschedulenow(this.resolveBodyInput(input) as any, init);
       case "open_foundry.pipeline.PipelineService.TriggerRun":
@@ -5701,6 +5913,8 @@ export class OpenFoundryClient {
         return this.pipelinePipelineUpdatepipeline(this.resolveBodyInput(input) as any, init);
       case "open_foundry.pipeline.ScheduleService.UpdateSchedule":
         return this.pipelineScheduleUpdateschedule(this.resolveBodyInput(input) as any, init);
+      case "open_foundry.pipeline.TransformService.ValidateTransform":
+        return this.pipelineTransformValidatetransform(this.resolveBodyInput(input) as any, init);
       case "open_foundry.query.QueryService.DeleteSavedQuery":
         return this.queryQueryDeletesavedquery(((input.query ?? {}) as any), init);
       case "open_foundry.query.QueryService.ExecuteQuery":

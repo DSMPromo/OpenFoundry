@@ -1786,6 +1786,30 @@ export const OPENFOUNDRY_MCP_TOOLS: ReadonlyArray<OpenFoundryMcpTool> = [
     stability: "beta",
   },
   {
+    name: "openfoundry.pipeline.compiletransform",
+    description: "Generated from `open_foundry.pipeline` RPC `CompileTransform` in service `TransformService`.",
+    operationId: "open_foundry.pipeline.TransformService.CompileTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/compile-transform",
+    namespace: "pipeline",
+    namespaceMember: "compiletransform",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/CompileTransformRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
     name: "openfoundry.pipeline.createpipeline",
     description: "Generated from `open_foundry.pipeline` RPC `CreatePipeline` in service `PipelineService`.",
     operationId: "open_foundry.pipeline.PipelineService.CreatePipeline",
@@ -2135,6 +2159,30 @@ export const OPENFOUNDRY_MCP_TOOLS: ReadonlyArray<OpenFoundryMcpTool> = [
     stability: "beta",
   },
   {
+    name: "openfoundry.pipeline.previewtransform",
+    description: "Generated from `open_foundry.pipeline` RPC `PreviewTransform` in service `TransformService`.",
+    operationId: "open_foundry.pipeline.TransformService.PreviewTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/preview-transform",
+    namespace: "pipeline",
+    namespaceMember: "previewtransform",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/PreviewTransformRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
     name: "openfoundry.pipeline.recordlineage",
     description: "Generated from `open_foundry.pipeline` RPC `RecordLineage` in service `LineageService`.",
     operationId: "open_foundry.pipeline.LineageService.RecordLineage",
@@ -2147,6 +2195,78 @@ export const OPENFOUNDRY_MCP_TOOLS: ReadonlyArray<OpenFoundryMcpTool> = [
         "properties": {
           "body": {
             "$ref": "#/components/schemas/RecordLineageRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.pipeline.registerpipelinebuildergraph",
+    description: "Generated from `open_foundry.pipeline` RPC `RegisterPipelineBuilderGraph` in service `TransformService`.",
+    operationId: "open_foundry.pipeline.TransformService.RegisterPipelineBuilderGraph",
+    method: "POST",
+    path: "/api/v1/pipelines/register-pipeline-builder-graph",
+    namespace: "pipeline",
+    namespaceMember: "registerpipelinebuildergraph",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/RegisterPipelineBuilderGraphRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.pipeline.registerpythontransform",
+    description: "Generated from `open_foundry.pipeline` RPC `RegisterPythonTransform` in service `TransformService`.",
+    operationId: "open_foundry.pipeline.TransformService.RegisterPythonTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/register-python-transform",
+    namespace: "pipeline",
+    namespaceMember: "registerpythontransform",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/RegisterPythonTransformRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.pipeline.registersqltransform",
+    description: "Generated from `open_foundry.pipeline` RPC `RegisterSqlTransform` in service `TransformService`.",
+    operationId: "open_foundry.pipeline.TransformService.RegisterSqlTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/register-sql-transform",
+    namespace: "pipeline",
+    namespaceMember: "registersqltransform",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/RegisterSqlTransformRequest"
           }
         },
         "required": [
@@ -2243,6 +2363,30 @@ export const OPENFOUNDRY_MCP_TOOLS: ReadonlyArray<OpenFoundryMcpTool> = [
         "properties": {
           "body": {
             "$ref": "#/components/schemas/UpdateScheduleRequest"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "type": "object"
+      }
+    ,
+    apiVersion: "v1",
+    stability: "beta",
+  },
+  {
+    name: "openfoundry.pipeline.validatetransform",
+    description: "Generated from `open_foundry.pipeline` RPC `ValidateTransform` in service `TransformService`.",
+    operationId: "open_foundry.pipeline.TransformService.ValidateTransform",
+    method: "POST",
+    path: "/api/v1/pipelines/validate-transform",
+    namespace: "pipeline",
+    namespaceMember: "validatetransform",
+    inputSchema:
+      {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/ValidateTransformRequest"
           }
         },
         "required": [

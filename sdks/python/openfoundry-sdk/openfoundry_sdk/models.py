@@ -246,6 +246,19 @@ class CommitTransactionRequest:
     transaction_rid: str | None = None
 
 @dataclass(slots=True)
+class CompileTransformRequest:
+    config_json: str | None = None
+    language: TransformLanguage | None = None
+    source: str | None = None
+
+@dataclass(slots=True)
+class CompileTransformResponse:
+    compiled: bool | None = None
+    compiled_form: str | None = None
+    deferred: bool | None = None
+    diagnostics: list[ValidationDiagnostic] | None = None
+
+@dataclass(slots=True)
 class CompoundTrigger:
     pass
 
@@ -1732,6 +1745,12 @@ class PipelineBuildTarget:
     pipeline_rid: str | None = None
 
 @dataclass(slots=True)
+class PipelineBuilderGraphSaved:
+    draft_updated_at: str | None = None
+    graph_json: str | None = None
+    pipeline_id: Uuid | None = None
+
+@dataclass(slots=True)
 class PipelineNode:
     config_json: str | None = None
     depends_on: list[str] | None = None
@@ -1785,6 +1804,12 @@ class PresignedUrlResponse:
     url: str | None = None
 
 @dataclass(slots=True)
+class PreviewColumn:
+    name: str | None = None
+    type: str | None = None
+    values_json: list[str] | None = None
+
+@dataclass(slots=True)
 class PreviewDataRequest:
     dataset_id: Uuid | None = None
     limit: int | None = None
@@ -1804,6 +1829,28 @@ class PreviewNextFiresRequest:
 @dataclass(slots=True)
 class PreviewNextFiresResponse:
     fires: list[str] | None = None
+
+@dataclass(slots=True)
+class PreviewSampleColumn:
+    name: str | None = None
+    type: str | None = None
+    values_json: list[str] | None = None
+
+@dataclass(slots=True)
+class PreviewTransformRequest:
+    config_json: str | None = None
+    language: TransformLanguage | None = None
+    limit: int | None = None
+    sample_columns: list[PreviewSampleColumn] | None = None
+    source: str | None = None
+
+@dataclass(slots=True)
+class PreviewTransformResponse:
+    columns: list[PreviewColumn] | None = None
+    deferred: bool | None = None
+    diagnostics: list[ValidationDiagnostic] | None = None
+    previewed: bool | None = None
+    row_count: int | None = None
 
 @dataclass(slots=True)
 class Product:
@@ -1956,6 +2003,18 @@ class RegisterModelRequest:
     provider: Provider | None = None
 
 @dataclass(slots=True)
+class RegisterPipelineBuilderGraphRequest:
+    graph_json: str | None = None
+    pipeline_id: Uuid | None = None
+
+@dataclass(slots=True)
+class RegisterPythonTransformRequest:
+    config_json: str | None = None
+    name: str | None = None
+    owner_id: Uuid | None = None
+    source: str | None = None
+
+@dataclass(slots=True)
 class RegisterRequest:
     email: str | None = None
     name: str | None = None
@@ -1964,6 +2023,13 @@ class RegisterRequest:
 @dataclass(slots=True)
 class RegisterResponse:
     user_id: Uuid | None = None
+
+@dataclass(slots=True)
+class RegisterSqlTransformRequest:
+    config_json: str | None = None
+    name: str | None = None
+    owner_id: Uuid | None = None
+    source: str | None = None
 
 @dataclass(slots=True)
 class RegisterVirtualMediaItemRequest:
@@ -2269,6 +2335,17 @@ class Transaction:
     state: TransactionState | None = None
 
 @dataclass(slots=True)
+class Transform:
+    config_json: str | None = None
+    created_at: str | None = None
+    id: Uuid | None = None
+    language: TransformLanguage | None = None
+    name: str | None = None
+    owner_id: Uuid | None = None
+    source: str | None = None
+    updated_at: str | None = None
+
+@dataclass(slots=True)
 class TraverseLinksRequest:
     depth: int | None = None
     direction: LinkDirection | None = None
@@ -2473,6 +2550,25 @@ class UserResponse:
 @dataclass(slots=True)
 class Uuid:
     value: str | None = None
+
+@dataclass(slots=True)
+class ValidateTransformRequest:
+    config_json: str | None = None
+    language: TransformLanguage | None = None
+    source: str | None = None
+
+@dataclass(slots=True)
+class ValidateTransformResponse:
+    diagnostics: list[ValidationDiagnostic] | None = None
+    valid: bool | None = None
+
+@dataclass(slots=True)
+class ValidationDiagnostic:
+    code: str | None = None
+    column: int | None = None
+    line: int | None = None
+    message: str | None = None
+    severity: ValidationSeverity | None = None
 
 @dataclass(slots=True)
 class WatchIngestJobRequest:
