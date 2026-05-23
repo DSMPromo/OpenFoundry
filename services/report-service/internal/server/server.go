@@ -63,7 +63,27 @@ func New(cfg *config.Config, metrics *observability.Metrics, log *slog.Logger, o
 		WithIssuer(cfg.JWT.Issuer).
 		WithAudience(cfg.JWT.Audience)
 
-	dist := handlers.NewDistributor()
+	smtpCfg := handlers.SMTPConfig{
+		Host:     cfg.SMTP.Host,
+		Port:     cfg.SMTP.Port,
+		Username: cfg.SMTP.Username,
+		Password: cfg.SMTP.Password,
+		From:     cfg.SMTP.From,
+	}
+	s3Store, err := handlers.NewS3ObjectStore(handlers.S3Config{
+		Endpoint:        cfg.S3.Endpoint,
+		Region:          cfg.S3.Region,
+		AccessKeyID:     cfg.S3.AccessKeyID,
+		SecretAccessKey: cfg.S3.SecretAccessKey,
+		PathStyle:       cfg.S3.PathStyle,
+	})
+	if err != nil {
+		if pool != nil {
+			pool.Close()
+		}
+		return nil, fmt.Errorf("build s3 object store: %w", err)
+	}
+	dist := handlers.NewDistributor(smtpCfg, s3Store)
 	r := BuildRouter(cfg, metrics, jwtCfg, store, dist)
 
 	var scheduler *handlers.Scheduler

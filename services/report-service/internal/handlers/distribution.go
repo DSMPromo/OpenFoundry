@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,16 +14,27 @@ import (
 )
 
 // Distributor delivers a generated report artifact to a definition's
-// recipients. The HTTP-based channels (webhook, slack, teams) are sent
-// directly; email and object-store (s3) delivery require external
-// infrastructure and are recorded as skipped until that is configured.
+// recipients. The HTTP-based channels (webhook, slack, teams) post
+// directly; email delivery goes through the configured SMTP relay and
+// s3 delivery through the configured ObjectStore. When either backend
+// is not configured the matching recipients are recorded as skipped
+// rather than failed — report generation succeeds regardless.
 type Distributor struct {
 	client *http.Client
+	smtp   SMTPConfig
+	store  ObjectStore
 }
 
-// NewDistributor builds a Distributor with a bounded HTTP client.
-func NewDistributor() *Distributor {
-	return &Distributor{client: &http.Client{Timeout: 15 * time.Second}}
+// NewDistributor builds a Distributor with a bounded HTTP client and
+// optional SMTP + object-store backends. Either backend may be the
+// zero value / nil — the corresponding channel is then recorded as
+// skipped until the operator wires real values.
+func NewDistributor(smtp SMTPConfig, store ObjectStore) *Distributor {
+	return &Distributor{
+		client: &http.Client{Timeout: 15 * time.Second},
+		smtp:   smtp,
+		store:  store,
+	}
 }
 
 // Deliver sends the artifact to every recipient and returns one result
@@ -49,21 +61,26 @@ func (d *Distributor) deliverOne(ctx context.Context, r DistributionRecipient, e
 	case "slack", "teams":
 		err = d.postJSON(ctx, r.Target, map[string]string{"text": chatMessage(e)})
 	case "email":
-		res.Status = "skipped"
-		res.Detail = "email delivery requires an SMTP relay to be configured"
-		return res
+		err = d.sendEmail(ctx, r, e, artifact)
 	case "s3":
-		res.Status = "skipped"
-		res.Detail = "object-store delivery requires bucket credentials to be configured"
-		return res
+		err = d.sendS3(ctx, r, e, artifact)
 	default:
 		res.Status = "skipped"
 		res.Detail = "unsupported delivery channel: " + string(r.Channel)
 		return res
 	}
 	if err != nil {
-		res.Status = "failed"
-		res.Detail = err.Error()
+		switch {
+		case errors.Is(err, errSMTPNotConfigured):
+			res.Status = "skipped"
+			res.Detail = "email delivery requires an SMTP relay to be configured"
+		case errors.Is(err, errS3NotConfigured):
+			res.Status = "skipped"
+			res.Detail = "object-store delivery requires bucket credentials to be configured"
+		default:
+			res.Status = "failed"
+			res.Detail = err.Error()
+		}
 		return res
 	}
 	res.Status = "delivered"
