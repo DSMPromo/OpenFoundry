@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials"
 	awss3 "github.com/aws/aws-sdk-go-v2/service/s3"
+
+	awsclient "github.com/openfoundry/openfoundry-go/libs/aws-client"
 )
 
 // ObjectStore is the tiny PUT-only contract the Distributor needs to
@@ -43,32 +43,25 @@ func (c S3Config) configured() bool { return c.Region != "" }
 // into a recipient-level "skipped", not a failure.
 var errS3NotConfigured = errors.New("s3 not configured")
 
-// NewS3ObjectStore builds an ObjectStore backed by aws-sdk-go-v2/s3.
-// Returns nil + nil when the config is empty so callers can pass a
-// possibly-disabled config straight through to NewDistributor.
+// NewS3ObjectStore builds an ObjectStore backed by aws-sdk-go-v2/s3
+// via libs/aws-client. Returns nil + nil when the config is empty so
+// callers can pass a possibly-disabled config straight through to
+// NewDistributor.
 func NewS3ObjectStore(cfg S3Config) (ObjectStore, error) {
 	if !cfg.configured() {
 		return nil, nil
 	}
-	loadOpts := []func(*awsconfig.LoadOptions) error{awsconfig.WithRegion(cfg.Region)}
-	if cfg.AccessKeyID != "" || cfg.SecretAccessKey != "" {
-		loadOpts = append(loadOpts, awsconfig.WithCredentialsProvider(
-			credentials.NewStaticCredentialsProvider(cfg.AccessKeyID, cfg.SecretAccessKey, ""),
-		))
-	}
-	awsCfg, err := awsconfig.LoadDefaultConfig(context.Background(), loadOpts...)
+	client, err := awsclient.S3(context.Background(), awsclient.Config{
+		EndpointURL:     cfg.Endpoint,
+		Region:          cfg.Region,
+		AccessKeyID:     cfg.AccessKeyID,
+		SecretAccessKey: cfg.SecretAccessKey,
+		PathStyle:       cfg.PathStyle,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("s3: load aws config: %w", err)
+		return nil, fmt.Errorf("s3: %w", err)
 	}
-	clientOpts := []func(*awss3.Options){}
-	if cfg.Endpoint != "" {
-		ep := cfg.Endpoint
-		clientOpts = append(clientOpts, func(o *awss3.Options) { o.BaseEndpoint = aws.String(ep) })
-	}
-	if cfg.PathStyle {
-		clientOpts = append(clientOpts, func(o *awss3.Options) { o.UsePathStyle = true })
-	}
-	return &awsObjectStore{client: awss3.NewFromConfig(awsCfg, clientOpts...)}, nil
+	return &awsObjectStore{client: client}, nil
 }
 
 type awsObjectStore struct{ client *awss3.Client }
