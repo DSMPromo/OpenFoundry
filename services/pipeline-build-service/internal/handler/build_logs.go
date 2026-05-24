@@ -8,6 +8,39 @@ import (
 	livellogs "github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/logs"
 )
 
+// GetBuildLogArchive surfaces the persisted driver-log URI for a
+// terminated build at `GET /api/v1/builds/{id}/logs/archive`. Returns
+// 200 + `{"log_uri": ...}` when the archive has been stamped, 404
+// when the build hasn't been archived yet (still running, or
+// archiver disabled), and 404 when the build doesn't exist at all.
+//
+// The UI consumes this endpoint to render the "Download driver log"
+// link on the build-detail page; A4.5 will plug in the click handler.
+func GetBuildLogArchive(w http.ResponseWriter, r *http.Request) {
+	repo, ok := requireBuildQueryRepository(w, "GetBuildLogArchive requires DATABASE_URL-backed repository wiring")
+	if !ok {
+		return
+	}
+	env, err := repo.GetBuild(r.Context(), buildIDParam(r))
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "get_build_failed", "detail": err.Error()})
+		return
+	}
+	if env == nil {
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": "build_not_found"})
+		return
+	}
+	if env.LogURI == nil || strings.TrimSpace(*env.LogURI) == "" {
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": "log_archive_not_available", "detail": "build has no archived driver log yet"})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"build_id": env.ID,
+		"log_uri":  *env.LogURI,
+		"state":    env.State,
+	})
+}
+
 // ListBuildLogs returns merged-by-timestamp history for every job in
 // the build at `GET /api/v1/builds/{id}/logs`. The JSON shape mirrors
 // the single-job ListJobLogs response (`data` + `total`) so the

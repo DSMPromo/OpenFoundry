@@ -144,6 +144,88 @@ func TestStreamBuildLogsFansInHistoryAndLive(t *testing.T) {
 	require.Contains(t, live, `"level":"WARN"`)
 }
 
+// archiveFakeRepo serves a canned build envelope so we can exercise
+// the GetBuildLogArchive 200/404 paths without standing up postgres.
+type archiveFakeRepo struct {
+	env *models.BuildEnvelope
+	err error
+}
+
+func (a *archiveFakeRepo) ListBuilds(context.Context, models.ListBuildsQuery) ([]models.BuildEnvelope, error) {
+	return nil, nil
+}
+func (a *archiveFakeRepo) GetBuild(context.Context, string) (*models.BuildEnvelope, error) {
+	if a.err != nil {
+		return nil, a.err
+	}
+	return a.env, nil
+}
+func (a *archiveFakeRepo) ListJobsForBuildID(context.Context, string) ([]models.Job, error) {
+	return nil, nil
+}
+func (a *archiveFakeRepo) GetJob(context.Context, string) (*models.Job, error) {
+	return nil, nil
+}
+
+func TestGetBuildLogArchive200WhenURIStamped(t *testing.T) {
+	id := uuid.New()
+	uri := "s3://logs/builds/" + id.String() + "/driver.log"
+	repo := &archiveFakeRepo{env: &models.BuildEnvelope{Build: models.Build{
+		ID:     id,
+		State:  string(models.BuildCompleted),
+		LogURI: &uri,
+	}}}
+	restoreRepo := SetBuildQueryRepository(repo)
+	defer restoreRepo()
+
+	r := chi.NewRouter()
+	r.Get("/api/v1/builds/{id}/logs/archive", GetBuildLogArchive)
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/builds/"+id.String()+"/logs/archive", nil)
+	rec := httptest.NewRecorder()
+	r.ServeHTTP(rec, req)
+
+	require.Equal(t, http.StatusOK, rec.Code, rec.Body.String())
+	var got map[string]any
+	require.NoError(t, json.Unmarshal(rec.Body.Bytes(), &got))
+	require.Equal(t, uri, got["log_uri"])
+	require.Equal(t, string(models.BuildCompleted), got["state"])
+}
+
+func TestGetBuildLogArchive404WhenURIMissing(t *testing.T) {
+	id := uuid.New()
+	repo := &archiveFakeRepo{env: &models.BuildEnvelope{Build: models.Build{
+		ID:     id,
+		State:  string(models.BuildRunning),
+		LogURI: nil,
+	}}}
+	restoreRepo := SetBuildQueryRepository(repo)
+	defer restoreRepo()
+
+	r := chi.NewRouter()
+	r.Get("/api/v1/builds/{id}/logs/archive", GetBuildLogArchive)
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/builds/"+id.String()+"/logs/archive", nil)
+	rec := httptest.NewRecorder()
+	r.ServeHTTP(rec, req)
+
+	require.Equal(t, http.StatusNotFound, rec.Code)
+	require.Contains(t, rec.Body.String(), "log_archive_not_available")
+}
+
+func TestGetBuildLogArchive404WhenBuildMissing(t *testing.T) {
+	repo := &archiveFakeRepo{env: nil}
+	restoreRepo := SetBuildQueryRepository(repo)
+	defer restoreRepo()
+
+	r := chi.NewRouter()
+	r.Get("/api/v1/builds/{id}/logs/archive", GetBuildLogArchive)
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/builds/"+uuid.New().String()+"/logs/archive", nil)
+	rec := httptest.NewRecorder()
+	r.ServeHTTP(rec, req)
+
+	require.Equal(t, http.StatusNotFound, rec.Code)
+	require.Contains(t, rec.Body.String(), "build_not_found")
+}
+
 func TestStreamBuildLogs503WhenLogStoreMissing(t *testing.T) {
 	restoreSvc := SetJobLogService(nil)
 	defer restoreSvc()

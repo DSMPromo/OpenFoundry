@@ -140,6 +140,7 @@ func BuildRouterWithDeps(cfg *config.Config, m *observability.Metrics, deps Deps
 		// the frontend can reuse its consumer.
 		api.Get("/builds/{id}/logs", handler.ListBuildLogs)
 		api.Get("/builds/{id}/logs/stream", handler.StreamBuildLogs)
+		api.Get("/builds/{id}/logs/archive", handler.GetBuildLogArchive)
 
 		// Jobs + logs.
 		api.Get("/jobs/{id}", handler.GetJob)
