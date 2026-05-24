@@ -809,6 +809,12 @@ services:
       PIPELINE_SERVICE_URL: http://pipeline-build-service:50081
       ONTOLOGY_SERVICE_URL: http://ontology-definition-service:50103
       ALLOW_PRIVATE_NETWORK_EGRESS: "true"
+      # Dev-mode: no external ingestion control plane is running. Without one
+      # of {INGESTION_CONTROL_PLANE_URL, INGESTION_RECONCILE_MODE=noop|log|dev,
+      # INGESTION_ALLOW_NOOP_RECONCILER=true} the service refuses to boot with
+      # 'reconciler configuration failed'. The noop reconciler is the
+      # sanctioned local-dev knob.
+      INGESTION_ALLOW_NOOP_RECONCILER: ${OPENFOUNDRY_INGESTION_ALLOW_NOOP_RECONCILER:-true}
     depends_on:
       postgres:
         condition: service_healthy
