@@ -57,7 +57,7 @@ export default defineConfig({
     : [['html', { outputFolder: 'playwright-report', open: 'never' }], ['list']],
 
   use: {
-    baseURL: 'http://127.0.0.1:5174',
+    baseURL: 'http://127.0.0.1:55173',
     actionTimeout: 10_000,
     navigationTimeout: 20_000,
     trace: isCI ? 'on-first-retry' : 'retain-on-failure',
@@ -70,7 +70,7 @@ export default defineConfig({
 
   webServer: {
     command: 'pnpm dev -- --host 127.0.0.1',
-    url: 'http://127.0.0.1:5174',
+    url: 'http://127.0.0.1:55173',
     reuseExistingServer: !isCI,
     timeout: 120_000,
     stdout: 'pipe',

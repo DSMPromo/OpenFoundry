@@ -8,7 +8,7 @@
 >
 > **Convenciones de referencia (no repetidas en cada prompt):**
 > - Repo: `/home/user/OpenFoundry`. Frontend: `apps/web/`. Tests E2E: `apps/web/e2e/`.
-> - Config Playwright: `apps/web/playwright.config.ts` (baseURL `http://127.0.0.1:5174`).
+> - Config Playwright: `apps/web/playwright.config.ts` (baseURL `http://127.0.0.1:55173`).
 > - Patrones existentes a imitar: `apps/web/e2e/workshop-actions.spec.ts`, `apps/web/e2e/route-smokes.spec.ts`, `apps/web/e2e/auth-smoke.spec.ts`, `apps/web/e2e/smoke-navigation.spec.ts`.
 > - Fixtures: `apps/web/e2e/fixtures/base.ts` (test extendido con `authedPage`), `mocks.ts` (`mockAuth`, `mockJson`, `buildUser`), `workshop.ts` (`defineWorkshopApp`, `mockWorkshopApp`).
 > - Page Objects existentes: `LoginPage`, `AppShellPage`, `WorkshopRuntimePage`, `ProjectsPage`, `SettingsPage` en `apps/web/e2e/pages/`.

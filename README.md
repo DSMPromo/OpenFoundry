@@ -146,7 +146,7 @@ make contracts-check
 
 ### Accessing OpenFoundry
 
-1. **Web Console**: Open `http://localhost:5173` (Vite dev server) or the URL exposed by your Kubernetes ingress.
+1. **Web Console**: Open `http://localhost:55173` (Vite dev server) or the URL exposed by your Kubernetes ingress.
 2. **APIs**: Each service exposes `/healthz`, `/metrics`, and a versioned `/api/v1/...` surface.
 3. **CLI**: Use `of-cli` from [`tools/of-cli/`](tools/of-cli/) for service introspection, contract checks, and route audits.
 

@@ -10,7 +10,7 @@ const SAMPLES: Record<Language, string> = {
   python: `def summarise(dataset):\n    return f"{dataset['id']} has {dataset['rows']} rows"\n\nprint(summarise({"id": "events", "rows": 1234}))\n`,
   sql: 'SELECT id, count(*) AS rows\nFROM events\nWHERE created_at > now() - interval \'1 day\'\nGROUP BY id\nORDER BY rows DESC;\n',
   markdown:
-    '# OpenFoundry\n\n- React shell at port 5174\n- Svelte shell at port 5173\n- Backend at 8080\n\n```sql\nSELECT 1;\n```\n',
+    '# OpenFoundry\n\n- React shell at port 55173\n- Backend at 8080\n\n```sql\nSELECT 1;\n```\n',
 };
 
 export function MonacoDemoPage() {

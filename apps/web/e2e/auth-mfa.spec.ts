@@ -171,7 +171,7 @@ test('TOTP success: posts the code and redirects to /', async ({ page }) => {
   await codeInput(page).fill(TOTP_CODE);
   await verifyButton(page).click();
 
-  await expect(page).toHaveURL(/127\.0\.0\.1:5174\/?$/);
+  await expect(page).toHaveURL(/127\.0\.0\.1:55173\/?$/);
 
   await expect.poll(() => cap.count()).toBe(1);
   const body = cap.last()?.body as Record<string, unknown> | undefined;
@@ -249,7 +249,7 @@ test('recovery-code happy path: posts recovery_code and redirects to /', async (
   await codeInput(page).fill(RECOVERY_CODE);
   await verifyButton(page).click();
 
-  await expect(page).toHaveURL(/127\.0\.0\.1:5174\/?$/);
+  await expect(page).toHaveURL(/127\.0\.0\.1:55173\/?$/);
   await expect.poll(() => cap.count()).toBe(1);
   const body = cap.last()?.body as Record<string, unknown> | undefined;
   expect(body).toMatchObject({
