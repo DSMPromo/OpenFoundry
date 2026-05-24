@@ -84,6 +84,7 @@ export function LoginPage() {
   const [searchParams] = useSearchParams();
   const registeredEmail = searchParams.get('email')?.trim() ?? '';
   const justRegistered = searchParams.get('registered') === 'true';
+  const justResetPassword = searchParams.get('password_reset') === '1';
   const explicitReturnTo = getAuthReturnTo(location.search);
   const intendedReturnTo = explicitReturnTo ?? getStoredAuthReturnTo();
   const postAuthRedirect = resolveAuthReturnTo(location.search);
@@ -283,6 +284,24 @@ export function LoginPage() {
             {registeredEmail
               ? t('auth.login.registeredFor', { email: registeredEmail })
               : t('auth.login.registered')}
+          </div>
+        )}
+
+        {justResetPassword && status !== 'success' && status !== 'mfa_required' && (
+          <div
+            role="status"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              borderRadius: 6,
+              background: 'rgba(34, 197, 94, 0.16)',
+              border: '1px solid rgba(34, 197, 94, 0.4)',
+              color: '#bbf7d0',
+              fontSize: 12.5,
+              textAlign: 'center',
+            }}
+          >
+            Password updated. Sign in with your new password.
           </div>
         )}
 
@@ -524,6 +543,10 @@ export function LoginPage() {
             style={{ color: '#93c5fd', textDecoration: 'none' }}
           >
             {t('auth.login.register')}
+          </Link>
+          {' · '}
+          <Link to="/auth/forgot-password" style={{ color: '#93c5fd', textDecoration: 'none' }}>
+            Forgot password?
           </Link>
         </p>
       </div>

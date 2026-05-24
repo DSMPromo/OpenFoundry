@@ -361,6 +361,32 @@ export function changePassword(data: ChangePasswordRequest) {
   return api.post<void>('/auth/password', data);
 }
 
+export interface RequestPasswordResetResponse {
+  status: 'ok';
+  // Dev-only echo of the token + URL when the backend is not wired
+  // to an SMTP relay. Production deployments leave both fields empty.
+  dev_token?: string;
+  dev_reset_url?: string;
+}
+
+// Public: ask the backend to send a reset link to the supplied email.
+// Always returns 200 — the backend intentionally does not disclose
+// whether the email matched a real account.
+export function requestPasswordReset(email: string) {
+  return api.post<RequestPasswordResetResponse>('/auth/forgot-password', { email });
+}
+
+export interface ConfirmPasswordResetRequest {
+  token: string;
+  new_password: string;
+}
+
+// Public: redeem a reset token + set a new password. Returns 204
+// on success, 400 on a bad / expired / used token.
+export function confirmPasswordReset(data: ConfirmPasswordResetRequest) {
+  return api.post<void>('/auth/reset-password', data);
+}
+
 export function completeMfaLogin(data: CompleteMfaLoginRequest) {
   return api.post<AuthenticatedResponse>('/auth/mfa/totp/complete-login', data);
 }

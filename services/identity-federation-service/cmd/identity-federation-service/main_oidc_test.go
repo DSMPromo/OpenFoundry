@@ -66,7 +66,7 @@ func TestInitOIDC_InvalidConfig_BootsDegraded(t *testing.T) {
 	// without parsing logs or scraping metrics.
 	cfg := &config.Config{}
 	cfg.Service.Name = "identity-federation-service"
-	srv := server.New(cfg, nil, nil, nil, nil, nil, nil, &handlers.RBAC{}, nil,
+	srv := server.New(cfg, nil, nil, nil, nil, nil, nil, &handlers.RBAC{}, nil, nil,
 		observability.NewMetrics(), &server.Readiness{OIDCDegraded: degraded})
 
 	req := httptest.NewRequest(http.MethodGet, "/readyz", nil)
@@ -102,7 +102,7 @@ func TestInitOIDC_NilConfigs_BootsClean(t *testing.T) {
 
 	cfg := &config.Config{}
 	cfg.Service.Name = "identity-federation-service"
-	srv := server.New(cfg, nil, nil, nil, nil, nil, nil, &handlers.RBAC{}, nil,
+	srv := server.New(cfg, nil, nil, nil, nil, nil, nil, &handlers.RBAC{}, nil, nil,
 		observability.NewMetrics(), &server.Readiness{OIDCDegraded: degraded})
 
 	req := httptest.NewRequest(http.MethodGet, "/readyz", nil)
