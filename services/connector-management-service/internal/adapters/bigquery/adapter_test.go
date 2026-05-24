@@ -393,9 +393,9 @@ func TestObtainAccessTokenExchangesServiceAccountJWT(t *testing.T) {
 	})
 
 	saJSON := map[string]any{
-		"client_email":    "sa@example.iam.gserviceaccount.com",
-		"private_key":     string(pemBytes),
-		"private_key_id":  "kid-1",
+		"client_email":   "sa@example.iam.gserviceaccount.com",
+		"private_key":    string(pemBytes),
+		"private_key_id": "kid-1",
 	}
 	saRaw, err := json.Marshal(saJSON)
 	require.NoError(t, err)
@@ -477,4 +477,3 @@ func mustMarshalPKCS8(t *testing.T, key *rsa.PrivateKey) []byte {
 	require.NoError(t, err)
 	return der
 }
-

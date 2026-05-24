@@ -12,6 +12,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/bedrockruntime v1.52.0
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.90.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.101.0
+	github.com/aws/aws-sdk-go-v2/service/sns v1.39.17
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.27
 	github.com/beevik/etree v1.6.0
 	github.com/cedar-policy/cedar-go v1.6.1
 	github.com/coder/websocket v1.8.14

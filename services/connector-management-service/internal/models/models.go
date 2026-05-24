@@ -3698,33 +3698,33 @@ const (
 )
 
 type MediaSetSyncRun struct {
-	ID                uuid.UUID             `json:"id"`
-	SyncDefID         uuid.UUID             `json:"sync_def_id"`
-	Status            MediaSetSyncRunStatus `json:"status"`
-	StartedAt         time.Time             `json:"started_at"`
-	FinishedAt        *time.Time            `json:"finished_at,omitempty"`
-	AcceptedFiles     uint32                `json:"accepted_files"`
-	SkippedFiles      uint32                `json:"skipped_files"`
-	SchemaMismatched  uint32                `json:"schema_mismatched"`
-	DispatchedFiles   uint32                `json:"dispatched_files"`
-	DispatchErrors    uint32                `json:"dispatch_errors"`
-	BytesAccepted     uint64                `json:"bytes_accepted"`
-	SelectedPaths     []string              `json:"selected_paths"`
-	SchemaMismatches  []string              `json:"schema_mismatches"`
-	ErrorMessage      *string               `json:"error_message,omitempty"`
-	TriggeredBy       *string               `json:"triggered_by,omitempty"`
+	ID               uuid.UUID             `json:"id"`
+	SyncDefID        uuid.UUID             `json:"sync_def_id"`
+	Status           MediaSetSyncRunStatus `json:"status"`
+	StartedAt        time.Time             `json:"started_at"`
+	FinishedAt       *time.Time            `json:"finished_at,omitempty"`
+	AcceptedFiles    uint32                `json:"accepted_files"`
+	SkippedFiles     uint32                `json:"skipped_files"`
+	SchemaMismatched uint32                `json:"schema_mismatched"`
+	DispatchedFiles  uint32                `json:"dispatched_files"`
+	DispatchErrors   uint32                `json:"dispatch_errors"`
+	BytesAccepted    uint64                `json:"bytes_accepted"`
+	SelectedPaths    []string              `json:"selected_paths"`
+	SchemaMismatches []string              `json:"schema_mismatches"`
+	ErrorMessage     *string               `json:"error_message,omitempty"`
+	TriggeredBy      *string               `json:"triggered_by,omitempty"`
 }
 
 type MediaSetSyncUsageSummary struct {
-	SyncDefID            uuid.UUID              `json:"sync_def_id"`
-	RunCount             uint32                 `json:"run_count"`
-	LastRunAt            *time.Time             `json:"last_run_at,omitempty"`
-	LastStatus           *MediaSetSyncRunStatus `json:"last_status,omitempty"`
-	LastErrorMessage     *string                `json:"last_error_message,omitempty"`
-	TotalAcceptedFiles   uint64                 `json:"total_accepted_files"`
-	TotalBytesAccepted   uint64                 `json:"total_bytes_accepted"`
-	TotalDispatchErrors  uint64                 `json:"total_dispatch_errors"`
-	TotalSchemaMismatch  uint64                 `json:"total_schema_mismatch"`
+	SyncDefID           uuid.UUID              `json:"sync_def_id"`
+	RunCount            uint32                 `json:"run_count"`
+	LastRunAt           *time.Time             `json:"last_run_at,omitempty"`
+	LastStatus          *MediaSetSyncRunStatus `json:"last_status,omitempty"`
+	LastErrorMessage    *string                `json:"last_error_message,omitempty"`
+	TotalAcceptedFiles  uint64                 `json:"total_accepted_files"`
+	TotalBytesAccepted  uint64                 `json:"total_bytes_accepted"`
+	TotalDispatchErrors uint64                 `json:"total_dispatch_errors"`
+	TotalSchemaMismatch uint64                 `json:"total_schema_mismatch"`
 }
 
 type MediaSetSyncWithUsage struct {
@@ -3823,18 +3823,18 @@ func ConnectorSupportsMediaSync(connectorType string) bool {
 // to the Media Sets checklist. Returned by the API so frontends can render
 // the delegated responsibilities without hard-coding them.
 type MediaSetSyncHandoffDelegation struct {
-	Schema           string `json:"schema"`
-	Conversion       string `json:"conversion"`
-	Transformations  string `json:"transformations"`
+	Schema            string `json:"schema"`
+	Conversion        string `json:"conversion"`
+	Transformations   string `json:"transformations"`
 	TransactionPolicy string `json:"transaction_policy"`
 	MediaReference    string `json:"media_reference"`
 }
 
 func DefaultMediaSetSyncHandoffDelegation() MediaSetSyncHandoffDelegation {
 	return MediaSetSyncHandoffDelegation{
-		Schema:           "Owned by Media Sets; sync filters carry MIME hints only.",
-		Conversion:       "Performed by media-sets-service upload pipeline.",
-		Transformations:  "Configured on the target media set, not on the sync.",
+		Schema:            "Owned by Media Sets; sync filters carry MIME hints only.",
+		Conversion:        "Performed by media-sets-service upload pipeline.",
+		Transformations:   "Configured on the target media set, not on the sync.",
 		TransactionPolicy: "Determined by the target media set definition.",
 		MediaReference:    "Resolved via the media-sets-service item registry.",
 	}
@@ -3854,9 +3854,9 @@ func DefaultMediaSetSyncHandoffDelegation() MediaSetSyncHandoffDelegation {
 type VirtualMediaHandoffMode string
 
 const (
-	VirtualMediaHandoffModeMediaSetSync     VirtualMediaHandoffMode = "media_set_sync_virtual"
+	VirtualMediaHandoffModeMediaSetSync      VirtualMediaHandoffMode = "media_set_sync_virtual"
 	VirtualMediaHandoffModeExternalTransform VirtualMediaHandoffMode = "external_transform"
-	VirtualMediaHandoffModeRestAPI          VirtualMediaHandoffMode = "rest_api"
+	VirtualMediaHandoffModeRestAPI           VirtualMediaHandoffMode = "rest_api"
 )
 
 type VirtualMediaHandoff struct {
@@ -3878,24 +3878,24 @@ type VirtualMediaHandoff struct {
 }
 
 type VirtualMediaHandoffDescriptor struct {
-	SourceID            uuid.UUID                       `json:"source_id,omitempty"`
-	SourceRID           string                          `json:"source_rid,omitempty"`
-	ConnectorType       string                          `json:"connector_type"`
-	Status              string                          `json:"status"`
-	BlockedReason       string                          `json:"blocked_reason,omitempty"`
-	SupportedConnectors []string                        `json:"supported_connectors"`
-	Handoffs            []VirtualMediaHandoff           `json:"handoffs"`
-	Delegation          MediaSetSyncHandoffDelegation   `json:"delegation"`
+	SourceID            uuid.UUID                     `json:"source_id,omitempty"`
+	SourceRID           string                        `json:"source_rid,omitempty"`
+	ConnectorType       string                        `json:"connector_type"`
+	Status              string                        `json:"status"`
+	BlockedReason       string                        `json:"blocked_reason,omitempty"`
+	SupportedConnectors []string                      `json:"supported_connectors"`
+	Handoffs            []VirtualMediaHandoff         `json:"handoffs"`
+	Delegation          MediaSetSyncHandoffDelegation `json:"delegation"`
 }
 
 // virtualMediaHandoffBaseBlockers lists every blocker present on every handoff
 // regardless of connector or registration mode. They map to specific Media Sets
 // and platform checklist items that must complete before SDC.42 ships.
 var virtualMediaHandoffBaseBlockers = []string{
-	"media_sets_virtual_item_semantics",   // MS.18, MS.19, MS.20 still todo
-	"object_storage_authorization",        // no presigned URL / SAS / access-grant primitive
-	"external_credential_routing",         // source creds aren't forwarded to media-sets-service
-	"virtual_item_update_detection",       // MS.20: external mutation detection
+	"media_sets_virtual_item_semantics", // MS.18, MS.19, MS.20 still todo
+	"object_storage_authorization",      // no presigned URL / SAS / access-grant primitive
+	"external_credential_routing",       // source creds aren't forwarded to media-sets-service
+	"virtual_item_update_detection",     // MS.20: external mutation detection
 }
 
 func VirtualMediaHandoffBaseBlockers() []string {
@@ -4148,18 +4148,18 @@ type ListenerInboundCapability struct {
 }
 
 type ListenerInboundDescriptor struct {
-	SourceID             uuid.UUID                    `json:"source_id,omitempty"`
-	SourceRID            string                       `json:"source_rid,omitempty"`
-	ConnectorType        string                       `json:"connector_type"`
-	Status               string                       `json:"status"`
-	BlockedReason        string                       `json:"blocked_reason,omitempty"`
-	AvailableSurfaces    []string                     `json:"available_surfaces"`
-	SupportedAuthModes   []string                     `json:"supported_auth_modes"`
-	BlockedAuthModes     []string                     `json:"blocked_auth_modes"`
-	IdempotencyKeyHeaders []string                    `json:"idempotency_key_headers"`
-	MaxPayloadBytes      uint64                       `json:"max_payload_bytes"`
-	Capabilities         []ListenerInboundCapability  `json:"capabilities"`
-	Recommendation       StreamIngestionRecommendation `json:"recommendation"`
+	SourceID              uuid.UUID                     `json:"source_id,omitempty"`
+	SourceRID             string                        `json:"source_rid,omitempty"`
+	ConnectorType         string                        `json:"connector_type"`
+	Status                string                        `json:"status"`
+	BlockedReason         string                        `json:"blocked_reason,omitempty"`
+	AvailableSurfaces     []string                      `json:"available_surfaces"`
+	SupportedAuthModes    []string                      `json:"supported_auth_modes"`
+	BlockedAuthModes      []string                      `json:"blocked_auth_modes"`
+	IdempotencyKeyHeaders []string                      `json:"idempotency_key_headers"`
+	MaxPayloadBytes       uint64                        `json:"max_payload_bytes"`
+	Capabilities          []ListenerInboundCapability   `json:"capabilities"`
+	Recommendation        StreamIngestionRecommendation `json:"recommendation"`
 }
 
 type StreamIngestionRecommendation struct {
@@ -4225,11 +4225,11 @@ func BuildListenerInboundCapabilities() []ListenerInboundCapability {
 
 	return []ListenerInboundCapability{
 		{
-			ID:      "listener-schema-mapping",
-			Title:   "Schema mapping",
-			Summary: "Translate the inbound payload into the target stream/dataset schema when the producer cannot conform to it directly.",
-			Facet:   ListenerInboundFacetSchemaMapping,
-			Status:  "blocked",
+			ID:              "listener-schema-mapping",
+			Title:           "Schema mapping",
+			Summary:         "Translate the inbound payload into the target stream/dataset schema when the producer cannot conform to it directly.",
+			Facet:           ListenerInboundFacetSchemaMapping,
+			Status:          "blocked",
 			ExistingSurface: "Payload is stored verbatim in inbound_listener_events.payload (JSONB). No mapping pipeline is wired.",
 			Blockers: merge(
 				"schema_mapping_pipeline",
@@ -4263,11 +4263,11 @@ func BuildListenerInboundCapabilities() []ListenerInboundCapability {
 			DocsURL: "https://www.palantir.com/docs/foundry/data-connection/push-based-ingestion/",
 		},
 		{
-			ID:      "listener-auth-strategy",
-			Title:   "Auth strategy",
-			Summary: "Authenticate inbound calls when external producers cannot use the OpenFoundry push API token model.",
-			Facet:   ListenerInboundFacetAuthStrategy,
-			Status:  "partial",
+			ID:              "listener-auth-strategy",
+			Title:           "Auth strategy",
+			Summary:         "Authenticate inbound calls when external producers cannot use the OpenFoundry push API token model.",
+			Facet:           ListenerInboundFacetAuthStrategy,
+			Status:          "partial",
 			ExistingSurface: "Auth modes wired today: " + strings.Join(listenerInboundSupportedAuthModes, ", ") + " (see verifyInboundListenerAuth).",
 			Blockers: merge(
 				"oauth2_listener_token_exchange",
@@ -4294,11 +4294,11 @@ func BuildListenerInboundCapabilities() []ListenerInboundCapability {
 			DocsURL: "https://www.palantir.com/docs/foundry/data-connection/push-based-ingestion/",
 		},
 		{
-			ID:      "listener-replay-idempotency",
-			Title:   "Replay and idempotency controls",
-			Summary: "Detect and collapse duplicate inbound events, support bounded replay windows, and preserve ordering where the source guarantees it.",
-			Facet:   ListenerInboundFacetReplayIdempotency,
-			Status:  "partial",
+			ID:              "listener-replay-idempotency",
+			Title:           "Replay and idempotency controls",
+			Summary:         "Detect and collapse duplicate inbound events, support bounded replay windows, and preserve ordering where the source guarantees it.",
+			Facet:           ListenerInboundFacetReplayIdempotency,
+			Status:          "partial",
 			ExistingSurface: "Idempotency key is extracted from " + strings.Join(listenerInboundIdempotencyKeyHeaders, ", ") + " or payload.event_id, but no dedupe store enforces it.",
 			Blockers: merge(
 				"listener_dedupe_window",
@@ -4327,11 +4327,11 @@ func BuildListenerInboundCapabilities() []ListenerInboundCapability {
 			DocsURL: "https://www.palantir.com/docs/foundry/data-connection/push-based-ingestion/",
 		},
 		{
-			ID:      "listener-dead-letter",
-			Title:   "Dead-letter handling",
-			Summary: "Capture rejected events (validation, auth, schema, destination) into a separate sink so operators can inspect, redact, or requeue them.",
-			Facet:   ListenerInboundFacetDeadLetter,
-			Status:  "blocked",
+			ID:              "listener-dead-letter",
+			Title:           "Dead-letter handling",
+			Summary:         "Capture rejected events (validation, auth, schema, destination) into a separate sink so operators can inspect, redact, or requeue them.",
+			Facet:           ListenerInboundFacetDeadLetter,
+			Status:          "blocked",
 			ExistingSurface: "inbound_listener_events.status='rejected' rows persist with redacted headers, but there is no dead-letter dataset/stream or requeue API.",
 			Blockers: merge(
 				"dead_letter_sink_definition",

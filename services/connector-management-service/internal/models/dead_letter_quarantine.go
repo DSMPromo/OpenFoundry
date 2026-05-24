@@ -46,9 +46,9 @@ const (
 )
 
 type DeadLetterRedactionRule struct {
-	Field       string `json:"field"`         // dot-path like "payload.email"
-	Replacement string `json:"replacement"`   // default "[REDACTED]"
-	HashSHA256  bool   `json:"hash_sha256"`   // when true, the value is hashed instead of replaced
+	Field       string `json:"field"`       // dot-path like "payload.email"
+	Replacement string `json:"replacement"` // default "[REDACTED]"
+	HashSHA256  bool   `json:"hash_sha256"` // when true, the value is hashed instead of replaced
 	Description string `json:"description,omitempty"`
 }
 
@@ -111,13 +111,13 @@ type QuarantineReplayPlan struct {
 }
 
 type QuarantineSummary struct {
-	SyncDefID  uuid.UUID                            `json:"sync_def_id"`
-	Total      int                                  `json:"total"`
-	ByCategory map[QuarantineFailureCategory]int    `json:"by_category"`
-	Earliest   *time.Time                           `json:"earliest,omitempty"`
-	Latest     *time.Time                           `json:"latest,omitempty"`
-	NextExpiry *time.Time                           `json:"next_expiry,omitempty"`
-	Records    []QuarantinedRecord                  `json:"records"`
+	SyncDefID  uuid.UUID                         `json:"sync_def_id"`
+	Total      int                               `json:"total"`
+	ByCategory map[QuarantineFailureCategory]int `json:"by_category"`
+	Earliest   *time.Time                        `json:"earliest,omitempty"`
+	Latest     *time.Time                        `json:"latest,omitempty"`
+	NextExpiry *time.Time                        `json:"next_expiry,omitempty"`
+	Records    []QuarantinedRecord               `json:"records"`
 }
 
 // DefaultDeadLetterSink returns the canonical default sink for a sync. A

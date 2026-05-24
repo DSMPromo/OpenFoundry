@@ -112,6 +112,7 @@ func stringValue(m map[string]any, key, fallback string) string {
 	}
 	return fallback
 }
+
 func boolValue(m map[string]any, key string, fallback bool) bool {
 	if v, ok := m[key].(bool); ok {
 		return v
@@ -1442,6 +1443,7 @@ func (l *webhookInvocationLimiter) acquire(id uuid.UUID, def *models.WebhookDefi
 func sanitizeIceberg(value string) string {
 	return regexp.MustCompile(`[^A-Za-z0-9_-]`).ReplaceAllString(value, "_")
 }
+
 func icebergNotFound(w http.ResponseWriter, kind, value string) {
 	writeJSON(w, http.StatusNotFound, map[string]any{"error": map[string]any{"message": fmt.Sprintf("%s '%s' not found", kind, value), "type": "NoSuchNamespaceException", "code": 404}})
 }
@@ -1452,6 +1454,7 @@ func (h *Handlers) IcebergGetConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, models.IcebergConfigResponse{Defaults: models.IcebergConfigValues{Warehouse: "openfoundry"}, Overrides: models.IcebergConfigValues{}})
 }
+
 func (h *Handlers) IcebergListNamespaces(w http.ResponseWriter, r *http.Request) {
 	if _, ok := requireClaims(w, r); !ok {
 		return
@@ -1467,6 +1470,7 @@ func (h *Handlers) IcebergListNamespaces(w http.ResponseWriter, r *http.Request)
 	}
 	writeJSON(w, http.StatusOK, models.IcebergListNamespacesResponse{Namespaces: ns})
 }
+
 func (h *Handlers) IcebergGetNamespace(w http.ResponseWriter, r *http.Request) {
 	if _, ok := requireClaims(w, r); !ok {
 		return
@@ -1483,6 +1487,7 @@ func (h *Handlers) IcebergGetNamespace(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, models.IcebergNamespaceResponse{Namespace: []string{sanitizeIceberg(c.Name)}, Properties: map[string]string{"connection_id": c.ID.String(), "connector_type": c.ConnectorType, "owner": c.OwnerID.String()}})
 }
+
 func (h *Handlers) IcebergListTables(w http.ResponseWriter, r *http.Request) {
 	if _, ok := requireClaims(w, r); !ok {
 		return
@@ -1508,6 +1513,7 @@ func (h *Handlers) IcebergListTables(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, models.IcebergListTablesResponse{Identifiers: ids})
 }
+
 func (h *Handlers) IcebergLoadTable(w http.ResponseWriter, r *http.Request) {
 	if _, ok := requireClaims(w, r); !ok {
 		return

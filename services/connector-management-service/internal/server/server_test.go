@@ -112,61 +112,79 @@ func (s *routerStore) RunSyncJob(context.Context, uuid.UUID, uuid.UUID) (*models
 func (s *routerStore) ListSyncRuns(context.Context, uuid.UUID, uuid.UUID) ([]models.SyncRun, error) {
 	return []models.SyncRun{}, nil
 }
+
 func (s *routerStore) ListDataExports(context.Context, uuid.UUID, uuid.UUID) ([]models.DataExport, error) {
 	return []models.DataExport{}, nil
 }
+
 func (s *routerStore) GetDataExport(context.Context, uuid.UUID, uuid.UUID) (*models.DataExport, error) {
 	return &models.DataExport{ID: uuid.New(), SourceID: s.source, Name: "export", ExportType: models.DataExportTypeTable, ExportMode: models.DataExportModeTableMirror, Status: models.DataExportStatusDraft, Config: json.RawMessage(`{}`), Health: models.DefaultDataExportHealth(), History: []models.DataExportHistoryEntry{}}, nil
 }
+
 func (s *routerStore) CreateDataExport(context.Context, *models.CreateDataExportRequest, uuid.UUID) (*models.DataExport, error) {
 	return &models.DataExport{ID: uuid.New(), SourceID: s.source, Name: "export", ExportType: models.DataExportTypeTable, ExportMode: models.DataExportModeTableMirror, DestinationTable: stringPtr("public.orders_export"), Status: models.DataExportStatusDraft, Config: json.RawMessage(`{}`), Health: models.DefaultDataExportHealth(), History: []models.DataExportHistoryEntry{}}, nil
 }
+
 func (s *routerStore) UpdateDataExport(context.Context, uuid.UUID, *models.UpdateDataExportRequest, uuid.UUID) (*models.DataExport, error) {
 	return &models.DataExport{ID: uuid.New(), SourceID: s.source, Name: "export", ExportType: models.DataExportTypeTable, ExportMode: models.DataExportModeTableMirror, DestinationTable: stringPtr("public.orders_export"), Status: models.DataExportStatusDraft, Config: json.RawMessage(`{}`), Health: models.DefaultDataExportHealth(), History: []models.DataExportHistoryEntry{}}, nil
 }
+
 func (s *routerStore) RunDataExport(context.Context, uuid.UUID, uuid.UUID) (*models.DataExport, error) {
 	now := time.Now().UTC()
 	return &models.DataExport{ID: uuid.New(), SourceID: s.source, Name: "export", ExportType: models.DataExportTypeTable, ExportMode: models.DataExportModeTableMirror, Status: models.DataExportStatusSucceeded, Health: models.DataExportHealth{State: models.DataExportHealthHealthy, LastCheckedAt: &now}, LastRunAt: &now, Config: json.RawMessage(`{}`), History: []models.DataExportHistoryEntry{}}, nil
 }
+
 func (s *routerStore) StartDataExport(context.Context, uuid.UUID, uuid.UUID) (*models.DataExport, error) {
 	now := time.Now().UTC()
 	return &models.DataExport{ID: uuid.New(), SourceID: s.source, Name: "stream export", ExportType: models.DataExportTypeStreaming, ExportMode: models.DataExportModeStreamingContinuous, Status: models.DataExportStatusRunning, Health: models.DataExportHealth{State: models.DataExportHealthRunning, LastCheckedAt: &now}, LastRunAt: &now, Config: json.RawMessage(`{}`), History: []models.DataExportHistoryEntry{}}, nil
 }
+
 func (s *routerStore) StopDataExport(context.Context, uuid.UUID, uuid.UUID) (*models.DataExport, error) {
 	now := time.Now().UTC()
 	return &models.DataExport{ID: uuid.New(), SourceID: s.source, Name: "stream export", ExportType: models.DataExportTypeStreaming, ExportMode: models.DataExportModeStreamingContinuous, Status: models.DataExportStatusStopped, Health: models.DataExportHealth{State: models.DataExportHealthHealthy, LastCheckedAt: &now}, Config: json.RawMessage(`{}`), History: []models.DataExportHistoryEntry{}}, nil
 }
+
 func (s *routerStore) ListCredentials(context.Context, uuid.UUID, uuid.UUID) ([]models.CredentialResponse, error) {
 	return []models.CredentialResponse{}, nil
 }
+
 func (s *routerStore) SetCredential(context.Context, uuid.UUID, uuid.UUID, string, []byte, string) (*models.CredentialResponse, error) {
 	return &models.CredentialResponse{ID: uuid.New(), SourceID: s.source, Kind: "api_key", Fingerprint: "abc"}, nil
 }
+
 func (s *routerStore) ListConnectorAgents(context.Context, uuid.UUID) ([]models.ConnectorAgent, error) {
 	return []models.ConnectorAgent{{ID: s.agent, Name: "edge", AgentURL: "https://agent.local", OwnerID: s.owner, Status: "online", Capabilities: json.RawMessage(`{}`), Metadata: json.RawMessage(`{}`)}}, nil
 }
+
 func (s *routerStore) RegisterConnectorAgent(context.Context, *models.RegisterAgentRequest, uuid.UUID) (*models.ConnectorAgent, error) {
 	return &models.ConnectorAgent{ID: s.agent, Name: "edge", AgentURL: "https://agent.local", OwnerID: s.owner, Status: "online", Capabilities: json.RawMessage(`{}`), Metadata: json.RawMessage(`{}`)}, nil
 }
+
 func (s *routerStore) HeartbeatConnectorAgent(context.Context, uuid.UUID, *models.AgentHeartbeatRequest, uuid.UUID) (*models.ConnectorAgent, error) {
 	now := time.Now().UTC()
 	return &models.ConnectorAgent{ID: s.agent, Name: "edge", AgentURL: "https://agent.local", OwnerID: s.owner, Status: "online", Capabilities: json.RawMessage(`{}`), Metadata: json.RawMessage(`{}`), LastHeartbeatAt: &now}, nil
 }
+
 func (s *routerStore) DeleteConnectorAgent(context.Context, uuid.UUID, uuid.UUID) (bool, error) {
 	return true, nil
 }
+
 func (s *routerStore) GetConnectorAgent(context.Context, uuid.UUID) (*models.ConnectorAgent, error) {
 	return &models.ConnectorAgent{ID: s.agent, Name: "edge", AgentURL: "https://agent.local", OwnerID: s.owner, Status: "online", Capabilities: json.RawMessage(`{}`), Metadata: json.RawMessage(`{}`)}, nil
 }
+
 func (s *routerStore) MigrateConnectionToFoundryWorker(context.Context, uuid.UUID, uuid.UUID) (*models.Connection, error) {
 	return &models.Connection{ID: s.source, Name: "edge", ConnectorType: "rest_api", OwnerID: s.owner, Status: "online", Config: json.RawMessage(`{"worker":"foundry"}`)}, nil
 }
+
 func (s *routerStore) ListSourcePolicies(context.Context, uuid.UUID, uuid.UUID) ([]models.SourcePolicyBindingResponse, error) {
 	return []models.SourcePolicyBindingResponse{}, nil
 }
+
 func (s *routerStore) AttachPolicy(context.Context, uuid.UUID, uuid.UUID, uuid.UUID, string) (*models.SourcePolicyBindingResponse, error) {
 	return &models.SourcePolicyBindingResponse{SourceID: s.source, PolicyID: uuid.New(), Kind: "direct"}, nil
 }
+
 func (s *routerStore) DetachPolicy(context.Context, uuid.UUID, uuid.UUID, uuid.UUID) (bool, error) {
 	return true, nil
 }
@@ -210,9 +228,11 @@ func (s *routerStore) GetSourceCodeImport(context.Context, uuid.UUID, uuid.UUID)
 		UpdatedAt:                 time.Now().UTC(),
 	}, nil
 }
+
 func (s *routerStore) UpdateSourceCodeImport(ctx context.Context, sourceID uuid.UUID, ownerID uuid.UUID, _ *models.UpdateSourceCodeImportRequest) (*models.SourceCodeImport, error) {
 	return s.GetSourceCodeImport(ctx, sourceID, ownerID)
 }
+
 func (s *routerStore) ResolveSourceCodeImportBuildStart(ctx context.Context, sourceID uuid.UUID, ownerID uuid.UUID, _ *models.ResolveSourceCodeImportBuildRequest) (*models.SourceCodeImportBuildResolution, error) {
 	v, err := s.GetSourceCodeImport(ctx, sourceID, ownerID)
 	if err != nil || v == nil {
@@ -295,57 +315,75 @@ func (s *routerStore) GetVirtualTableLineage(context.Context, string, string) (*
 func (s *routerStore) ListRegistrations(context.Context, uuid.UUID) ([]models.ConnectionRegistration, error) {
 	return []models.ConnectionRegistration{{ID: uuid.New(), ConnectionID: s.source, Selector: "pg", DisplayName: "pg", SourceKind: "postgres", RegistrationMode: "zero_copy", Metadata: json.RawMessage(`{"supports_zero_copy":true}`)}}, nil
 }
+
 func (s *routerStore) UpsertRegistration(context.Context, uuid.UUID, models.DiscoveredSource, string, bool, bool, *uuid.UUID, json.RawMessage) (*models.ConnectionRegistration, error) {
 	return &models.ConnectionRegistration{ID: uuid.New(), ConnectionID: s.source, Selector: "pg", DisplayName: "pg", SourceKind: "postgres", RegistrationMode: "sync", Metadata: json.RawMessage(`{"supports_zero_copy":true}`)}, nil
 }
+
 func (s *routerStore) GetRegistration(context.Context, uuid.UUID, uuid.UUID) (*models.ConnectionRegistration, error) {
 	return &models.ConnectionRegistration{ID: uuid.New(), ConnectionID: s.source, Selector: "pg", DisplayName: "pg", SourceKind: "postgres", RegistrationMode: "zero_copy", Metadata: json.RawMessage(`{"supports_zero_copy":true}`)}, nil
 }
+
 func (s *routerStore) DeleteRegistration(context.Context, uuid.UUID, uuid.UUID) (bool, error) {
 	return true, nil
 }
+
 func (s *routerStore) UpdateConnectionConfig(context.Context, uuid.UUID, json.RawMessage) (*models.Connection, error) {
 	return &models.Connection{ID: s.source, Name: "pg", ConnectorType: "postgres", OwnerID: s.owner, Config: json.RawMessage(`{}`)}, nil
 }
+
 func (s *routerStore) ListIcebergNamespaces(context.Context) ([]models.Connection, error) {
 	return []models.Connection{{ID: s.source, Name: "pg", ConnectorType: "postgres", OwnerID: s.owner, Config: json.RawMessage(`{}`)}}, nil
 }
+
 func (s *routerStore) GetIcebergConnection(context.Context, string) (*models.Connection, error) {
 	return &models.Connection{ID: s.source, Name: "pg", ConnectorType: "postgres", OwnerID: s.owner, Config: json.RawMessage(`{}`)}, nil
 }
+
 func (s *routerStore) ListIcebergTables(context.Context, uuid.UUID) ([]models.ConnectionRegistration, error) {
 	return []models.ConnectionRegistration{{ID: uuid.New(), ConnectionID: s.source, Selector: "pg", DisplayName: "pg", SourceKind: "postgres", RegistrationMode: "zero_copy", Metadata: json.RawMessage(`{"supports_zero_copy":true}`)}}, nil
 }
+
 func (s *routerStore) GetSourceRetryPolicy(context.Context, uuid.UUID, uuid.UUID) (*models.SourceRetryPolicy, error) {
 	return nil, nil
 }
+
 func (s *routerStore) UpsertSourceRetryPolicy(context.Context, uuid.UUID, uuid.UUID, *string, models.SourceRetryPolicy) (*models.SourceRetryPolicy, error) {
 	return nil, nil
 }
+
 func (s *routerStore) ListSyncRunFailuresForSource(context.Context, uuid.UUID, uuid.UUID, int) ([]models.RetryRecoveryRunSummary, error) {
 	return nil, nil
 }
+
 func (s *routerStore) RecordMediaSetSyncRun(context.Context, uuid.UUID, uuid.UUID, models.MediaSetSyncRun) (*models.MediaSetSyncRun, error) {
 	return nil, nil
 }
+
 func (s *routerStore) ListMediaSetSyncRuns(context.Context, uuid.UUID, uuid.UUID, int) ([]models.MediaSetSyncRun, error) {
 	return nil, nil
 }
+
 func (s *routerStore) MediaSetSyncUsageForSource(context.Context, uuid.UUID, uuid.UUID) (map[uuid.UUID]models.MediaSetSyncUsageSummary, error) {
 	return map[uuid.UUID]models.MediaSetSyncUsageSummary{}, nil
 }
+
 func (s *routerStore) GetDeadLetterSink(context.Context, uuid.UUID, uuid.UUID) (*models.DeadLetterSink, error) {
 	return nil, nil
 }
+
 func (s *routerStore) UpsertDeadLetterSink(context.Context, uuid.UUID, uuid.UUID, *string, models.UpdateDeadLetterSinkRequest) (*models.DeadLetterSink, error) {
 	return nil, nil
 }
+
 func (s *routerStore) RecordQuarantinedRecord(context.Context, uuid.UUID, uuid.UUID, models.RecordQuarantineRequest, models.DeadLetterSink, time.Time) (*models.QuarantinedRecord, error) {
 	return nil, nil
 }
+
 func (s *routerStore) ListQuarantinedRecords(context.Context, uuid.UUID, uuid.UUID, models.QuarantineFailureCategory, int) ([]models.QuarantinedRecord, error) {
 	return nil, nil
 }
+
 func (s *routerStore) MarkQuarantinedRecordsForReplay(context.Context, uuid.UUID, uuid.UUID, *string, []uuid.UUID, time.Time) (int, error) {
 	return 0, nil
 }

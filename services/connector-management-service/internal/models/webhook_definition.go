@@ -759,8 +759,10 @@ func cloneRawMessage(raw json.RawMessage) json.RawMessage {
 	return json.RawMessage(out)
 }
 
-var webhookURLPattern = regexp.MustCompile(`https?://[^\s"']+`)
-var webhookSecretAssignmentPattern = regexp.MustCompile(`(?i)(authorization:\s*bearer\s+|authorization=\s*bearer%20|api[_-]?key=|token=|secret=|password=)([^&\s"']+)`)
+var (
+	webhookURLPattern              = regexp.MustCompile(`https?://[^\s"']+`)
+	webhookSecretAssignmentPattern = regexp.MustCompile(`(?i)(authorization:\s*bearer\s+|authorization=\s*bearer%20|api[_-]?key=|token=|secret=|password=)([^&\s"']+)`)
+)
 
 func SanitizeWebhookDiagnostic(msg string) string {
 	sanitized := webhookURLPattern.ReplaceAllStringFunc(msg, func(candidate string) string {

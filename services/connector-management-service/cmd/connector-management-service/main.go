@@ -24,6 +24,8 @@ import (
 	"github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/kafka"
 	lambdaadapter "github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/lambda"
 	s3adapter "github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/s3"
+	snsadapter "github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/sns"
+	sqsadapter "github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/sqs"
 	"github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/config"
 	"github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/handlers"
 	"github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/repo"
@@ -92,6 +94,8 @@ func main() {
 	adapterRegistry.MustRegister("kafka", kafka.Factory())
 	adapterRegistry.MustRegister(s3adapter.ConnectorType, s3adapter.Factory())
 	adapterRegistry.MustRegister(lambdaadapter.ConnectorType, lambdaadapter.Factory())
+	adapterRegistry.MustRegister(sqsadapter.ConnectorType, sqsadapter.Factory())
+	adapterRegistry.MustRegister(snsadapter.ConnectorType, snsadapter.Factory())
 
 	h := &handlers.Handlers{
 		Repo:            store,

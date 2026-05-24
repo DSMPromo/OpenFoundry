@@ -34,14 +34,14 @@ type ConnectorCapabilityFlags struct {
 type ConnectorCapabilityFamily string
 
 const (
-	ConnectorCapabilityFamilyRelational ConnectorCapabilityFamily = "relational_database"
-	ConnectorCapabilityFamilyWarehouse  ConnectorCapabilityFamily = "data_warehouse"
-	ConnectorCapabilityFamilyObjectStore ConnectorCapabilityFamily = "object_store"
+	ConnectorCapabilityFamilyRelational   ConnectorCapabilityFamily = "relational_database"
+	ConnectorCapabilityFamilyWarehouse    ConnectorCapabilityFamily = "data_warehouse"
+	ConnectorCapabilityFamilyObjectStore  ConnectorCapabilityFamily = "object_store"
 	ConnectorCapabilityFamilyFileTransfer ConnectorCapabilityFamily = "file_transfer"
-	ConnectorCapabilityFamilyEventStream ConnectorCapabilityFamily = "event_stream"
+	ConnectorCapabilityFamilyEventStream  ConnectorCapabilityFamily = "event_stream"
 	ConnectorCapabilityFamilyMessageQueue ConnectorCapabilityFamily = "message_queue"
-	ConnectorCapabilityFamilyRestAPI     ConnectorCapabilityFamily = "rest_api"
-	ConnectorCapabilityFamilyFoundry     ConnectorCapabilityFamily = "foundry_to_foundry"
+	ConnectorCapabilityFamilyRestAPI      ConnectorCapabilityFamily = "rest_api"
+	ConnectorCapabilityFamilyFoundry      ConnectorCapabilityFamily = "foundry_to_foundry"
 )
 
 type ConnectorValidationRule struct {
@@ -52,15 +52,15 @@ type ConnectorValidationRule struct {
 }
 
 type ConnectorCapabilityPack struct {
-	ConnectorType   string                                       `json:"connector_type"`
-	DisplayName     string                                       `json:"display_name"`
-	Family          ConnectorCapabilityFamily                    `json:"family"`
-	Capabilities    ConnectorCapabilityFlags                     `json:"capabilities"`
-	WorkerOverrides map[string]ConnectorCapabilityFlags          `json:"worker_overrides,omitempty"`
-	CdcInputKind    string                                       `json:"cdc_input_kind,omitempty"`
-	ValidationRules []ConnectorValidationRule                    `json:"validation_rules"`
-	Notes           []string                                     `json:"notes,omitempty"`
-	DocsURL         string                                       `json:"docs_url"`
+	ConnectorType   string                              `json:"connector_type"`
+	DisplayName     string                              `json:"display_name"`
+	Family          ConnectorCapabilityFamily           `json:"family"`
+	Capabilities    ConnectorCapabilityFlags            `json:"capabilities"`
+	WorkerOverrides map[string]ConnectorCapabilityFlags `json:"worker_overrides,omitempty"`
+	CdcInputKind    string                              `json:"cdc_input_kind,omitempty"`
+	ValidationRules []ConnectorValidationRule           `json:"validation_rules"`
+	Notes           []string                            `json:"notes,omitempty"`
+	DocsURL         string                              `json:"docs_url"`
 }
 
 // CapabilityList returns the capability names that are set to true on the

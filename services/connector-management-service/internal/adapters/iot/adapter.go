@@ -38,15 +38,15 @@ const (
 
 	sourceKindMQTTTopic = "mqtt_topic"
 
-	defaultPort                  = 1883
-	defaultTLSPort               = 8883
-	defaultKeepAliveSecs         = int64(30)
-	defaultConnectTimeoutMs      = int64(5_000)
-	defaultDiscoveryWindowMs     = int64(2_000)
-	defaultMaxMessages           = int64(1_000)
-	defaultFetchWindowMs         = int64(5_000)
-	defaultPreviewLimit          = 50
-	defaultPreviewWindowMs       = int64(2_000)
+	defaultPort              = 1883
+	defaultTLSPort           = 8883
+	defaultKeepAliveSecs     = int64(30)
+	defaultConnectTimeoutMs  = int64(5_000)
+	defaultDiscoveryWindowMs = int64(2_000)
+	defaultMaxMessages       = int64(1_000)
+	defaultFetchWindowMs     = int64(5_000)
+	defaultPreviewLimit      = 50
+	defaultPreviewWindowMs   = int64(2_000)
 
 	keepAliveClampLow      = int64(5)
 	keepAliveClampHigh     = int64(600)
@@ -103,20 +103,20 @@ func (a *Adapter) SetRunner(runner mqttRunner) {
 }
 
 type iotConfig struct {
-	BrokerHost         string   `json:"broker_host"`
-	BrokerPort         *int64   `json:"broker_port"`
-	TLS                bool     `json:"tls"`
-	Username           string   `json:"username"`
-	Password           string   `json:"password"`
-	ClientID           string   `json:"client_id"`
-	KeepAliveSecs      *int64   `json:"keep_alive_secs"`
-	ConnectTimeoutMs   *int64   `json:"connect_timeout_ms"`
-	DiscoveryWindowMs  *int64   `json:"discovery_window_ms"`
-	MaxMessages        *int64   `json:"max_messages"`
-	MaxDurationMs      *int64   `json:"max_duration_ms"`
-	QoS                *int64   `json:"qos"`
-	Topic              string   `json:"topic"`
-	Topics             []string `json:"topics"`
+	BrokerHost        string   `json:"broker_host"`
+	BrokerPort        *int64   `json:"broker_port"`
+	TLS               bool     `json:"tls"`
+	Username          string   `json:"username"`
+	Password          string   `json:"password"`
+	ClientID          string   `json:"client_id"`
+	KeepAliveSecs     *int64   `json:"keep_alive_secs"`
+	ConnectTimeoutMs  *int64   `json:"connect_timeout_ms"`
+	DiscoveryWindowMs *int64   `json:"discovery_window_ms"`
+	MaxMessages       *int64   `json:"max_messages"`
+	MaxDurationMs     *int64   `json:"max_duration_ms"`
+	QoS               *int64   `json:"qos"`
+	Topic             string   `json:"topic"`
+	Topics            []string `json:"topics"`
 }
 
 func parseConfig(raw json.RawMessage) (*iotConfig, error) {

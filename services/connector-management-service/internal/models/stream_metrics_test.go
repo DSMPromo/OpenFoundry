@@ -25,20 +25,20 @@ func TestStreamMetricsWindowSeconds(t *testing.T) {
 func TestBuildStreamMetricsSnapshot_BasicRates(t *testing.T) {
 	capturedAt := time.Date(2026, 5, 14, 12, 0, 0, 0, time.UTC)
 	snapshot := BuildStreamMetricsSnapshot(StreamMetricsInput{
-		StreamID:        "stream-1",
-		StreamRID:       "ri.streams.main.stream-1",
-		StreamName:      "events",
-		Window:          StreamMetricsWindow1Minute,
-		CapturedAt:      capturedAt,
-		IngestedRecords: 6000,
-		IngestedBytes:   60000,
-		ConsumedRecords: 3000,
-		ConsumedBytes:   30000,
-		StreamLagRecords: 3000,
-		HotBufferRecords: 5000,
-		HotBufferBytes:   500000,
+		StreamID:          "stream-1",
+		StreamRID:         "ri.streams.main.stream-1",
+		StreamName:        "events",
+		Window:            StreamMetricsWindow1Minute,
+		CapturedAt:        capturedAt,
+		IngestedRecords:   6000,
+		IngestedBytes:     60000,
+		ConsumedRecords:   3000,
+		ConsumedBytes:     30000,
+		StreamLagRecords:  3000,
+		HotBufferRecords:  5000,
+		HotBufferBytes:    500000,
 		ArchiveLagRecords: 100,
-		ProcessingLag:    200,
+		ProcessingLag:     200,
 	})
 
 	if snapshot.Ingestion.RecordsPerSecond != 100 {

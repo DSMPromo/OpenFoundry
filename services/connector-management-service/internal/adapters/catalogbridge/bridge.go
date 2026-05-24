@@ -108,7 +108,8 @@ func (b *Bridge) ValidateConfig(raw json.RawMessage) error {
 
 	hasBaseURL := stringField(cfg, "base_url") != ""
 	hasCatalogPath := stringField(cfg, "catalog_path") != ""
-	hasResourceTemplate := firstString(cfg,
+	hasResourceTemplate := firstString(
+		cfg,
 		"resource_path_template",
 		"stream_path_template",
 		"view_path_template",
@@ -354,7 +355,8 @@ func parseCatalogEntry(raw any, defaultSourceKind string) (catalogEntry, bool) {
 	if !ok {
 		return catalogEntry{}, false
 	}
-	selector := strings.TrimSpace(firstStringFromObj(obj,
+	selector := strings.TrimSpace(firstStringFromObj(
+		obj,
 		"selector", "name", "table", "view", "dataset", "stream", "report", "asset",
 	))
 	if selector == "" {
@@ -368,7 +370,8 @@ func parseCatalogEntry(raw any, defaultSourceKind string) (catalogEntry, bool) {
 	if sourceKind == "" {
 		sourceKind = defaultSourceKind
 	}
-	path := firstStringFromObj(obj,
+	path := firstStringFromObj(
+		obj,
 		"path", "resource_path", "stream_path", "view_path",
 		"dataset_path", "report_path", "query_path",
 	)
@@ -444,7 +447,8 @@ func sourceURL(cfg map[string]any, selector string, entry *catalogEntry, _ strin
 		template = entry.Path
 	}
 	if template == "" {
-		template = firstString(cfg,
+		template = firstString(
+			cfg,
 			"resource_path_template",
 			"stream_path_template",
 			"view_path_template",

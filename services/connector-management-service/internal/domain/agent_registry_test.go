@@ -36,7 +36,7 @@ func TestResolveAgentURLPrefersInlineURL(t *testing.T) {
 
 func TestResolveAgentURLRejectsOfflineAgent(t *testing.T) {
 	id := uuid.New()
-	resolver := AgentRegistryResolver{Store: fakeAgentStore{agents: map[uuid.UUID]*models.ConnectorAgent{id: &models.ConnectorAgent{ID: id, Name: "edge", AgentURL: "https://edge", Status: "offline"}}}}
+	resolver := AgentRegistryResolver{Store: fakeAgentStore{agents: map[uuid.UUID]*models.ConnectorAgent{id: {ID: id, Name: "edge", AgentURL: "https://edge", Status: "offline"}}}}
 	_, err := resolver.ResolveAgentURL(context.Background(), json.RawMessage(`{"agent_id":"`+id.String()+`"}`))
 	if err == nil {
 		t.Fatal("expected error")
@@ -47,7 +47,7 @@ func TestResolveAgentURLRejectsStaleHeartbeat(t *testing.T) {
 	id := uuid.New()
 	now := time.Unix(1000, 0).UTC()
 	last := now.Add(-3 * time.Minute)
-	resolver := AgentRegistryResolver{Store: fakeAgentStore{agents: map[uuid.UUID]*models.ConnectorAgent{id: &models.ConnectorAgent{ID: id, Name: "edge", AgentURL: "https://edge", Status: "online", LastHeartbeatAt: &last}}}, Clock: fakeAgentClock{now: now}, StaleAfter: 2 * time.Minute}
+	resolver := AgentRegistryResolver{Store: fakeAgentStore{agents: map[uuid.UUID]*models.ConnectorAgent{id: {ID: id, Name: "edge", AgentURL: "https://edge", Status: "online", LastHeartbeatAt: &last}}}, Clock: fakeAgentClock{now: now}, StaleAfter: 2 * time.Minute}
 	_, err := resolver.ResolveAgentURL(context.Background(), json.RawMessage(`{"agent_id":"`+id.String()+`"}`))
 	if err == nil {
 		t.Fatal("expected error")

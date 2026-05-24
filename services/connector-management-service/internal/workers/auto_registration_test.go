@@ -26,13 +26,16 @@ type fakeAutoStore struct {
 func (s *fakeAutoStore) ListConnections(context.Context, *uuid.UUID) ([]models.Connection, error) {
 	return s.connections, nil
 }
+
 func (s *fakeAutoStore) UpsertRegistration(_ context.Context, _ uuid.UUID, source models.DiscoveredSource, _ string, _ bool, _ bool, _ *uuid.UUID, _ json.RawMessage) (*models.ConnectionRegistration, error) {
 	s.upserts = append(s.upserts, source)
 	return &models.ConnectionRegistration{ID: uuid.New(), Selector: source.Selector}, nil
 }
+
 func (s *fakeAutoStore) GetRegistrationSignature(_ context.Context, _ uuid.UUID, selector string) (*string, error) {
 	return s.signatures[selector], nil
 }
+
 func (s *fakeAutoStore) RecordRegistrationSignature(_ context.Context, _ uuid.UUID, selector string, signature *string) error {
 	s.signatures[selector] = signature
 	return nil

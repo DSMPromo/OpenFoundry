@@ -40,7 +40,7 @@ type StreamLagSummary struct {
 }
 
 type StreamCheckpointMetrics struct {
-	CheckpointCount  uint32 `json:"checkpoint_count"`
+	CheckpointCount   uint32 `json:"checkpoint_count"`
 	AverageDurationMs int64  `json:"average_duration_ms"`
 	MaxDurationMs     int64  `json:"max_duration_ms"`
 	LastDurationMs    int64  `json:"last_duration_ms"`
@@ -82,27 +82,27 @@ type StreamSyncMetrics struct {
 }
 
 type StreamExportMetrics struct {
-	ExportID       string                  `json:"export_id"`
-	ExportName     string                  `json:"export_name,omitempty"`
-	LastRunStatus  string                  `json:"last_run_status,omitempty"`
-	Consumption    StreamThroughputSummary `json:"consumption"`
-	Retries        uint32                  `json:"retries"`
-	DuplicateRisk  bool                    `json:"duplicate_risk"`
-	DropRisk       bool                    `json:"drop_risk"`
-	RecordsExported int64                  `json:"records_exported"`
+	ExportID        string                  `json:"export_id"`
+	ExportName      string                  `json:"export_name,omitempty"`
+	LastRunStatus   string                  `json:"last_run_status,omitempty"`
+	Consumption     StreamThroughputSummary `json:"consumption"`
+	Retries         uint32                  `json:"retries"`
+	DuplicateRisk   bool                    `json:"duplicate_risk"`
+	DropRisk        bool                    `json:"drop_risk"`
+	RecordsExported int64                   `json:"records_exported"`
 }
 
 type StreamMetricsSnapshot struct {
-	StreamID         string                  `json:"stream_id"`
-	StreamRID        string                  `json:"stream_rid,omitempty"`
-	StreamName       string                  `json:"stream_name,omitempty"`
-	Window           StreamMetricsWindow     `json:"window"`
-	CapturedAt       time.Time               `json:"captured_at"`
-	Ingestion        StreamThroughputSummary `json:"ingestion"`
-	Consumption      StreamThroughputSummary `json:"consumption"`
-	Lag              StreamLagSummary        `json:"lag"`
-	Checkpoint       StreamCheckpointMetrics `json:"checkpoint"`
-	Retries          StreamRetryMetrics      `json:"retries"`
+	StreamID         string                   `json:"stream_id"`
+	StreamRID        string                   `json:"stream_rid,omitempty"`
+	StreamName       string                   `json:"stream_name,omitempty"`
+	Window           StreamMetricsWindow      `json:"window"`
+	CapturedAt       time.Time                `json:"captured_at"`
+	Ingestion        StreamThroughputSummary  `json:"ingestion"`
+	Consumption      StreamThroughputSummary  `json:"consumption"`
+	Lag              StreamLagSummary         `json:"lag"`
+	Checkpoint       StreamCheckpointMetrics  `json:"checkpoint"`
+	Retries          StreamRetryMetrics       `json:"retries"`
 	Partitions       []StreamPartitionMetrics `json:"partitions"`
 	Consumers        []StreamConsumerMetrics  `json:"consumers"`
 	StreamingSyncs   []StreamSyncMetrics      `json:"streaming_syncs"`
@@ -374,12 +374,12 @@ func BuildStreamMetricsSnapshot(input StreamMetricsInput) StreamMetricsSnapshot 
 	}
 
 	snapshot := StreamMetricsSnapshot{
-		StreamID:   input.StreamID,
-		StreamRID:  input.StreamRID,
-		StreamName: input.StreamName,
-		Window:     window,
-		CapturedAt: capturedAt,
-		Ingestion:  computeThroughput(input.IngestedRecords, input.IngestedBytes, window, capturedAt),
+		StreamID:    input.StreamID,
+		StreamRID:   input.StreamRID,
+		StreamName:  input.StreamName,
+		Window:      window,
+		CapturedAt:  capturedAt,
+		Ingestion:   computeThroughput(input.IngestedRecords, input.IngestedBytes, window, capturedAt),
 		Consumption: computeThroughput(input.ConsumedRecords, input.ConsumedBytes, window, capturedAt),
 		Lag: StreamLagSummary{
 			StreamLagRecords:     input.StreamLagRecords,
