@@ -133,6 +133,14 @@ func BuildRouterWithDeps(cfg *config.Config, m *observability.Metrics, deps Deps
 		api.Post("/builds/{id}/abort", handler.AbortBuild)
 		api.Get("/builds/{id}/jobs", handler.ListJobs)
 
+		// Build-keyed log fan-in (A4.2 of TASKS_COMPUTE_PIPELINES.md).
+		// /logs returns merged history as JSON; /logs/stream is the
+		// SSE channel multiplexed across every job in the build. Both
+		// share the per-job ListJobLogs / StreamJobLogs wire format so
+		// the frontend can reuse its consumer.
+		api.Get("/builds/{id}/logs", handler.ListBuildLogs)
+		api.Get("/builds/{id}/logs/stream", handler.StreamBuildLogs)
+
 		// Jobs + logs.
 		api.Get("/jobs/{id}", handler.GetJob)
 		api.Get("/jobs/{id}/logs", handler.ListJobLogs)
