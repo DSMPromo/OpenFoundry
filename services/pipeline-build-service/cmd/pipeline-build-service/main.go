@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -22,6 +23,7 @@ import (
 	pythonsidecar "github.com/openfoundry/openfoundry-go/libs/python-sidecar"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/config"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/dispatch"
+	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/domain/queuedispatcher"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/handler"
 	livellogs "github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/logs"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/postgres"
@@ -151,6 +153,47 @@ func main() {
 		handler.SetScheduleRepository(repo)
 		handler.SetJobLogService(&livellogs.Service{Store: repo, Subscriber: livellogs.NewMemoryService()})
 		log.Info("postgres repositories wired", slog.String("database_url", "set"))
+
+		// Build-queue dispatcher (TASKS_COMPUTE_PIPELINES.md A3.2).
+		// In-process ticker; per-run advancement is atomic via the
+		// PromoteToRunning CAS so multiple replicas don't double-
+		// schedule. Disable by setting QUEUE_DISPATCHER_INTERVAL=0.
+		dispatchInterval := 5 * time.Second
+		if v := os.Getenv("QUEUE_DISPATCHER_INTERVAL_MS"); v != "" {
+			if n, err := strconv.Atoi(v); err == nil && n > 0 {
+				dispatchInterval = time.Duration(n) * time.Millisecond
+			}
+		}
+		if dispatchInterval > 0 {
+			dispatcher := queuedispatcher.New(repo, queuedispatcher.WithLogger(log))
+			go func() {
+				ticker := time.NewTicker(dispatchInterval)
+				defer ticker.Stop()
+				log.Info("queue dispatcher started",
+					slog.Duration("interval", dispatchInterval))
+				for {
+					select {
+					case <-ctx.Done():
+						log.Info("queue dispatcher stopping")
+						return
+					case <-ticker.C:
+						result, err := dispatcher.Tick(ctx)
+						if err != nil {
+							log.Warn("queue dispatcher tick failed",
+								slog.String("error", err.Error()))
+							continue
+						}
+						if result.Promoted > 0 || result.Waiting > 0 || result.Errors > 0 {
+							log.Info("queue dispatcher tick",
+								slog.Int("considered", result.Considered),
+								slog.Int("promoted", result.Promoted),
+								slog.Int("waiting", result.Waiting),
+								slog.Int("errors", result.Errors))
+						}
+					}
+				}
+			}()
+		}
 	} else {
 		log.Warn("DATABASE_URL unset — production repositories disabled; supported handlers return explicit 503 instead of fake success")
 	}
