@@ -462,7 +462,8 @@ func transformCatalogGeoDistanceJoin(docs []string) pipelineTransformCatalogEntr
 			"max_candidate_pairs":   defaultGeoJoinMaxCandidatePairs,
 		},
 	}
-	entry.Form.Fields = append(entry.Form.Fields,
+	entry.Form.Fields = append(
+		entry.Form.Fields,
 		pipelineTransformCatalogField{Name: "max_distance", Label: "Max distance", FieldType: "number", Required: true, Default: 1.0, HelpText: "Only pairs at or below this distance are emitted."},
 		pipelineTransformCatalogField{Name: "distance_column", Label: "Distance column", FieldType: "text", Required: true, Default: "geo_distance_miles"},
 	)
@@ -491,7 +492,8 @@ func transformCatalogGeoNearestJoin(docs []string) pipelineTransformCatalogEntry
 			"max_candidate_pairs":   defaultGeoJoinMaxCandidatePairs,
 		},
 	}
-	entry.Form.Fields = append(entry.Form.Fields,
+	entry.Form.Fields = append(
+		entry.Form.Fields,
 		pipelineTransformCatalogField{Name: "k", Label: "Nearest neighbors", FieldType: "number", Required: true, Default: 1, HelpText: "Maximum neighbors per left row. Runtime limit is 50."},
 		pipelineTransformCatalogField{Name: "max_distance", Label: "Optional max distance", FieldType: "number", Required: false, HelpText: "When set, neighbors farther away are ignored."},
 		pipelineTransformCatalogField{Name: "distance_column", Label: "Distance column", FieldType: "text", Required: true, Default: "geo_distance_miles"},

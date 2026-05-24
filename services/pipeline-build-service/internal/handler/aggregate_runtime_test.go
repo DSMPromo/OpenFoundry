@@ -72,7 +72,8 @@ func runAggregateStep(t *testing.T, seedRows []map[string]any, aggPayload string
 
 func TestRunAggregate_singleGlobalGroup_countSumAvg(t *testing.T) {
 	t.Parallel()
-	rows, meta := runAggregateStep(t,
+	rows, meta := runAggregateStep(
+		t,
 		[]map[string]any{
 			{"customer_id": "C1", "amount": 10},
 			{"customer_id": "C1", "amount": 20},
@@ -94,7 +95,8 @@ func TestRunAggregate_singleGlobalGroup_countSumAvg(t *testing.T) {
 
 func TestRunAggregate_groupBy_sumAndCountDistinct(t *testing.T) {
 	t.Parallel()
-	rows, _ := runAggregateStep(t,
+	rows, _ := runAggregateStep(
+		t,
 		[]map[string]any{
 			{"customer_id": "C1", "invoice": "I1", "revenue": 10.0},
 			{"customer_id": "C1", "invoice": "I1", "revenue": 2.0},
@@ -123,10 +125,17 @@ func TestRunAggregate_groupBy_sumAndCountDistinct(t *testing.T) {
 func TestRunAggregate_minMaxStddev(t *testing.T) {
 	t.Parallel()
 	// Sample stddev of [2,4,4,4,5,5,7,9] = 2.138...
-	rows, _ := runAggregateStep(t,
+	rows, _ := runAggregateStep(
+		t,
 		[]map[string]any{
-			{"v": 2}, {"v": 4}, {"v": 4}, {"v": 4},
-			{"v": 5}, {"v": 5}, {"v": 7}, {"v": 9},
+			{"v": 2},
+			{"v": 4},
+			{"v": 4},
+			{"v": 4},
+			{"v": 5},
+			{"v": 5},
+			{"v": 7},
+			{"v": 9},
 		},
 		`{"aggregations":[
 			{"function":"min","source_column":"v","target_column":"mn"},
@@ -145,7 +154,8 @@ func TestRunAggregate_minMaxStddev(t *testing.T) {
 
 func TestRunAggregate_nullsIgnoredExceptCountStar(t *testing.T) {
 	t.Parallel()
-	rows, _ := runAggregateStep(t,
+	rows, _ := runAggregateStep(
+		t,
 		[]map[string]any{
 			{"v": 10}, {"v": nil}, {"v": 20},
 		},

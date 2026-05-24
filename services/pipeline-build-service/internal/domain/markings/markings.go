@@ -5,7 +5,7 @@
 // must be inherited by the output dataset, recorded as
 // `source = 'inherited_from_upstream'` with `inherited_from = <input_rid>`.
 // Idempotency is delegated to the Postgres unique index on
-// `dataset_markings (dataset_rid, marking_id, COALESCE(inherited_from, ''))`.
+// `dataset_markings (dataset_rid, marking_id, COALESCE(inherited_from, ”))`.
 package markings
 
 import (

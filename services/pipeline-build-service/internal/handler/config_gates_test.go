@@ -163,12 +163,15 @@ func (f *fakeBuildQueryRepo) ListBuilds(_ context.Context, query models.ListBuil
 	f.lastQuery = query
 	return f.builds, nil
 }
+
 func (f *fakeBuildQueryRepo) GetBuild(context.Context, string) (*models.BuildEnvelope, error) {
 	return nil, nil
 }
+
 func (f *fakeBuildQueryRepo) ListJobsForBuildID(context.Context, string) ([]models.Job, error) {
 	return nil, nil
 }
+
 func (f *fakeBuildQueryRepo) GetJob(context.Context, string) (*models.Job, error) { return nil, nil }
 
 type fakeIcebergTxClient struct{ committed []string }
@@ -177,6 +180,7 @@ func (f *fakeIcebergTxClient) Commit(_ context.Context, tx executor.OutputTransa
 	f.committed = append(f.committed, tx.DatasetRID)
 	return nil
 }
+
 func (f *fakeIcebergTxClient) Abort(context.Context, executor.OutputTransaction) error { return nil }
 
 var _ dispatch.Client = (*fakeSparkClient)(nil)

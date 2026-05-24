@@ -63,6 +63,7 @@ type ExecutionPorts struct {
 	AIP          PipelineAIPGenerator
 	Functions    PipelineFunctionRegistry
 	Distributed  DistributedTransformRunner
+	Lambda       LambdaRunner
 	Transactions executor.TransactionManager
 	Committer    executor.OutputCommitter
 	Audit        executor.AuditSink
@@ -122,8 +123,10 @@ func (m ConfigGatedTransactionManager) Abort(ctx context.Context, tx executor.Ou
 
 type executionSlot struct{ ports ExecutionPorts }
 
-var executionPorts atomic.Value // stores *executionSlot
-var executionCancels sync.Map   // stores map[uuid.UUID]context.CancelFunc
+var (
+	executionPorts   atomic.Value // stores *executionSlot
+	executionCancels sync.Map     // stores map[uuid.UUID]context.CancelFunc
+)
 
 // SetExecutionPorts injects executor dependencies for ExecutePipeline and
 // TriggerPipelineRun. It returns a restore function for tests.
@@ -994,6 +997,7 @@ type runtimeNodeRunner struct {
 	LLM       LLMTransformRunner
 	Table     *lightweightTableRuntime
 	Dist      DistributedTransformRunner
+	Lambda    LambdaRunner
 }
 
 func (r runtimeNodeRunner) Run(ctx context.Context, node executor.NodeContext) (executor.NodeResult, error) {
@@ -1008,6 +1012,9 @@ func (r runtimeNodeRunner) Run(ctx context.Context, node executor.NodeContext) (
 			return executor.NodeResult{}, errors.New("python_sidecar_not_configured: set PYTHON_SIDECAR_BINARY to execute Python transforms")
 		}
 		return r.runPython(ctx, node, payload)
+	}
+	if transformType == "lambda" {
+		return r.runLambda(ctx, node, payload)
 	}
 	if isLLMTransform(transformType) {
 		return r.runLLM(ctx, node, payload)

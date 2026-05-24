@@ -187,6 +187,7 @@ func newRuntimeNodeRunner(ports ExecutionPorts) runtimeNodeRunner {
 		LLM:       ports.LLM,
 		Table:     newLightweightTableRuntime(ports.Functions),
 		Dist:      distributed,
+		Lambda:    ports.Lambda,
 	}
 }
 

@@ -187,5 +187,7 @@ func TestDeleteMLModelOwnerOnly(t *testing.T) {
 }
 
 // Keep the bytes / sync imports honest if the test runner inlines them.
-var _ = bytes.NewReader
-var _ = sync.Mutex{}
+var (
+	_ = bytes.NewReader
+	_ = sync.Mutex{}
+)

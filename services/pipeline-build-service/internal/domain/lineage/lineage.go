@@ -53,18 +53,18 @@ type LineageNode struct {
 
 // LineageGraphEdge mirrors `pub struct LineageGraphEdge`.
 type LineageGraphEdge struct {
-	ID                uuid.UUID       `json:"id"`
-	Source            uuid.UUID       `json:"source"`
-	SourceKind        string          `json:"source_kind"`
-	Target            uuid.UUID       `json:"target"`
-	TargetKind        string          `json:"target_kind"`
-	RelationKind      string          `json:"relation_kind"`
-	PipelineID        *uuid.UUID      `json:"pipeline_id,omitempty"`
-	WorkflowID        *uuid.UUID      `json:"workflow_id,omitempty"`
-	NodeID            *string         `json:"node_id,omitempty"`
-	StepID            *string         `json:"step_id,omitempty"`
-	EffectiveMarking  string          `json:"effective_marking"`
-	Metadata          json.RawMessage `json:"metadata"`
+	ID               uuid.UUID       `json:"id"`
+	Source           uuid.UUID       `json:"source"`
+	SourceKind       string          `json:"source_kind"`
+	Target           uuid.UUID       `json:"target"`
+	TargetKind       string          `json:"target_kind"`
+	RelationKind     string          `json:"relation_kind"`
+	PipelineID       *uuid.UUID      `json:"pipeline_id,omitempty"`
+	WorkflowID       *uuid.UUID      `json:"workflow_id,omitempty"`
+	NodeID           *string         `json:"node_id,omitempty"`
+	StepID           *string         `json:"step_id,omitempty"`
+	EffectiveMarking string          `json:"effective_marking"`
+	Metadata         json.RawMessage `json:"metadata"`
 }
 
 // LineageGraph mirrors `pub struct LineageGraph`.
@@ -85,15 +85,15 @@ type LineagePathHop struct {
 
 // LineageImpactItem mirrors `pub struct LineageImpactItem`.
 type LineageImpactItem struct {
-	ID                       uuid.UUID        `json:"id"`
-	Kind                     string           `json:"kind"`
-	Label                    string           `json:"label"`
-	Distance                 int              `json:"distance"`
-	Marking                  string           `json:"marking"`
-	EffectiveMarking         string           `json:"effective_marking"`
-	RequiresAcknowledgement  bool             `json:"requires_acknowledgement"`
-	Metadata                 json.RawMessage  `json:"metadata"`
-	Path                     []LineagePathHop `json:"path"`
+	ID                      uuid.UUID        `json:"id"`
+	Kind                    string           `json:"kind"`
+	Label                   string           `json:"label"`
+	Distance                int              `json:"distance"`
+	Marking                 string           `json:"marking"`
+	EffectiveMarking        string           `json:"effective_marking"`
+	RequiresAcknowledgement bool             `json:"requires_acknowledgement"`
+	Metadata                json.RawMessage  `json:"metadata"`
+	Path                    []LineagePathHop `json:"path"`
 }
 
 // LineageBuildCandidate mirrors `pub struct LineageBuildCandidate`.

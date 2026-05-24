@@ -68,15 +68,15 @@ const (
 // SeedTransform is one declarative pipeline node. Mirrors the YAML
 // spec verbatim; deviations must be reflected in both files.
 type SeedTransform struct {
-	ID              string
-	Kind            TransformKind
-	SourceLabel     string
-	ExecKind        ExecKind
-	ScheduleCron    string
-	InputDatasets   []string
-	OutputDataset   string
+	ID               string
+	Kind             TransformKind
+	SourceLabel      string
+	ExecKind         ExecKind
+	ScheduleCron     string
+	InputDatasets    []string
+	OutputDataset    string
 	OutputObjectType string
-	OutputMarking   string
+	OutputMarking    string
 	// Implementation is the fully-qualified Go symbol the
 	// pipeline-runner dispatches against. Empty = stub.
 	Implementation string
@@ -104,8 +104,8 @@ type SeedSink interface {
 
 // LoadResult is what Load returns.
 type LoadResult struct {
-	Created  []string
-	Skipped  []string
+	Created []string
+	Skipped []string
 }
 
 // Load applies the catalog against the sink, skipping transforms that
