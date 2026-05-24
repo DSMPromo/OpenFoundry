@@ -186,6 +186,11 @@ func SelectUpstream(path string, u config.UpstreamURLs) string {
 	case strings.HasPrefix(path, "/api/v1/pipelines"):
 		return u.PipelineBuild
 
+	// Resource pools — Foundry build-queue admin (Task A3 of
+	// TASKS_COMPUTE_PIPELINES.md). Lives in pipeline-build-service.
+	case strings.HasPrefix(path, "/api/v1/resource-pools"):
+		return u.PipelineBuild
+
 	case strings.HasPrefix(path, "/api/v1/lineage"):
 		return u.Lineage
 

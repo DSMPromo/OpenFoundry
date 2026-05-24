@@ -143,6 +143,16 @@ func BuildRouterWithDeps(cfg *config.Config, m *observability.Metrics, deps Deps
 		api.Post("/dry-run/validate", handler.DryRunValidate)
 		api.Post("/execute", handler.ExecutePipeline)
 
+		// Resource pools — Foundry build-queue admin (Task A3 of
+		// TASKS_COMPUTE_PIPELINES.md). The dispatcher in a follow-up
+		// PR consults these to bound CPU / RAM / concurrent-build
+		// totals before promoting a QUEUED build to RUNNING.
+		api.Get("/resource-pools", handler.ListResourcePools)
+		api.Post("/resource-pools", handler.CreateResourcePool)
+		api.Get("/resource-pools/{id}", handler.GetResourcePool)
+		api.Patch("/resource-pools/{id}", handler.UpdateResourcePool)
+		api.Delete("/resource-pools/{id}", handler.DeleteResourcePool)
+
 		// Pipelines (legacy CRUD + runs).
 		api.Get("/pipelines", handler.ListPipelines)
 		api.Post("/pipelines", handler.CreatePipeline)
