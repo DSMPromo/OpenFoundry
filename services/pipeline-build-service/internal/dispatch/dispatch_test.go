@@ -212,6 +212,55 @@ func TestKubernetesClient_GetStatusMapsJobConditions(t *testing.T) {
 	require.Equal(t, dispatch.RunSucceeded, rep.Status)
 }
 
+func TestKubernetesClient_StreamPodLogsReturnsRawBody(t *testing.T) {
+	t.Parallel()
+	var gotPath string
+	var gotQuery string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotPath = r.URL.Path
+		gotQuery = r.URL.RawQuery
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("driver-line-1\ndriver-line-2\n"))
+	}))
+	defer srv.Close()
+
+	cli, err := dispatch.NewKubernetesClient(srv.URL, "", srv.Client())
+	require.NoError(t, err)
+
+	body, err := cli.StreamPodLogs(context.Background(), "openfoundry", "my-driver-pod", dispatch.PodLogOptions{
+		Follow:    true,
+		TailLines: 100,
+		Container: "spark-driver",
+	})
+	require.NoError(t, err)
+	defer body.Close()
+	out, err := io.ReadAll(body)
+	require.NoError(t, err)
+	require.Equal(t, "driver-line-1\ndriver-line-2\n", string(out))
+	require.Equal(t, "/api/v1/namespaces/openfoundry/pods/my-driver-pod/log", gotPath)
+	require.Contains(t, gotQuery, "follow=true")
+	require.Contains(t, gotQuery, "tailLines=100")
+	require.Contains(t, gotQuery, "container=spark-driver")
+}
+
+func TestKubernetesClient_StreamPodLogsSurfacesKubeError(t *testing.T) {
+	t.Parallel()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte(`{"message":"pod not found"}`))
+	}))
+	defer srv.Close()
+
+	cli, err := dispatch.NewKubernetesClient(srv.URL, "", srv.Client())
+	require.NoError(t, err)
+	_, err = cli.StreamPodLogs(context.Background(), "openfoundry", "nope", dispatch.PodLogOptions{})
+	require.Error(t, err)
+	var kube *dispatch.KubeError
+	require.ErrorAs(t, err, &kube)
+	require.Equal(t, http.StatusNotFound, kube.StatusCode)
+}
+
 func TestParseStatus_branches(t *testing.T) {
 	t.Parallel()
 	cases := map[string]struct {
