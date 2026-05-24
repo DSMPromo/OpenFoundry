@@ -21,7 +21,7 @@ func (r *Repository) ListQueuedRuns(ctx context.Context, limit int) ([]queuedisp
 	}
 	rows, err := r.db.Query(
 		ctx,
-		`SELECT pr.id, pr.pipeline_id, pr.resource_pool_id, p.project_id
+		`SELECT pr.id, pr.pipeline_id, pr.resource_pool_id, p.project_id, pr.started_at
 		 FROM pipeline_runs pr
 		 JOIN pipelines p ON p.id = pr.pipeline_id
 		 WHERE pr.status IN ('queued', 'BUILD_QUEUED', 'pending')
@@ -36,7 +36,7 @@ func (r *Repository) ListQueuedRuns(ctx context.Context, limit int) ([]queuedisp
 	out := make([]queuedispatcher.QueuedRun, 0, limit)
 	for rows.Next() {
 		var run queuedispatcher.QueuedRun
-		if err := rows.Scan(&run.ID, &run.PipelineID, &run.ResourcePoolID, &run.ProjectID); err != nil {
+		if err := rows.Scan(&run.ID, &run.PipelineID, &run.ResourcePoolID, &run.ProjectID, &run.QueuedAt); err != nil {
 			return nil, fmt.Errorf("scan queued run: %w", err)
 		}
 		out = append(out, run)

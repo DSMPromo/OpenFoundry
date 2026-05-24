@@ -31,6 +31,8 @@ import (
 	"fmt"
 	"log/slog"
 	"sort"
+	"strconv"
+	"time"
 
 	"github.com/google/uuid"
 
@@ -38,12 +40,17 @@ import (
 )
 
 // QueuedRun is the narrow projection the dispatcher needs from a
-// `pipeline_runs` row in `queued` state.
+// `pipeline_runs` row in `queued` state. QueuedAt is the timestamp
+// the run entered the queue; the dispatcher uses it to observe the
+// `pipeline_build_wait_seconds` histogram when the run finally
+// promotes. The zero value is acceptable (skips the histogram
+// observation).
 type QueuedRun struct {
 	ID             uuid.UUID
 	PipelineID     uuid.UUID
 	ResourcePoolID *uuid.UUID
 	ProjectID      *uuid.UUID
+	QueuedAt       time.Time
 }
 
 // PoolUtilization is the current load against a pool: how many runs
@@ -121,12 +128,16 @@ type Dispatcher struct {
 	Repo     Repository
 	Reserver Reserver
 	Logger   *slog.Logger
+	Metrics  *Metrics
 	// PerTickLimit caps how many queued runs we evaluate per Tick.
 	// Defaults to 100 when zero.
 	PerTickLimit int
 }
 
 // New builds a Dispatcher with the supplied repo + sane defaults.
+// Metrics is left nil by default — the dispatcher skips collector
+// updates when absent so tests can run without standing up a
+// registry. main.go passes a registered Metrics via WithMetrics.
 func New(repo Repository, opts ...Option) *Dispatcher {
 	d := &Dispatcher{
 		Repo:         repo,
@@ -168,6 +179,12 @@ func WithPerTickLimit(n int) Option {
 			d.PerTickLimit = n
 		}
 	}
+}
+
+// WithMetrics wires the Prometheus collectors. When omitted the
+// dispatcher silently skips every metric update.
+func WithMetrics(m *Metrics) Option {
+	return func(d *Dispatcher) { d.Metrics = m }
 }
 
 // TickResult is the outcome of one Tick. Returned for observability
@@ -219,6 +236,18 @@ func (d *Dispatcher) Tick(ctx context.Context) (TickResult, error) {
 		bucket[pool.ID] = append(bucket[pool.ID], run)
 	}
 
+	// Emit queue-depth + utilization gauges before draining: a
+	// dashboard refresh that lands mid-tick should see the state
+	// the dispatcher started from, not a half-drained snapshot.
+	if d.Metrics != nil {
+		for _, pool := range pools {
+			depth := float64(len(bucket[pool.ID]))
+			d.Metrics.QueueDepth.WithLabelValues(pool.Name).Set(depth)
+			util, _ := d.Repo.CurrentPoolUtilization(ctx, pool.ID)
+			d.Metrics.PoolUtilization.WithLabelValues(pool.Name).Set(poolUtilizationRatio(pool, util))
+		}
+	}
+
 	// Round-robin across pools so a single big-queue pool can't
 	// starve every other pool's first run.
 	queueIdx := map[uuid.UUID]int{}
@@ -248,12 +277,18 @@ func (d *Dispatcher) Tick(ctx context.Context) (TickResult, error) {
 						slog.String("run_id", run.ID.String()), slog.String("error", err.Error()))
 				}
 				result.Waiting++
+				if d.Metrics != nil {
+					d.Metrics.TickWaiting.Inc()
+				}
 				continue
 			}
 			if err := d.Reserver.Reserve(ctx, run, *pool); err != nil {
 				d.Logger.WarnContext(ctx, "queuedispatcher: reserve failed",
 					slog.String("run_id", run.ID.String()), slog.String("error", err.Error()))
 				result.Errors++
+				if d.Metrics != nil {
+					d.Metrics.TickErrors.Inc()
+				}
 				continue
 			}
 			if err := d.Repo.PromoteToRunning(ctx, run.ID, pool.ID); err != nil {
@@ -262,17 +297,40 @@ func (d *Dispatcher) Tick(ctx context.Context) (TickResult, error) {
 					// Treat as a no-op; counted as 'promoted' from
 					// the system's perspective.
 					result.Promoted++
+					if d.Metrics != nil {
+						d.Metrics.TickPromoted.Inc()
+					}
 					continue
 				}
 				d.Logger.ErrorContext(ctx, "queuedispatcher: promote failed",
 					slog.String("run_id", run.ID.String()), slog.String("error", err.Error()))
 				result.Errors++
+				if d.Metrics != nil {
+					d.Metrics.TickErrors.Inc()
+				}
 				continue
 			}
 			result.Promoted++
+			if d.Metrics != nil {
+				d.Metrics.TickPromoted.Inc()
+				if !run.QueuedAt.IsZero() {
+					d.Metrics.WaitSeconds.
+						WithLabelValues(pool.Name, strconv.Itoa(pool.Priority)).
+						Observe(time.Since(run.QueuedAt).Seconds())
+				}
+			}
 		}
 	}
 	return result, nil
+}
+
+// poolUtilizationRatio returns running / max_concurrent for a pool,
+// or 0 when the pool is unbounded (no useful denominator).
+func poolUtilizationRatio(pool models.ResourcePool, util PoolUtilization) float64 {
+	if pool.MaxConcurrentBuilds == nil || *pool.MaxConcurrentBuilds <= 0 {
+		return 0
+	}
+	return float64(util.RunningCount) / float64(*pool.MaxConcurrentBuilds)
 }
 
 // indexPools returns a name-indexed lookup plus the default pool
