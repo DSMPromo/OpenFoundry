@@ -47,5 +47,5 @@ INSERT INTO permissions (resource, action, description) VALUES
     ('restricted_view', 'read', 'Read restricted view rows and metadata'),
     ('restricted_view', 'edit', 'Edit restricted view metadata'),
     ('restricted_view', 'manage', 'Manage restricted view permissions and lifecycle')
-ON CONFLICT (resource, action) DO UPDATE
+ON CONFLICT (resource, action) WHERE tenant_id IS NULL DO UPDATE
     SET description = EXCLUDED.description;
