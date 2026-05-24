@@ -44,11 +44,17 @@ CREATE TABLE IF NOT EXISTS user_roles (
 -- `admin` role by name when assigning the first-user-becomes-admin
 -- promotion; without these rows the call fails with `lookup role
 -- admin: no rows in result set` on a fresh install.
+-- The `roles` table is shared with authorization-policy-service which
+-- evolves it to tenant-aware uniqueness (partial unique index on
+-- `name` WHERE tenant_id IS NULL). The ON CONFLICT target below uses
+-- the inference form so Postgres binds to that partial index whether
+-- the table is at slice-1 shape (plain UNIQUE on `name`) or the
+-- evolved shape.
 INSERT INTO roles (id, name, description) VALUES
     (gen_random_uuid(), 'admin', 'Full platform administrator'),
     (gen_random_uuid(), 'editor', 'Can create and modify resources'),
     (gen_random_uuid(), 'viewer', 'Read-only access')
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (name) WHERE tenant_id IS NULL DO NOTHING;
 
 -- Postgres-backed refresh tokens for slice 1.
 -- Slice 2 migrates these to Cassandra `auth_runtime.refresh_tokens`
