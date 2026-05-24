@@ -125,7 +125,7 @@ test('valid code+state: exchanges tokens and redirects to /', async ({ page }) =
   );
 
   // Post-success redirect — no return_to provided so we land on /.
-  await expect(page).toHaveURL(/127\.0\.0\.1:5174\/?$/);
+  await expect(page).toHaveURL(/127\.0\.0\.1:55173\/?$/);
 
   // The exchange was invoked with the URL params. React StrictMode in
   // dev double-mounts the effect; the page de-dupes concurrent

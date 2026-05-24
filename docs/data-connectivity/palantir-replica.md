@@ -30,7 +30,7 @@ Branch: `claude/review-data-connection-ui-ZFd3U`.
 
 ```sh
 pnpm install
-pnpm --filter @open-foundry/web dev   # http://localhost:5174/
+pnpm --filter @open-foundry/web dev   # http://localhost:55173/
 ```
 
 Compare side by side with the Palantir reference screenshots:

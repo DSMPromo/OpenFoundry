@@ -208,7 +208,7 @@ To create a new service: copy [docs/templates/service-skeleton/](../../docs/temp
 
 7. **The gateway is rate-limited** and trips HTTP 429 on bursts (~50 req in 1s). For bulk seeds use the direct port-forward to `object-database-service:18081`, not the gateway.
 
-8. **The Vite dev server** runs on `5174`, not `5173`. Its proxy sends:
+8. **The Vite dev server** runs on `55173`, not `5173`. Its proxy sends:
    - `/api/v1/auth` → `127.0.0.1:50088` (identity-federation-service)
    - `/api/v1/users/me` → `127.0.0.1:50088`
    - `/api/v1/data-connection/...` → `127.0.0.1:50088 / 50119`
@@ -261,12 +261,12 @@ curl -s "http://localhost:18081/api/v1/ontology/types/678b55fe-db5f-4d3a-bbf2-8c
 
 ```sh
 pnpm --filter @open-foundry/web dev
-# → http://localhost:5174
+# → http://localhost:55173
 ```
 
 ### 2.4 Login
 
-- Open `http://localhost:5174/login`
+- Open `http://localhost:55173/login`
 - Credentials: `smoke@openfoundry.local` / `openfoundry-smoke-password`
 - If the login page fails with a 502, the port-forward to `identity-federation-service:50088` is not active.
 

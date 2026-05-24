@@ -167,7 +167,7 @@ test('clicking a recent row navigates to the resource path', async ({ adminPage 
   await expect(link).toHaveAttribute('href', /^\/datasets\//);
   await link.click();
 
-  await expect(adminPage).toHaveURL(/^http:\/\/127\.0\.0\.1:5174\/datasets\//);
+  await expect(adminPage).toHaveURL(/^http:\/\/127\.0\.0\.1:55173\/datasets\//);
 });
 
 test('empty state: "No visible recent resources."', async ({ adminPage }) => {

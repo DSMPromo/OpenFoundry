@@ -246,7 +246,7 @@ test('row click navigates to the per-project route', async ({ adminPage }) => {
   await expect(link).toHaveAttribute('href', /^\/projects\//);
   await link.click();
 
-  await expect(adminPage).toHaveURL(/^http:\/\/127\.0\.0\.1:5174\/projects\//);
+  await expect(adminPage).toHaveURL(/^http:\/\/127\.0\.0\.1:55173\/projects\//);
 });
 
 test('local search filters the table without re-querying the API', async ({ adminPage }) => {
