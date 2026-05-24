@@ -121,6 +121,55 @@ services:
       mc mb --ignore-existing local/openfoundry-artifacts
       "
 
+  # ── LocalStack (full AWS API emulation for dev) ────────────
+  # Opt-in via the `localstack` profile so the default DX stack
+  # stays lean. Pairs with libs/aws-client: any service that
+  # respects OF_AWS__ENDPOINT_URL routes through here in dev and
+  # through real AWS in prod with zero code change.
+  #
+  # Community-tier services enabled by default cover the AWS
+  # integrations OpenFoundry actually uses (S3, Lambda, SQS, SNS,
+  # DynamoDB, Athena, IAM, STS, KMS, SecretsManager). Bedrock is
+  # only available in LocalStack Pro; until that lands, the LLM
+  # catalog uses Ollama as the local provider — see
+  # services/llm-catalog-service/CLAUDE.md.
+  localstack:
+    <<: *common
+    image: ${OPENFOUNDRY_LOCALSTACK_IMAGE:-localstack/localstack:3}
+    profiles: ["localstack"]
+    ports:
+      - "${OPENFOUNDRY_LOCALSTACK_HOST_PORT:-4566}:4566"
+    environment:
+      SERVICES: ${OPENFOUNDRY_LOCALSTACK_SERVICES:-s3,lambda,sqs,sns,dynamodb,iam,sts,kms,secretsmanager,athena,events}
+      DEBUG: "0"
+      PERSISTENCE: "0"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # ── LocalStack seed ────────────────────────────────────────
+  # Lays the same fixtures every dev session expects: a test S3
+  # bucket, a stub Lambda, a test SQS queue, a DynamoDB table.
+  # Idempotent — safe to re-run after `docker compose up` flaps.
+  localstack-init:
+    image: ${OPENFOUNDRY_AWSCLI_IMAGE:-amazon/aws-cli:2}
+    profiles: ["localstack"]
+    depends_on:
+      localstack:
+        condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    entrypoint: ["/bin/sh", "/seed/localstack-seed.sh"]
+    volumes:
+      - ./local/localstack-init:/seed:ro
+
   # ── Vespa Lite (DX search engine, Apache-2.0) ──────────────
   # Single-node container of the same Vespa engine that runs in production
   # (see infra/runbooks/vespa.md and docs/architecture/adr/ADR-0007-search-engine-choice.md).
@@ -2180,6 +2229,7 @@ volumes:
   valkey_data:
   nats_data:
   minio_data:
+  localstack_data:
   vespa_data:
   cassandra_data:
   opensearch_data:

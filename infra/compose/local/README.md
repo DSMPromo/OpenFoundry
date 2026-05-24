@@ -9,5 +9,6 @@ out of the infrastructure root.
 | --- | --- |
 | `postgres-init/` | `postgres` service, mounted at `/docker-entrypoint-initdb.d` |
 | `nginx/` | `nginx` app-profile edge proxy |
+| `localstack-init/` | `localstack-init` (opt-in `localstack` profile); seeds S3 buckets, SQS queues, an SNS topic, a DynamoDB table, a Lambda, and one SecretsManager secret. See [LocalStack section in libs/aws-client](../../../libs/aws-client/README.md#local-development-with-localstack). |
 
 Kubernetes-only manifests belong under `infra/k8s/platform/`.
