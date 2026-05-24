@@ -6,6 +6,7 @@ import { ErrorBanner } from '@/lib/components/ErrorBanner';
 import { LoadingState } from '@/lib/components/LoadingState';
 import { Tabs } from '@/lib/components/Tabs';
 import { ArtifactsPanel } from '@/lib/components/builds/ArtifactsPanel';
+import { BuildLogsViewer } from '@/lib/components/builds/BuildLogsViewer';
 import { BuildRunLogs } from '@/lib/components/builds/BuildRunLogs';
 import { StateBadge } from '@/lib/components/builds/StateBadge';
 import { BuildExpectationResultsPanel } from '@/lib/components/pipeline/DataExpectationsPanel';
@@ -220,9 +221,20 @@ export function BuildDetailPage() {
           )}
 
           {tab === 'logs' && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, alignItems: 'start' }}>
-              <JobsPanel build={build} selectedJobRid={selectedJob?.rid ?? ''} onSelectJob={setSelectedJobRid} compact />
-              <BuildRunLogs job={selectedJob} />
+            <div style={{ display: 'grid', gap: 16 }}>
+              <BuildLogsViewer
+                buildRid={build.rid}
+                isTerminal={['BUILD_COMPLETED', 'BUILD_FAILED', 'BUILD_ABORTED'].includes(build.state)}
+              />
+              <details style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 12 }}>
+                <summary style={{ cursor: 'pointer', fontSize: 12, color: 'var(--text-muted)' }}>
+                  Per-job logs (legacy view)
+                </summary>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, alignItems: 'start', marginTop: 12 }}>
+                  <JobsPanel build={build} selectedJobRid={selectedJob?.rid ?? ''} onSelectJob={setSelectedJobRid} compact />
+                  <BuildRunLogs job={selectedJob} />
+                </div>
+              </details>
             </div>
           )}
 
