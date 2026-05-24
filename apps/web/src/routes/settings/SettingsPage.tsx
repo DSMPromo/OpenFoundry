@@ -16,6 +16,7 @@ import {
 import { ApiKeysSection } from './ApiKeysSection';
 import { GroupsSection } from './GroupsSection';
 import { MfaSection } from './MfaSection';
+import { PasswordSection } from './PasswordSection';
 import { PermissionsSection } from './PermissionsSection';
 import { PoliciesSection } from './PoliciesSection';
 import { RestrictedViewsSection } from './RestrictedViewsSection';
@@ -25,6 +26,7 @@ import { UsersSection } from './UsersSection';
 
 type SectionId =
   | 'profile'
+  | 'password'
   | 'mfa'
   | 'tokens'
   | 'users'
@@ -72,6 +74,7 @@ export function SettingsPage() {
         label: 'User settings',
         items: [
           { id: 'profile', label: 'Profile', visible: true },
+          { id: 'password', label: 'Password', visible: true },
           { id: 'mfa', label: 'Multi-factor auth', visible: true },
           { id: 'tokens', label: 'Tokens', visible: true },
         ],
@@ -252,6 +255,10 @@ export function SettingsPage() {
                 )}
               </div>
             </section>
+          )}
+
+          {active === 'password' && (
+            <PasswordSection setNotice={setNotice} setError={setError} />
           )}
 
           {active === 'mfa' && (

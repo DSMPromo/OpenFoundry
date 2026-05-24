@@ -426,6 +426,25 @@ func (r *Repo) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+// UpdatePasswordHash rewrites the argon2id password digest for one
+// user. Used by the self-service POST /api/v1/auth/password handler
+// after the caller has proven possession of the current password.
+// Returns sql.ErrNoRows when id does not match a row so callers can
+// translate the miss to a 404 / 401 of their choosing.
+func (r *Repo) UpdatePasswordHash(ctx context.Context, id uuid.UUID, newHash string) error {
+	tag, err := r.Pool.Exec(ctx,
+		`UPDATE users SET password_hash = $2, updated_at = NOW() WHERE id = $1`,
+		id, newHash,
+	)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return pgx.ErrNoRows
+	}
+	return nil
+}
+
 // ListUserRoles returns roles assigned to a user.
 func (r *Repo) ListUserRoles(ctx context.Context, userID uuid.UUID) ([]models.Role, error) {
 	rows, err := r.Pool.Query(ctx,

@@ -349,6 +349,18 @@ export function getBootstrapStatus() {
   return api.get<BootstrapStatusResponse>('/auth/bootstrap-status');
 }
 
+export interface ChangePasswordRequest {
+  current_password: string;
+  new_password: string;
+}
+
+// Self-service password change. Backend verifies the current
+// password and rewrites the argon2id hash; returns 204 on success.
+// The session cookie stays valid — no forced re-login.
+export function changePassword(data: ChangePasswordRequest) {
+  return api.post<void>('/auth/password', data);
+}
+
 export function completeMfaLogin(data: CompleteMfaLoginRequest) {
   return api.post<AuthenticatedResponse>('/auth/mfa/totp/complete-login', data);
 }

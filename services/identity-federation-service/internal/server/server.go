@@ -134,6 +134,14 @@ func New(cfg *config.Config, jwt *authmw.JWTConfig, auth *handlers.Auth, mfa *ha
 		api.Post("/webauthn/register/finish", wa.RegisterFinish)
 	})
 
+	// /api/v1/auth/password — bearer-protected self-service password
+	// change. Verifies the current password and replaces the argon2id
+	// hash; the session cookie keeps working (no forced re-login).
+	r.Route("/api/v1/auth/password", func(api chi.Router) {
+		api.Use(authmw.Middleware(jwt))
+		api.Post("/", auth.ChangePassword)
+	})
+
 	// /api/v1/{users,roles,groups,permissions,api-keys} — bearer
 	// protected admin surface (slice 6 RBAC CRUD).
 	r.Route("/api/v1", func(api chi.Router) {
