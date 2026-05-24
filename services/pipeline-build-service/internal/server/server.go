@@ -267,6 +267,12 @@ func BuildRouterWithDeps(cfg *config.Config, m *observability.Metrics, deps Deps
 		v1.Get("/builds/{rid}", handler.GetBuildV1)
 		v1.Post("/builds/{rid}:abort", handler.AbortBuildV1)
 		v1.Get("/builds/{rid}/jobs", handler.ListBuildJobsV1)
+		// Build-keyed merged log surface (A4.2 / A4.3) mirrored under
+		// the Foundry-compat /v1 alias so the typed buildsV1 client in
+		// apps/web can hit one base URL.
+		v1.Get("/builds/{rid}/logs", handler.ListBuildLogs)
+		v1.Get("/builds/{rid}/logs/stream", handler.StreamBuildLogs)
+		v1.Get("/builds/{rid}/logs/archive", handler.GetBuildLogArchive)
 		v1.Get("/datasets/{rid}/builds", handler.ListDatasetBuildsV1)
 		v1.Get("/jobs/{rid}", handler.GetJobV1)
 		v1.Get("/jobs/{rid}/outputs", handler.GetJobOutputsV1)

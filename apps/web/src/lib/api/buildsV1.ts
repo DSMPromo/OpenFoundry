@@ -40,6 +40,7 @@ export interface Build {
 	started_at?: string | null;
 	finished_at?: string | null;
 	error_message?: string | null;
+	log_uri?: string | null;
 	requested_by: string;
 	created_at: string;
 }
@@ -215,6 +216,54 @@ export function listJobLogsV1(jobRid: string, params: ListJobLogsParams = {}): P
 	}
 	const query = qs.toString();
 	return jsonFetch<JobLogsResponse>(`/jobs/${encodeURIComponent(jobRid)}/logs${query ? `?${query}` : ''}`);
+}
+
+// Build-keyed merged log surface (A4.2 / A4.3). The build SSE channel
+// multiplexes every job's stream, so a single subscription tails the
+// whole build instead of pinning to a job that may not exist yet.
+
+export interface BuildLogArchive {
+	build_id: string;
+	log_uri: string;
+	state: BuildState;
+}
+
+export function listBuildLogsV1(buildRid: string, params: ListJobLogsParams = {}): Promise<JobLogsResponse> {
+	const qs = new URLSearchParams();
+	for (const [k, v] of Object.entries(params)) {
+		if (v === undefined || v === null) continue;
+		if (Array.isArray(v)) {
+			if (v.length > 0) qs.set(k, v.join(','));
+		} else if (String(v).length > 0) {
+			qs.set(k, String(v));
+		}
+	}
+	const query = qs.toString();
+	return jsonFetch<JobLogsResponse>(`/builds/${encodeURIComponent(buildRid)}/logs${query ? `?${query}` : ''}`);
+}
+
+export function buildLogsStreamUrl(buildRid: string, params: ListJobLogsParams = {}): string {
+	const qs = new URLSearchParams();
+	for (const [k, v] of Object.entries(params)) {
+		if (v === undefined || v === null) continue;
+		if (Array.isArray(v)) {
+			if (v.length > 0) qs.set(k, v.join(','));
+		} else if (String(v).length > 0) {
+			qs.set(k, String(v));
+		}
+	}
+	const query = qs.toString();
+	return `${BASE}/builds/${encodeURIComponent(buildRid)}/logs/stream${query ? `?${query}` : ''}`;
+}
+
+export async function getBuildLogArchiveV1(buildRid: string): Promise<BuildLogArchive | null> {
+	const res = await fetch(`${BASE}/builds/${encodeURIComponent(buildRid)}/logs/archive`, { credentials: 'include' });
+	if (res.status === 404) return null;
+	if (!res.ok) {
+		const detail = await res.text().catch(() => '');
+		throw new Error(`${res.status} ${res.statusText}: ${detail}`);
+	}
+	return (await res.json()) as BuildLogArchive;
 }
 
 export function runBuildV1(body: CreateBuildRequest): Promise<CreateBuildResponse> {
