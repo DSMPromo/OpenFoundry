@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -381,6 +382,64 @@ func (c *KubernetesClient) GetPipelineRunStatus(ctx context.Context, namespace, 
 	}
 	report := ParseStatus(obj)
 	return &report, nil
+}
+
+// PodLogOptions is the subset of `corev1.PodLogOptions` the build-log
+// tail needs. Follow=true mirrors `kubectl logs -f`. TailLines bounds
+// the catch-up window when subscribing to a long-running pod so we
+// don't dump megabytes before the live stream opens.
+type PodLogOptions struct {
+	Follow     bool
+	TailLines  int64
+	Container  string
+	Timestamps bool
+}
+
+// StreamPodLogs returns an io.ReadCloser streaming the raw log bytes
+// from the named pod. The caller MUST Close() the reader to release
+// the HTTP connection. The K8s logs endpoint returns text/plain — no
+// framing — so the caller is responsible for line splitting.
+//
+// Returns a *KubeError (StatusCode populated) when the apiserver
+// rejects the request. A 404 there means "pod not found" — the live-
+// log subscriber translates that into a clean "no logs yet" rather
+// than tearing down the client connection.
+func (c *KubernetesClient) StreamPodLogs(ctx context.Context, namespace, podName string, opts PodLogOptions) (io.ReadCloser, error) {
+	query := url.Values{}
+	if opts.Follow {
+		query.Set("follow", "true")
+	}
+	if opts.TailLines > 0 {
+		query.Set("tailLines", strconv.FormatInt(opts.TailLines, 10))
+	}
+	if opts.Container != "" {
+		query.Set("container", opts.Container)
+	}
+	if opts.Timestamps {
+		query.Set("timestamps", "true")
+	}
+	path := fmt.Sprintf("/api/v1/namespaces/%s/pods/%s/log", namespace, podName)
+	if encoded := query.Encode(); encoded != "" {
+		path += "?" + encoded
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.BaseURL+path, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "text/plain")
+	if c.BearerToken != "" {
+		req.Header.Set("Authorization", "Bearer "+c.BearerToken)
+	}
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return nil, &KubeError{Message: err.Error()}
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(resp.Body)
+		_ = resp.Body.Close()
+		return nil, &KubeError{StatusCode: resp.StatusCode, Message: string(body)}
+	}
+	return resp.Body, nil
 }
 
 func (c *KubernetesClient) doJSON(ctx context.Context, method, path string, body []byte, out any) error {
