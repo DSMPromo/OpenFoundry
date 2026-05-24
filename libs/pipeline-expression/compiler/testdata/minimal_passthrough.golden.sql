@@ -1,0 +1,2 @@
+INSERT OVERWRITE {{output:out}}
+SELECT * FROM node_25a6634263c1;

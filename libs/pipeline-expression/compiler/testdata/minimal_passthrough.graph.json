@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "nodes": [
+    {
+      "id": "src",
+      "kind": "dataset_input",
+      "config": {"dataset_rid": "ri.dataset.x", "branch": "master"}
+    },
+    {
+      "id": "out",
+      "kind": "dataset_output",
+      "inputs": ["src"],
+      "config": {"dataset_rid": "ri.dataset.y", "write_mode": "SNAPSHOT"}
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "version": "1",
+  "nodes": [
+    {
+      "id": "src",
+      "kind": "dataset_input",
+      "config": {"dataset_rid": "ri.dataset.orders", "branch": "master"}
+    },
+    {
+      "id": "active",
+      "kind": "filter",
+      "inputs": ["src"],
+      "config": {"predicate": "status = 'ACTIVE' AND amount > 0"}
+    },
+    {
+      "id": "narrow",
+      "kind": "select",
+      "inputs": ["active"],
+      "config": {"columns": ["order_id", "customer_id", "amount", "placed_at"]}
+    },
+    {
+      "id": "with_totals",
+      "kind": "derived_column",
+      "inputs": ["narrow"],
+      "config": {
+        "columns": [
+          {"name": "amount_cents", "expression": "amount * 100"},
+          {"name": "placed_date", "expression": "to_date(placed_at)"}
+        ]
+      }
+    },
+    {
+      "id": "out",
+      "kind": "dataset_output",
+      "inputs": ["with_totals"],
+      "config": {"dataset_rid": "ri.dataset.orders_normalised", "write_mode": "SNAPSHOT"}
+    }
+  ]
+}

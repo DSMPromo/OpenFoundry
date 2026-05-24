@@ -1,0 +1,22 @@
+{
+  "version": "1",
+  "nodes": [
+    {
+      "id": "events_in",
+      "kind": "dataset_input",
+      "config": {"dataset_rid": "ri.dataset.events_raw"}
+    },
+    {
+      "id": "valid",
+      "kind": "filter",
+      "inputs": ["events_in"],
+      "config": {"predicate": "event_id IS NOT NULL"}
+    },
+    {
+      "id": "events_out",
+      "kind": "dataset_output",
+      "inputs": ["valid"],
+      "config": {"dataset_rid": "ri.dataset.events_clean", "write_mode": "APPEND"}
+    }
+  ]
+}
