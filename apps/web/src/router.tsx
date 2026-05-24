@@ -348,6 +348,12 @@ export const router = createBrowserRouter([
         lazy: async () => ({ Component: (await import('./routes/control-panel/ControlPanelPage')).ControlPanelPage }),
       },
       {
+        path: 'control-panel/development-portal',
+        lazy: async () => ({
+          Component: (await import('./routes/control-panel/DevelopmentPortalPage')).DevelopmentPortalPage,
+        }),
+      },
+      {
         path: 'control-panel/streaming-profiles',
         lazy: async () => ({ Component: (await import('./routes/control-panel/StreamingProfilesPage')).StreamingProfilesPage }),
       },
