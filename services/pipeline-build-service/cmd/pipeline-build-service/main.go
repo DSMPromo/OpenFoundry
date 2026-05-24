@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/openfoundry/openfoundry-go/libs/capabilities/probes"
 	"github.com/openfoundry/openfoundry-go/libs/observability"
@@ -86,6 +87,11 @@ func main() {
 	} else {
 		log.Warn("PYTHON_SIDECAR_BINARY unset; Python pipeline transforms are unavailable and jobs will fail with python_sidecar_not_configured")
 	}
+
+	// Metrics is created early so the queue dispatcher (below)
+	// can register its collectors with the same Prometheus
+	// Registry the /metrics endpoint serves.
+	metrics := observability.NewMetrics()
 
 	var pool *pgxpool.Pool
 	if cfg.DatabaseURL != "" {
@@ -165,7 +171,15 @@ func main() {
 			}
 		}
 		if dispatchInterval > 0 {
-			dispatcher := queuedispatcher.New(repo, queuedispatcher.WithLogger(log))
+			dispatcherMetrics := queuedispatcher.NewMetrics()
+			for _, c := range dispatcherMetrics.Collectors() {
+				dispatcherMetricsRegister(metrics, c, log)
+			}
+			dispatcher := queuedispatcher.New(
+				repo,
+				queuedispatcher.WithLogger(log),
+				queuedispatcher.WithMetrics(dispatcherMetrics),
+			)
 			go func() {
 				ticker := time.NewTicker(dispatchInterval)
 				defer ticker.Stop()
@@ -205,12 +219,25 @@ func main() {
 		log.Warn("kubernetes client unavailable — pipeline-runner submission endpoints return explicit 503", slog.String("error", err.Error()))
 	}
 
-	metrics := observability.NewMetrics()
 	srv := server.NewWithDeps(cfg, metrics, server.Deps{Pool: pool}, probes.Postgres("primary", pool))
 	if err := run(ctx, srv, log); err != nil && !errors.Is(err, context.Canceled) {
 		log.Error("server exited with error", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
+}
+
+// dispatcherMetricsRegister attaches one queue-dispatcher collector
+// to the shared metrics registry. Wraps the panic-on-duplicate that
+// observability.Metrics.Register would otherwise raise so a startup
+// retry / hot reload doesn't crash the service.
+func dispatcherMetricsRegister(metrics *observability.Metrics, c prometheus.Collector, log *slog.Logger) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Warn("queue dispatcher metric already registered",
+				slog.Any("recovered", r))
+		}
+	}()
+	metrics.Register(c)
 }
 
 func run(ctx context.Context, srv *http.Server, log *slog.Logger) error {

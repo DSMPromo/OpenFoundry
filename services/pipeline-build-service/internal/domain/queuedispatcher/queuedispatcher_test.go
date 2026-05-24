@@ -5,22 +5,60 @@ import (
 	"errors"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
+	"github.com/prometheus/client_golang/prometheus"
+	dto "github.com/prometheus/client_model/go"
 
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/models"
 )
+
+// gaugeValue extracts the current value of a single-label gauge child.
+func gaugeValue(t *testing.T, g prometheus.Gauge) float64 {
+	t.Helper()
+	m := &dto.Metric{}
+	if err := g.Write(m); err != nil {
+		t.Fatalf("gauge write: %v", err)
+	}
+	return m.GetGauge().GetValue()
+}
+
+// counterValue extracts the current value of a Counter.
+func counterValue(t *testing.T, c prometheus.Counter) float64 {
+	t.Helper()
+	m := &dto.Metric{}
+	if err := c.Write(m); err != nil {
+		t.Fatalf("counter write: %v", err)
+	}
+	return m.GetCounter().GetValue()
+}
+
+// histogramSampleCount returns the cumulative number of observations
+// on the labeled histogram child.
+func histogramSampleCount(t *testing.T, h *prometheus.HistogramVec, lvs ...string) uint64 {
+	t.Helper()
+	obs, err := h.GetMetricWithLabelValues(lvs...)
+	if err != nil {
+		t.Fatalf("histogram lookup: %v", err)
+	}
+	m := &dto.Metric{}
+	if err := obs.(prometheus.Histogram).Write(m); err != nil {
+		t.Fatalf("histogram write: %v", err)
+	}
+	return m.GetHistogram().GetSampleCount()
+}
 
 // fakeRepo implements the dispatcher's Repository contract. Every
 // call records into a shared mu+slice for assertion; canned outputs
 // per-method.
 type fakeRepo struct {
-	mu          sync.Mutex
-	queued      []QueuedRun
-	pools       []models.ResourcePool
-	utilByPool  map[uuid.UUID]PoolUtilization
-	promoted    []uuid.UUID
-	waiting     map[uuid.UUID]string
+	mu         sync.Mutex
+	queued     []QueuedRun
+	pools      []models.ResourcePool
+	utilByPool map[uuid.UUID]PoolUtilization
+	promoted   []uuid.UUID
+	waiting    map[uuid.UUID]string
 	promoteErr error
 	waitErr    error
 }
@@ -196,6 +234,66 @@ type recordReserver struct {
 func (r *recordReserver) Reserve(_ context.Context, _ QueuedRun, _ models.ResourcePool) error {
 	r.calls++
 	return r.err
+}
+
+func TestTickEmitsQueueDepthAndUtilizationGauges(t *testing.T) {
+	dpool := defaultPool()
+	dpool.MaxConcurrentBuilds = intp(4)
+	runs := []QueuedRun{{ID: uuid.New()}, {ID: uuid.New()}, {ID: uuid.New()}}
+	repo := &fakeRepo{
+		queued:     runs,
+		pools:      []models.ResourcePool{dpool},
+		utilByPool: map[uuid.UUID]PoolUtilization{dpool.ID: {RunningCount: 1}},
+	}
+	m := NewMetrics()
+	d := New(repo, WithMetrics(m))
+	if _, err := d.Tick(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	gotDepth := gaugeValue(t, m.QueueDepth.WithLabelValues("default"))
+	if gotDepth != 3 {
+		t.Errorf("queue_depth = %v, want 3", gotDepth)
+	}
+	// 1 running / 4 max = 0.25
+	gotUtil := gaugeValue(t, m.PoolUtilization.WithLabelValues("default"))
+	if gotUtil != 0.25 {
+		t.Errorf("pool_utilization = %v, want 0.25", gotUtil)
+	}
+}
+
+func TestTickObservesWaitSecondsOnPromote(t *testing.T) {
+	dpool := defaultPool()
+	queuedAt := time.Now().Add(-3 * time.Second)
+	runs := []QueuedRun{{ID: uuid.New(), QueuedAt: queuedAt}}
+	repo := &fakeRepo{queued: runs, pools: []models.ResourcePool{dpool}}
+	m := NewMetrics()
+	d := New(repo, WithMetrics(m))
+	if _, err := d.Tick(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	count := histogramSampleCount(t, m.WaitSeconds, "default", "100")
+	if count != 1 {
+		t.Errorf("wait_seconds samples = %d, want 1", count)
+	}
+}
+
+func TestTickIncrementsCountersForEveryOutcome(t *testing.T) {
+	dpool := defaultPool()
+	dpool.MaxConcurrentBuilds = intp(1)
+	runs := []QueuedRun{{ID: uuid.New()}, {ID: uuid.New()}}
+	repo := &fakeRepo{
+		queued:     runs,
+		pools:      []models.ResourcePool{dpool},
+		utilByPool: map[uuid.UUID]PoolUtilization{dpool.ID: {RunningCount: 1}},
+	}
+	m := NewMetrics()
+	d := New(repo, WithMetrics(m))
+	if _, err := d.Tick(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if got := counterValue(t, m.TickWaiting); got != 2 {
+		t.Errorf("waiting counter = %v, want 2", got)
+	}
 }
 
 func TestTickRollsBackPromoteWhenReserveFails(t *testing.T) {
