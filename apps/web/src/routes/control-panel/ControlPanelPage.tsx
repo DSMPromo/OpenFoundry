@@ -169,6 +169,7 @@ export function ControlPanelPage() {
       {loading && <p className="of-text-muted">Loading…</p>}
 
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <Link to="/control-panel/development-portal" className="of-button">Development portal →</Link>
         <Link to="/control-panel/streaming-profiles" className="of-button">Streaming profiles →</Link>
         <Link to="/control-panel/data-health" className="of-button">Data health →</Link>
         <Link to="/control-panel/tenancy" className="of-button">Organizations &amp; spaces →</Link>
