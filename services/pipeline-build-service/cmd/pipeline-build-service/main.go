@@ -143,6 +143,7 @@ func main() {
 		handler.SetBuildQueryRepository(repo)
 		handler.SetPipelineAuthoringRepository(repo)
 		handler.SetTransformRepository(repo)
+		handler.SetResourcePoolRepository(repo)
 		handler.SetPipelineAccessRepository(repo)
 		handler.SetComputeProfileRepository(repo)
 		handler.SetMLModelRepository(repo)
