@@ -33,5 +33,24 @@ CREATE TABLE IF NOT EXISTS lineage_edges (
 );
 
 CREATE INDEX IF NOT EXISTS idx_pipeline_runs_pipeline ON pipeline_runs(pipeline_id);
-CREATE INDEX IF NOT EXISTS idx_lineage_source ON lineage_edges(source_dataset_id);
-CREATE INDEX IF NOT EXISTS idx_lineage_target ON lineage_edges(target_dataset_id);
+
+-- lineage_edges is now owned by lineage-service (see
+-- services/lineage-service/internal/repo/migrations/
+-- 20260517120000_openlineage_graph.sql). Its schema uses
+-- src_dataset_rid / dst_dataset_rid rather than the
+-- source_dataset_id / target_dataset_id this migration
+-- originally created. We can't drop the CREATE TABLE above
+-- without breaking pipeline-build-only deployments, but the
+-- index creation below would fail on column lookup when the
+-- new shape is already present. Guard both indexes on column
+-- existence so the migration applies cleanly in either order.
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'lineage_edges' AND column_name = 'source_dataset_id'
+    ) THEN
+        EXECUTE 'CREATE INDEX IF NOT EXISTS idx_lineage_source ON lineage_edges(source_dataset_id)';
+        EXECUTE 'CREATE INDEX IF NOT EXISTS idx_lineage_target ON lineage_edges(target_dataset_id)';
+    END IF;
+END $$;
