@@ -24,11 +24,17 @@ func validPlan() pipelineplan.Plan {
 	return pipelineplan.Plan{
 		PipelineID: "p", RunID: "r",
 		Ops: []pipelineplan.Op{
-			{ID: "src", Kind: pipelineplan.KindReadTable,
-				ReadTable: &pipelineplan.ReadTable{Catalog: "c", Namespace: "n", Table: "t"}},
-			{ID: "sink", Kind: pipelineplan.KindWriteTable, Inputs: []string{"src"},
-				WriteTable: &pipelineplan.WriteTable{Catalog: "c", Namespace: "n", Table: "t",
-					Mode: pipelineplan.WriteModeCreateOrReplace}},
+			{
+				ID: "src", Kind: pipelineplan.KindReadTable,
+				ReadTable: &pipelineplan.ReadTable{Catalog: "c", Namespace: "n", Table: "t"},
+			},
+			{
+				ID: "sink", Kind: pipelineplan.KindWriteTable, Inputs: []string{"src"},
+				WriteTable: &pipelineplan.WriteTable{
+					Catalog: "c", Namespace: "n", Table: "t",
+					Mode: pipelineplan.WriteModeCreateOrReplace,
+				},
+			},
 		},
 	}
 }
@@ -219,9 +225,11 @@ func TestParseStatus_branches(t *testing.T) {
 		"succeeded → succeeded":    {`{"status":{"succeeded":1}}`, dispatch.RunSucceeded, ""},
 		"failed condition":         {`{"status":{"conditions":[{"type":"Failed","status":"True","message":"backoff"}]}}`, dispatch.RunFailed, "backoff"},
 		"failed condition without message": {
-			`{"status":{"conditions":[{"type":"Failed","status":"True"}]}}`, dispatch.RunFailed, ""},
+			`{"status":{"conditions":[{"type":"Failed","status":"True"}]}}`, dispatch.RunFailed, "",
+		},
 		"failed condition status False is ignored": {
-			`{"status":{"conditions":[{"type":"Failed","status":"False"}],"succeeded":1}}`, dispatch.RunSucceeded, ""},
+			`{"status":{"conditions":[{"type":"Failed","status":"False"}],"succeeded":1}}`, dispatch.RunSucceeded, "",
+		},
 	}
 	for name, tc := range cases {
 		tc := tc

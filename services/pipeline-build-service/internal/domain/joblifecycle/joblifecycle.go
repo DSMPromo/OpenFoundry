@@ -1,10 +1,10 @@
 // Package joblifecycle ports services/pipeline-build-service/src/domain/job_lifecycle.rs
 // 1:1: the Foundry "Builds.md § Job states" state machine.
 //
-//	  WAITING ──┬─→ RUN_PENDING ─→ RUNNING ─┬─→ COMPLETED
-//	            │                            ├─→ FAILED
-//	            │                            └─→ ABORT_PENDING ─→ ABORTED
-//	            └────────────────────────────→ ABORTED       (cascading abort)
+//	WAITING ──┬─→ RUN_PENDING ─→ RUNNING ─┬─→ COMPLETED
+//	          │                            ├─→ FAILED
+//	          │                            └─→ ABORT_PENDING ─→ ABORTED
+//	          └────────────────────────────→ ABORTED       (cascading abort)
 //
 // Any transition not listed above is rejected by IsValidTransition
 // and propagated as ErrInvalidTransition. The high-level TransitionJob
@@ -47,16 +47,16 @@ func (e *ErrNotFound) Error() string { return "job " + e.ID.String() + " not fou
 func IsValidTransition(from, to models.JobState) bool {
 	type pair struct{ from, to models.JobState }
 	allowed := map[pair]bool{
-		{models.JobWaiting, models.JobRunPending}:        true,
-		{models.JobWaiting, models.JobAborted}:           true,
-		{models.JobWaiting, models.JobAbortPending}:      true,
-		{models.JobRunPending, models.JobRunning}:        true,
-		{models.JobRunPending, models.JobAbortPending}:   true,
-		{models.JobRunPending, models.JobFailed}:         true,
-		{models.JobRunning, models.JobCompleted}:         true,
-		{models.JobRunning, models.JobFailed}:            true,
-		{models.JobRunning, models.JobAbortPending}:      true,
-		{models.JobAbortPending, models.JobAborted}:      true,
+		{models.JobWaiting, models.JobRunPending}:      true,
+		{models.JobWaiting, models.JobAborted}:         true,
+		{models.JobWaiting, models.JobAbortPending}:    true,
+		{models.JobRunPending, models.JobRunning}:      true,
+		{models.JobRunPending, models.JobAbortPending}: true,
+		{models.JobRunPending, models.JobFailed}:       true,
+		{models.JobRunning, models.JobCompleted}:       true,
+		{models.JobRunning, models.JobFailed}:          true,
+		{models.JobRunning, models.JobAbortPending}:    true,
+		{models.JobAbortPending, models.JobAborted}:    true,
 	}
 	return allowed[pair{from, to}]
 }

@@ -100,10 +100,12 @@ func newFakeStore(staged ...*StagedTransaction) *fakeStore {
 func (f *fakeStore) LoadTransaction(_ context.Context, tx executor.OutputTransaction) (*StagedTransaction, error) {
 	return f.byTxn[tx.TransactionRID], nil
 }
+
 func (f *fakeStore) MarkCommitted(_ context.Context, tx executor.OutputTransaction) error {
 	f.committed[tx.TransactionRID] = true
 	return nil
 }
+
 func (f *fakeStore) MarkAborted(_ context.Context, tx executor.OutputTransaction) error {
 	f.aborted[tx.TransactionRID] = true
 	return nil
@@ -135,6 +137,7 @@ func (f *fakeTable) Append(_ context.Context, batch AppendBatch) error {
 	}
 	return nil
 }
+
 func (f *fakeTable) Rollback(_ context.Context, req RollbackRequest) error {
 	f.rollbacks = append(f.rollbacks, req)
 	if err := f.rollbackErrByTxn[req.TransactionRID]; err != nil {

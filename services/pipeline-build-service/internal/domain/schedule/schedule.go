@@ -60,9 +60,9 @@ const (
 type EventType string
 
 const (
-	EventTypeNewLogic               EventType = "NEW_LOGIC"
-	EventTypeDataUpdated            EventType = "DATA_UPDATED"
-	EventTypeJobSucceeded           EventType = "JOB_SUCCEEDED"
+	EventTypeNewLogic                EventType = "NEW_LOGIC"
+	EventTypeDataUpdated             EventType = "DATA_UPDATED"
+	EventTypeJobSucceeded            EventType = "JOB_SUCCEEDED"
 	EventTypeScheduleRanSuccessfully EventType = "SCHEDULE_RAN_SUCCESSFULLY"
 )
 
@@ -180,11 +180,11 @@ type ScheduleTarget struct {
 
 // PipelineBuildTarget mirrors `pub struct PipelineBuildTarget`.
 type PipelineBuildTarget struct {
-	PipelineRID      string   `json:"pipeline_rid"`
-	BuildBranch      string   `json:"build_branch"`
-	JobSpecFallback  []string `json:"job_spec_fallback,omitempty"`
-	ForceBuild       bool     `json:"force_build"`
-	AbortPolicy      *string  `json:"abort_policy,omitempty"`
+	PipelineRID     string   `json:"pipeline_rid"`
+	BuildBranch     string   `json:"build_branch"`
+	JobSpecFallback []string `json:"job_spec_fallback,omitempty"`
+	ForceBuild      bool     `json:"force_build"`
+	AbortPolicy     *string  `json:"abort_policy,omitempty"`
 }
 
 // DatasetBuildTarget mirrors `pub struct DatasetBuildTarget`.
@@ -209,26 +209,26 @@ type HealthCheckTarget struct {
 
 // PauseReason mirrors the canonical Rust strings.
 const (
-	PauseReasonManual                 = "MANUAL"
+	PauseReasonManual                  = "MANUAL"
 	PauseReasonAutoPausedAfterFailures = "AUTO_PAUSED_AFTER_FAILURES"
 )
 
 // Schedule mirrors `pub struct Schedule`.
 type Schedule struct {
-	ID          uuid.UUID  `json:"id"`
-	RID         string     `json:"rid"`
-	ProjectRID  string     `json:"project_rid"`
-	Name        string     `json:"name"`
-	Description string     `json:"description"`
-	Trigger     Trigger    `json:"trigger"`
+	ID          uuid.UUID      `json:"id"`
+	RID         string         `json:"rid"`
+	ProjectRID  string         `json:"project_rid"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Trigger     Trigger        `json:"trigger"`
 	Target      ScheduleTarget `json:"target"`
-	Paused      bool       `json:"paused"`
-	PauseReason *string    `json:"pause_reason,omitempty"`
-	Version     int32      `json:"version"`
-	CreatedBy   string     `json:"created_by"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	LastRunAt   *time.Time `json:"last_run_at,omitempty"`
+	Paused      bool           `json:"paused"`
+	PauseReason *string        `json:"pause_reason,omitempty"`
+	Version     int32          `json:"version"`
+	CreatedBy   string         `json:"created_by"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+	LastRunAt   *time.Time     `json:"last_run_at,omitempty"`
 }
 
 // ── Cron window planner ───────────────────────────────────────────
@@ -326,9 +326,9 @@ func mapFlavor(f CronFlavor) cron.CronFlavor {
 // TriggerEvent is one input the event-listener feeds the trigger
 // evaluator. Mirrors the Rust event-driven dispatcher's input.
 type TriggerEvent struct {
-	EventType EventType
-	TargetRID string
-	Branch    string
+	EventType  EventType
+	TargetRID  string
+	Branch     string
 	OccurredAt time.Time
 }
 
@@ -468,7 +468,7 @@ const AutoPauseFailureThreshold = 5
 // RunOutcome mirrors the slimmest path of `RunOutcome` the auto-
 // pause supervisor reads. `Succeeded` resets the failure counter.
 type RunOutcome struct {
-	Succeeded bool
+	Succeeded  bool
 	OccurredAt time.Time
 }
 
@@ -517,10 +517,10 @@ const (
 
 // DueRunRecord mirrors `pub struct DueRunRecord`.
 type DueRunRecord struct {
-	TargetKind          ScheduleTargetKindLegacy `json:"target_kind"`
-	TargetID            uuid.UUID                `json:"target_id"`
-	Name                string                   `json:"name"`
-	DueAt               time.Time                `json:"due_at"`
-	ScheduleExpression  string                   `json:"schedule_expression"`
-	TriggerType         string                   `json:"trigger_type"`
+	TargetKind         ScheduleTargetKindLegacy `json:"target_kind"`
+	TargetID           uuid.UUID                `json:"target_id"`
+	Name               string                   `json:"name"`
+	DueAt              time.Time                `json:"due_at"`
+	ScheduleExpression string                   `json:"schedule_expression"`
+	TriggerType        string                   `json:"trigger_type"`
 }

@@ -43,18 +43,18 @@ const (
 // expose the trend history; the latest event per (dataset, check_name)
 // is also rolled up into DatasetHealthSummary.
 type HealthEvent struct {
-	ID           int64           `json:"id"`
-	DatasetRID   string          `json:"dataset_rid"`
-	SnapshotID   *int64          `json:"snapshot_id,omitempty"`
-	CheckName    string          `json:"check_name"`
-	Severity     HealthSeverity  `json:"severity"`
-	Status       HealthStatus    `json:"status"`
-	MetricName   *string         `json:"metric_name,omitempty"`
-	MetricValue  *float64        `json:"metric_value,omitempty"`
-	Threshold    *float64        `json:"threshold,omitempty"`
-	Message      *string         `json:"message,omitempty"`
-	Details      json.RawMessage `json:"details,omitempty"`
-	EvaluatedAt  time.Time       `json:"evaluated_at"`
+	ID          int64           `json:"id"`
+	DatasetRID  string          `json:"dataset_rid"`
+	SnapshotID  *int64          `json:"snapshot_id,omitempty"`
+	CheckName   string          `json:"check_name"`
+	Severity    HealthSeverity  `json:"severity"`
+	Status      HealthStatus    `json:"status"`
+	MetricName  *string         `json:"metric_name,omitempty"`
+	MetricValue *float64        `json:"metric_value,omitempty"`
+	Threshold   *float64        `json:"threshold,omitempty"`
+	Message     *string         `json:"message,omitempty"`
+	Details     json.RawMessage `json:"details,omitempty"`
+	EvaluatedAt time.Time       `json:"evaluated_at"`
 }
 
 // RecordHealthEventRequest is the POST /internal/datasets/{rid}/health
@@ -75,8 +75,8 @@ type RecordHealthEventRequest struct {
 //
 //	Overall = degraded when ANY active check is degraded.
 type DatasetHealthSummary struct {
-	DatasetRID  string         `json:"dataset_rid"`
-	Overall     HealthStatus   `json:"overall"`
+	DatasetRID     string        `json:"dataset_rid"`
+	Overall        HealthStatus  `json:"overall"`
 	LatestPerCheck []HealthEvent `json:"latest_per_check"`
 	RecentEvents   []HealthEvent `json:"recent_events"`
 }
@@ -108,7 +108,8 @@ func (r *HealthRepo) RecordEvent(ctx context.Context, datasetRID string, body Re
 	if len(details) == 0 {
 		details = json.RawMessage(`{}`)
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO dataset_health_events
 		   (dataset_rid, snapshot_id, check_name, severity, status,
 		    metric_name, metric_value, threshold, message, details)
@@ -123,7 +124,8 @@ func (r *HealthRepo) RecordEvent(ctx context.Context, datasetRID string, body Re
 // LatestPerCheck returns the most recent event per check_name for the
 // given dataset.
 func (r *HealthRepo) LatestPerCheck(ctx context.Context, datasetRID string) ([]HealthEvent, error) {
-	rows, err := r.Pool.Query(ctx,
+	rows, err := r.Pool.Query(
+		ctx,
 		`SELECT DISTINCT ON (check_name) `+healthCols+`
 		   FROM dataset_health_events
 		  WHERE dataset_rid = $1
@@ -150,7 +152,8 @@ func (r *HealthRepo) Recent(ctx context.Context, datasetRID string, limit int) (
 	if limit <= 0 {
 		limit = 50
 	}
-	rows, err := r.Pool.Query(ctx,
+	rows, err := r.Pool.Query(
+		ctx,
 		`SELECT `+healthCols+`
 		   FROM dataset_health_events
 		  WHERE dataset_rid = $1

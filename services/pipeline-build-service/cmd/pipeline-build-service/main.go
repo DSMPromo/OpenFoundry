@@ -122,7 +122,24 @@ func main() {
 		aiClient := &http.Client{Timeout: 45 * time.Second}
 		llmRunner := handler.NewAIServiceLLMRunner(handler.AIServiceLLMConfig{BaseURL: cfg.AIServiceURL, BearerToken: cfg.AIServiceBearer, Client: aiClient})
 		aipGenerator := handler.NewAIServicePipelineAIPGenerator(handler.PipelineAIPGeneratorConfig{BaseURL: cfg.AIServiceURL, BearerToken: cfg.AIServiceBearer, Client: aiClient})
-		handler.SetExecutionPorts(handler.ExecutionPorts{Plans: repo, Runs: repo, Python: pythonRuntime, LLM: llmRunner, AIP: aipGenerator, Distributed: distributedRunner, Transactions: handler.ConfigGatedTransactionManager{Metadata: repo, CatalogConfigured: cfg.FoundryIcebergCatalogURL != ""}, Committer: handler.ConfigGatedOutputCommitter{Metadata: outputCommitter, CatalogConfigured: cfg.FoundryIcebergCatalogURL != ""}, Audit: repo, Parallelism: cfg.DistributedPipelineWorkers})
+		// Lambda runner is optional — only built when OF_AWS__REGION
+		// (or the LocalStack endpoint) is set. Otherwise pipeline
+		// nodes with transform_type=lambda fail with a clear
+		// 'lambda_runner_not_configured' error at execution time.
+		lambdaRunner, err := handler.NewLambdaRunner(ctx, handler.LambdaRunnerConfig{
+			Region:          os.Getenv("OF_AWS__REGION"),
+			EndpointURL:     os.Getenv("OF_AWS__ENDPOINT_URL"),
+			AccessKeyID:     os.Getenv("OF_AWS__ACCESS_KEY_ID"),
+			SecretAccessKey: os.Getenv("OF_AWS__SECRET_ACCESS_KEY"),
+			SessionToken:    os.Getenv("OF_AWS__SESSION_TOKEN"),
+		})
+		if err != nil {
+			log.Warn("lambda runner init failed; transform_type=lambda nodes will error",
+				slog.String("error", err.Error()))
+		} else if lambdaRunner != nil {
+			log.Info("lambda transform runner wired")
+		}
+		handler.SetExecutionPorts(handler.ExecutionPorts{Plans: repo, Runs: repo, Python: pythonRuntime, LLM: llmRunner, AIP: aipGenerator, Distributed: distributedRunner, Lambda: lambdaRunner, Transactions: handler.ConfigGatedTransactionManager{Metadata: repo, CatalogConfigured: cfg.FoundryIcebergCatalogURL != ""}, Committer: handler.ConfigGatedOutputCommitter{Metadata: outputCommitter, CatalogConfigured: cfg.FoundryIcebergCatalogURL != ""}, Audit: repo, Parallelism: cfg.DistributedPipelineWorkers})
 		handler.SetBuildQueryRepository(repo)
 		handler.SetPipelineAuthoringRepository(repo)
 		handler.SetTransformRepository(repo)

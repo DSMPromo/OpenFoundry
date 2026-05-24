@@ -194,6 +194,7 @@ func newFakeV1Repo() *fakeV1Repo {
 func (f *fakeV1Repo) ListBuilds(context.Context, models.ListBuildsQuery) ([]models.BuildEnvelope, error) {
 	return append([]models.BuildEnvelope(nil), f.builds...), nil
 }
+
 func (f *fakeV1Repo) GetBuild(_ context.Context, idOrRID string) (*models.BuildEnvelope, error) {
 	for _, b := range f.builds {
 		if b.RID == idOrRID || b.ID.String() == idOrRID {
@@ -203,12 +204,14 @@ func (f *fakeV1Repo) GetBuild(_ context.Context, idOrRID string) (*models.BuildE
 	}
 	return nil, nil
 }
+
 func (f *fakeV1Repo) ListJobsForBuildID(_ context.Context, idOrRID string) ([]models.Job, error) {
 	if build, _ := f.GetBuild(context.Background(), idOrRID); build != nil {
 		return append([]models.Job(nil), build.Jobs...), nil
 	}
 	return nil, nil
 }
+
 func (f *fakeV1Repo) GetJob(_ context.Context, idOrRID string) (*models.Job, error) {
 	for _, b := range f.builds {
 		for _, job := range b.Jobs {
@@ -220,9 +223,11 @@ func (f *fakeV1Repo) GetJob(_ context.Context, idOrRID string) (*models.Job, err
 	}
 	return nil, nil
 }
+
 func (f *fakeV1Repo) ListDatasetBuilds(context.Context, string, int64) ([]models.Build, error) {
 	return nil, nil
 }
+
 func (f *fakeV1Repo) GetJobOutputs(_ context.Context, jobRID string) (*JobOutputsResponse, error) {
 	out := f.outputs[jobRID]
 	if out != nil {
@@ -233,9 +238,11 @@ func (f *fakeV1Repo) GetJobOutputs(_ context.Context, jobRID string) (*JobOutput
 	}
 	return nil, nil
 }
+
 func (f *fakeV1Repo) GetJobInputResolutions(context.Context, string) (json.RawMessage, error) {
 	return nil, nil
 }
+
 func (f *fakeV1Repo) PublishJobSpec(_ context.Context, kind string, req CreateJobSpecRequest, _ string) (PublishedJobSpec, error) {
 	contentHash := ""
 	if req.ContentHash != nil {

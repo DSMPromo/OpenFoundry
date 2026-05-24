@@ -250,7 +250,8 @@ func (r *Repository) CreateSchedule(ctx context.Context, req models.CreateSchedu
 		pausedAt = &now
 	}
 
-	return scanSchedule(r.db.QueryRow(ctx, `INSERT INTO schedules (
+	return scanSchedule(r.db.QueryRow(
+		ctx, `INSERT INTO schedules (
     id, project_rid, folder_rid, name, description,
     trigger_json, target_json, target_rids, branch, build_strategy,
     paused, paused_reason, paused_at, created_by, last_updated_by,
@@ -375,7 +376,8 @@ func (r *Repository) updateSchedule(ctx context.Context, next *models.Schedule, 
 		db = tx
 		_, _ = db.Exec(ctx, `SELECT set_config('app.editor', $1, true), set_config('app.change_comment', $2, true)`, actor, comment)
 	}
-	updated, err := scanSchedule(db.QueryRow(ctx, `UPDATE schedules
+	updated, err := scanSchedule(db.QueryRow(
+		ctx, `UPDATE schedules
 SET project_rid=$2,
     folder_rid=$3,
     name=$4,
@@ -616,7 +618,8 @@ func (r *Repository) ConvertScheduleToProjectScope(ctx context.Context, rid stri
 	serviceID := uuid.New()
 	displayName := "Schedule run-as: " + current.Name
 	var principal models.ScheduleServicePrincipal
-	err = r.db.QueryRow(ctx, `INSERT INTO service_principals (id, display_name, project_scope_rids, clearances, created_by)
+	err = r.db.QueryRow(
+		ctx, `INSERT INTO service_principals (id, display_name, project_scope_rids, clearances, created_by)
 VALUES ($1,$2,$3,$4,$5)
 RETURNING id, rid, display_name, project_scope_rids, clearances, created_by, created_at`,
 		serviceID, displayName, uniqueStrings(req.ProjectScopeRIDs), uniqueStrings(req.Clearances), actor,

@@ -136,7 +136,7 @@ func TestOFACTransformPointsAtRealImplementation(t *testing.T) {
 func TestOFACDecoderSymbolMatchesCatalogConstant(t *testing.T) {
 	// Smoke-import the package so a rename of DecodeSDN breaks the
 	// build instead of letting the catalog drift silently.
-	var fn = ofac.DecodeSDN
+	fn := ofac.DecodeSDN
 	require.NotNil(t, fn)
 	// The constant string and the import path must agree.
 	const wantPrefix = "github.com/openfoundry/openfoundry-go/libs/poc-geopolitica-transforms/ofac."

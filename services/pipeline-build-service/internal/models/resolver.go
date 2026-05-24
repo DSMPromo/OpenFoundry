@@ -47,10 +47,10 @@ type OpenedTransaction struct {
 
 // ResolvedInputView is the schema bundle selected for an external input.
 type ResolvedInputView struct {
-	DatasetRID          string          `json:"dataset_rid"`
-	Branch              string          `json:"branch"`
-	HeadTransactionRID  *string         `json:"head_transaction_rid,omitempty"`
-	Schema              json.RawMessage `json:"schema"`
+	DatasetRID         string          `json:"dataset_rid"`
+	Branch             string          `json:"branch"`
+	HeadTransactionRID *string         `json:"head_transaction_rid,omitempty"`
+	Schema             json.RawMessage `json:"schema"`
 }
 
 // ResolvedJob is the resolver's DAG-executor-neutral job plan entry.

@@ -179,21 +179,25 @@ func newDataIntegrationRepo(t *testing.T) *dataIntegrationRepo {
 func (r *dataIntegrationRepo) LoadPipeline(context.Context, uuid.UUID) (*models.Pipeline, error) {
 	return &r.pipeline, nil
 }
+
 func (r *dataIntegrationRepo) OpenPipelineRun(ctx context.Context, pipeline *models.Pipeline, req models.TriggerPipelineRequest, startedBy *uuid.UUID, contextJSON json.RawMessage) (*models.PipelineRun, error) {
 	return r.OpenPipelineRunWithOptions(ctx, pipeline, req, startedBy, "manual", req.FromNodeID, nil, 1, contextJSON)
 }
+
 func (r *dataIntegrationRepo) OpenPipelineRunWithOptions(_ context.Context, pipeline *models.Pipeline, _ models.TriggerPipelineRequest, startedBy *uuid.UUID, triggerType string, fromNodeID *string, retryOfRunID *uuid.UUID, attemptNumber int32, contextJSON json.RawMessage) (*models.PipelineRun, error) {
 	id := uuid.New()
 	run := models.PipelineRun{ID: id, PipelineID: pipeline.ID, Status: "queued", TriggerType: triggerType, StartedBy: startedBy, AttemptNumber: attemptNumber, StartedFromNodeID: fromNodeID, RetryOfRunID: retryOfRunID, ExecutionContext: contextJSON, StartedAt: time.Now().UTC()}
 	r.runs[id] = run
 	return &run, nil
 }
+
 func (r *dataIntegrationRepo) MarkPipelineRunRunning(_ context.Context, runID uuid.UUID) error {
 	run := r.runs[runID]
 	run.Status = "running"
 	r.runs[runID] = run
 	return nil
 }
+
 func (r *dataIntegrationRepo) FinishPipelineRun(_ context.Context, runID uuid.UUID, status string, nodeResults json.RawMessage, errorMessage *string) error {
 	run := r.runs[runID]
 	run.Status = status
@@ -204,9 +208,11 @@ func (r *dataIntegrationRepo) FinishPipelineRun(_ context.Context, runID uuid.UU
 	r.runs[runID] = run
 	return nil
 }
+
 func (r *dataIntegrationRepo) ListPipelineRuns(context.Context, uuid.UUID, int64, int64) ([]models.PipelineRun, error) {
 	return r.allRuns(), nil
 }
+
 func (r *dataIntegrationRepo) GetPipelineRun(_ context.Context, _, runID uuid.UUID) (*models.PipelineRun, error) {
 	run, ok := r.runs[runID]
 	if !ok {
@@ -214,9 +220,11 @@ func (r *dataIntegrationRepo) GetPipelineRun(_ context.Context, _, runID uuid.UU
 	}
 	return &run, nil
 }
+
 func (r *dataIntegrationRepo) ListBuildQueue(context.Context, BuildQueueQuery) ([]models.PipelineRun, error) {
 	return r.allRuns(), nil
 }
+
 func (r *dataIntegrationRepo) AbortPipelineRun(_ context.Context, runID uuid.UUID) (*models.PipelineRun, bool, error) {
 	run, ok := r.runs[runID]
 	if !ok {
@@ -229,17 +237,21 @@ func (r *dataIntegrationRepo) AbortPipelineRun(_ context.Context, runID uuid.UUI
 	r.runs[runID] = run
 	return &run, true, nil
 }
+
 func (r *dataIntegrationRepo) QueueSummary(context.Context) (map[string]int64, error) {
 	return r.summary, nil
 }
+
 func (r *dataIntegrationRepo) ListDuePipelines(context.Context) ([]models.Pipeline, error) {
 	return r.due, nil
 }
+
 func (r *dataIntegrationRepo) UpdatePipelineNextRun(_ context.Context, _ uuid.UUID, nextRunAt *time.Time) error {
 	r.nextRunUpdated = true
 	r.nextRunAt = nextRunAt
 	return nil
 }
+
 func (r *dataIntegrationRepo) allRuns() []models.PipelineRun {
 	out := make([]models.PipelineRun, 0, len(r.runs))
 	for _, run := range r.runs {

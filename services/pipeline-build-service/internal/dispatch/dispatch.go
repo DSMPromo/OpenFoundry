@@ -618,7 +618,8 @@ func httpClientFromKubeCluster(cluster *struct {
 	CertificateAuthority     string `yaml:"certificate-authority"`
 	CertificateAuthorityData string `yaml:"certificate-authority-data"`
 	InsecureSkipTLSVerify    bool   `yaml:"insecure-skip-tls-verify"`
-}, kubeconfigDir string) (*http.Client, error) {
+}, kubeconfigDir string,
+) (*http.Client, error) {
 	if cluster == nil {
 		return nil, nil
 	}

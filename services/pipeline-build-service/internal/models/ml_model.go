@@ -15,19 +15,19 @@ import (
 // framework + version, typed feature and output schemas, and an artifact /
 // serving location.
 type MLModel struct {
-	ID           uuid.UUID         `json:"id"`
-	Slug         string            `json:"slug"`
-	DisplayName  string            `json:"display_name"`
-	Description  string            `json:"description"`
-	Framework    string            `json:"framework"`
-	Version      string            `json:"version"`
-	InputSchema  []MLModelField    `json:"input_schema"`
-	OutputSchema []MLModelField    `json:"output_schema"`
-	ArtifactURI  string            `json:"artifact_uri"`
-	InferenceURL string            `json:"inference_url,omitempty"`
-	OwnerID      *uuid.UUID        `json:"owner_id,omitempty"`
-	CreatedAt    time.Time         `json:"created_at"`
-	UpdatedAt    time.Time         `json:"updated_at"`
+	ID           uuid.UUID      `json:"id"`
+	Slug         string         `json:"slug"`
+	DisplayName  string         `json:"display_name"`
+	Description  string         `json:"description"`
+	Framework    string         `json:"framework"`
+	Version      string         `json:"version"`
+	InputSchema  []MLModelField `json:"input_schema"`
+	OutputSchema []MLModelField `json:"output_schema"`
+	ArtifactURI  string         `json:"artifact_uri"`
+	InferenceURL string         `json:"inference_url,omitempty"`
+	OwnerID      *uuid.UUID     `json:"owner_id,omitempty"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    time.Time      `json:"updated_at"`
 }
 
 // MLModelField is one entry in the input or output schema of a model.
@@ -38,15 +38,15 @@ type MLModelField struct {
 
 // CreateMLModelRequest is the body for POST /ml-models.
 type CreateMLModelRequest struct {
-	Slug         string          `json:"slug"`
-	DisplayName  string          `json:"display_name"`
-	Description  string          `json:"description,omitempty"`
-	Framework    string          `json:"framework,omitempty"`
-	Version      string          `json:"version,omitempty"`
-	InputSchema  []MLModelField  `json:"input_schema,omitempty"`
-	OutputSchema []MLModelField  `json:"output_schema,omitempty"`
-	ArtifactURI  string          `json:"artifact_uri,omitempty"`
-	InferenceURL string          `json:"inference_url,omitempty"`
+	Slug         string         `json:"slug"`
+	DisplayName  string         `json:"display_name"`
+	Description  string         `json:"description,omitempty"`
+	Framework    string         `json:"framework,omitempty"`
+	Version      string         `json:"version,omitempty"`
+	InputSchema  []MLModelField `json:"input_schema,omitempty"`
+	OutputSchema []MLModelField `json:"output_schema,omitempty"`
+	ArtifactURI  string         `json:"artifact_uri,omitempty"`
+	InferenceURL string         `json:"inference_url,omitempty"`
 }
 
 var supportedMLFrameworks = map[string]struct{}{

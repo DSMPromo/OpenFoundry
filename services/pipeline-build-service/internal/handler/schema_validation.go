@@ -304,6 +304,12 @@ func validateStrictNode(node models.PipelineIRNode, deps []pipelineStrictSchema,
 	case "python":
 		base := firstSchema(deps)
 		return validatePythonNode(node, cfg, base, report)
+	case "lambda":
+		// The Lambda transform_type carries opaque user-side schema —
+		// the only structural requirement we enforce at authoring
+		// time is that `function_name` is present. The runtime
+		// validates the response shape when the node runs.
+		return validateLambdaNode(node, cfg, firstSchema(deps), report)
 	case "passthrough":
 		if len(deps) == 0 {
 			return sourceSchemaForNode(node, cfg, report)
@@ -526,6 +532,36 @@ func validateFunctionNode(nodeID string, cfg runtimeFunctionConfig, schema pipel
 		fields = append(fields, pipelineStrictValidationField{Name: target, FieldType: resultType, Nullable: true})
 	}
 	return pipelineStrictSchema{Known: true, Fields: fields}
+}
+
+// validateLambdaNode enforces the structural requirements on a
+// lambda transform: function_name must be present in the config.
+// The output schema, when declared, is honored; otherwise the node
+// is treated as schema-opaque (downstream nodes accept whatever
+// columns the Lambda returns at runtime).
+func validateLambdaNode(node models.PipelineIRNode, _ tableRuntimeConfig, schema pipelineStrictSchema, report *pipelineStrictValidationReport) pipelineStrictSchema {
+	var raw map[string]json.RawMessage
+	if len(node.Config) > 0 {
+		_ = json.Unmarshal(node.Config, &raw)
+	}
+	functionName := ""
+	if v, ok := raw["function_name"]; ok {
+		_ = json.Unmarshal(v, &functionName)
+	}
+	if strings.TrimSpace(functionName) == "" {
+		report.addError(node.ID, nil, "lambda_missing_function_name", "lambda transform requires logic_payload.function_name")
+	}
+	if node.OutputSchema != nil {
+		out := schemaFromIRSchema(*node.OutputSchema)
+		validateSchemaInternals(node.ID, out, report)
+		return out
+	}
+	if node.PreviewSchema != nil {
+		out := schemaFromIRSchema(*node.PreviewSchema)
+		validateSchemaInternals(node.ID, out, report)
+		return out
+	}
+	return schema
 }
 
 func validatePythonNode(node models.PipelineIRNode, cfg tableRuntimeConfig, schema pipelineStrictSchema, report *pipelineStrictValidationReport) pipelineStrictSchema {

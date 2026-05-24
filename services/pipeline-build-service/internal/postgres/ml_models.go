@@ -86,7 +86,8 @@ func (r *Repository) CreateMLModel(ctx context.Context, req models.CreateMLModel
 		return nil, fmt.Errorf("encode output_schema: %w", err)
 	}
 	id := uuid.New()
-	row := r.db.QueryRow(ctx, `
+	row := r.db.QueryRow(
+		ctx, `
 		INSERT INTO ml_models (id, slug, display_name, description, framework, version, input_schema, output_schema, artifact_uri, inference_url, owner_id)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 		RETURNING `+mlModelSelectColumns,

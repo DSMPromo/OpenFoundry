@@ -33,25 +33,29 @@ import (
 	"github.com/google/uuid"
 
 	authmw "github.com/openfoundry/openfoundry-go/libs/auth-middleware"
+	dispatchpkg "github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/dispatch"
 	livellogs "github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/logs"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/models"
-	dispatchpkg "github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/dispatch"
 )
 
-const defaultSSEInitialDelay = 10 * time.Second
-const defaultSSEHeartbeatInterval = time.Second
+const (
+	defaultSSEInitialDelay      = 10 * time.Second
+	defaultSSEHeartbeatInterval = time.Second
+)
 
 type jobLogStreamConfig struct {
 	InitialDelay      time.Duration
 	HeartbeatInterval time.Duration
 }
 
-var jobLogService atomic.Value               // stores *livellogs.Service
-var streamConfig atomic.Value                // stores jobLogStreamConfig
-var sparkClientValue atomic.Value            // stores *sparkClientSlot
-var sparkSubmissionRepository atomic.Value   // stores *sparkSubmissionSlot
-var buildQueryRepository atomic.Value        // stores *buildQuerySlot
-var pipelineAuthoringRepository atomic.Value // stores *pipelineAuthoringSlot
+var (
+	jobLogService               atomic.Value // stores *livellogs.Service
+	streamConfig                atomic.Value // stores jobLogStreamConfig
+	sparkClientValue            atomic.Value // stores *sparkClientSlot
+	sparkSubmissionRepository   atomic.Value // stores *sparkSubmissionSlot
+	buildQueryRepository        atomic.Value // stores *buildQuerySlot
+	pipelineAuthoringRepository atomic.Value // stores *pipelineAuthoringSlot
+)
 
 type sparkClientSlot struct {
 	client dispatchpkg.Client
@@ -65,13 +69,13 @@ type SparkSubmissionRepository interface {
 }
 
 type SparkSubmission struct {
-	PipelineRunID  uuid.UUID               `json:"pipeline_run_id"`
-	Namespace      string                  `json:"namespace"`
-	SparkAppName   string                  `json:"spark_app_name"`
+	PipelineRunID  uuid.UUID             `json:"pipeline_run_id"`
+	Namespace      string                `json:"namespace"`
+	SparkAppName   string                `json:"spark_app_name"`
 	Status         dispatchpkg.RunStatus `json:"status"`
-	ErrorMessage   *string                 `json:"error_message,omitempty"`
-	SubmittedAt    *time.Time              `json:"submitted_at,omitempty"`
-	LastObservedAt *time.Time              `json:"last_observed_at,omitempty"`
+	ErrorMessage   *string               `json:"error_message,omitempty"`
+	SubmittedAt    *time.Time            `json:"submitted_at,omitempty"`
+	LastObservedAt *time.Time            `json:"last_observed_at,omitempty"`
 }
 
 type sparkSubmissionSlot struct {
@@ -292,6 +296,7 @@ func ListBuilds(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"data": items, "total": len(items)})
 }
+
 func GetBuild(w http.ResponseWriter, r *http.Request) {
 	repo, ok := requireBuildQueryRepository(w, "GetBuild requires DATABASE_URL-backed repository wiring")
 	if !ok {
@@ -322,6 +327,7 @@ func ListJobs(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"data": items, "total": len(items)})
 }
+
 func GetJob(w http.ResponseWriter, r *http.Request) {
 	repo, ok := requireBuildQueryRepository(w, "GetJob requires DATABASE_URL-backed repository wiring")
 	if !ok {
@@ -338,6 +344,7 @@ func GetJob(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, job)
 }
+
 func ListJobLogs(w http.ResponseWriter, r *http.Request) {
 	service, ok := requireJobLogStore(w, "ListJobLogs requires DATABASE_URL-backed log store wiring")
 	if !ok {
@@ -515,6 +522,7 @@ func ListPipelines(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, out)
 }
+
 func CreatePipeline(w http.ResponseWriter, r *http.Request) {
 	repo, ok := requirePipelineAuthoringRepository(w, "CreatePipeline requires DATABASE_URL-backed pipeline authoring repository wiring")
 	if !ok {
@@ -536,6 +544,7 @@ func CreatePipeline(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusCreated, pipeline)
 }
+
 func GetPipeline(w http.ResponseWriter, r *http.Request) {
 	repo, ok := requirePipelineAuthoringRepository(w, "GetPipeline requires DATABASE_URL-backed pipeline authoring repository wiring")
 	if !ok {
@@ -763,17 +772,17 @@ func writeSparkSubmissionRepositoryUnavailable(w http.ResponseWriter, detail str
 }
 
 type submitSparkRunRequest struct {
-	PipelineRunID       *uuid.UUID                      `json:"pipeline_run_id,omitempty"`
-	PipelineID          string                          `json:"pipeline_id"`
-	RunID               string                          `json:"run_id,omitempty"`
-	InputDatasetRID     string                          `json:"input_dataset_rid"`
-	OutputDatasetRID    string                          `json:"output_dataset_rid"`
+	PipelineRunID    *uuid.UUID `json:"pipeline_run_id,omitempty"`
+	PipelineID       string     `json:"pipeline_id"`
+	RunID            string     `json:"run_id,omitempty"`
+	InputDatasetRID  string     `json:"input_dataset_rid"`
+	OutputDatasetRID string     `json:"output_dataset_rid"`
 	// ApplicationType — the Spark application type field is no longer
 	// honoured (ADR-0045 Phase C.4.a removed the SparkApplication CR
 	// path). Kept as a string so legacy wire payloads keep decoding.
-	ApplicationType     *string                          `json:"application_type,omitempty"`
-	PipelineRunnerImage string                          `json:"pipeline_runner_image,omitempty"`
-	Namespace           string                          `json:"namespace,omitempty"`
+	ApplicationType     *string                       `json:"application_type,omitempty"`
+	PipelineRunnerImage string                        `json:"pipeline_runner_image,omitempty"`
+	Namespace           string                        `json:"namespace,omitempty"`
 	Resources           dispatchpkg.ResourceOverrides `json:"resources,omitempty"`
 }
 
@@ -1102,6 +1111,7 @@ type noSparkClient struct{}
 func (noSparkClient) SubmitPipelineRun(context.Context, dispatchpkg.PipelineRunInput) (string, error) {
 	return "", &dispatchpkg.UnavailableError{}
 }
+
 func (noSparkClient) GetPipelineRunStatus(context.Context, string, string) (*dispatchpkg.RunStatusReport, error) {
 	return nil, &dispatchpkg.UnavailableError{}
 }
