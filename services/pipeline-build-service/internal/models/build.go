@@ -97,6 +97,7 @@ type Build struct {
 	FinishedAt        *time.Time `json:"finished_at,omitempty"`
 	DurationMillis    *int64     `json:"duration_ms,omitempty"`
 	ErrorMessage      *string    `json:"error_message,omitempty"`
+	LogURI            *string    `json:"log_uri,omitempty"`
 	RequestedBy       string     `json:"requested_by"`
 	CreatedAt         time.Time  `json:"created_at"`
 }

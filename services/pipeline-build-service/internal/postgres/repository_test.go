@@ -37,8 +37,8 @@ func TestRepositoryOpenListGetBuild(t *testing.T) {
 		WillReturnResult(pgconn.NewCommandTag("INSERT 0 1"))
 	require.NoError(t, repo.OpenBuild(ctx, resolver.ResolveBuildArgs{PipelineRID: "ri.pipeline.1", BuildBranch: "master", OutputDatasetRIDs: []string{"out.users"}, RequestedBy: "user-1"}, buildID))
 
-	buildRows := pgxmock.NewRows([]string{"id", "rid", "pipeline_rid", "build_branch", "job_spec_fallback", "target_dataset_rids", "state", "trigger_kind", "force_build", "abort_policy", "queued_at", "started_at", "finished_at", "error_message", "requested_by", "created_at"}).
-		AddRow(buildID, "ri.foundry.main.build."+buildID.String(), "ri.pipeline.1", "master", []string{}, []string{"out.users"}, string(models.BuildResolution), "MANUAL", false, string(models.AbortDependentOnly), nil, nil, nil, nil, "user-1", now)
+	buildRows := pgxmock.NewRows([]string{"id", "rid", "pipeline_rid", "build_branch", "job_spec_fallback", "target_dataset_rids", "state", "trigger_kind", "force_build", "abort_policy", "queued_at", "started_at", "finished_at", "error_message", "log_uri", "requested_by", "created_at"}).
+		AddRow(buildID, "ri.foundry.main.build."+buildID.String(), "ri.pipeline.1", "master", []string{}, []string{"out.users"}, string(models.BuildResolution), "MANUAL", false, string(models.AbortDependentOnly), nil, nil, nil, nil, nil, "user-1", now)
 	mock.ExpectQuery("SELECT id, rid, pipeline_rid").WithArgs("ri.pipeline.1", "", "", pgxmock.AnyArg(), pgxmock.AnyArg(), int64(25)).WillReturnRows(buildRows)
 	limit := int64(25)
 	items, err := repo.ListBuilds(ctx, models.ListBuildsQuery{PipelineRID: "ri.pipeline.1", Limit: &limit})
@@ -46,8 +46,8 @@ func TestRepositoryOpenListGetBuild(t *testing.T) {
 	require.Len(t, items, 1)
 	require.Equal(t, buildID, items[0].ID)
 
-	getRows := pgxmock.NewRows([]string{"id", "rid", "pipeline_rid", "build_branch", "job_spec_fallback", "target_dataset_rids", "state", "trigger_kind", "force_build", "abort_policy", "queued_at", "started_at", "finished_at", "error_message", "requested_by", "created_at"}).
-		AddRow(buildID, "ri.foundry.main.build."+buildID.String(), "ri.pipeline.1", "master", []string{}, []string{"out.users"}, string(models.BuildResolution), "MANUAL", false, string(models.AbortDependentOnly), nil, nil, nil, nil, "user-1", now)
+	getRows := pgxmock.NewRows([]string{"id", "rid", "pipeline_rid", "build_branch", "job_spec_fallback", "target_dataset_rids", "state", "trigger_kind", "force_build", "abort_policy", "queued_at", "started_at", "finished_at", "error_message", "log_uri", "requested_by", "created_at"}).
+		AddRow(buildID, "ri.foundry.main.build."+buildID.String(), "ri.pipeline.1", "master", []string{}, []string{"out.users"}, string(models.BuildResolution), "MANUAL", false, string(models.AbortDependentOnly), nil, nil, nil, nil, nil, "user-1", now)
 	mock.ExpectQuery("FROM builds WHERE").WithArgs(buildID.String()).WillReturnRows(getRows)
 	jobRows := pgxmock.NewRows(jobSelectColumnsForTest())
 	mock.ExpectQuery("FROM jobs WHERE build_id").WithArgs(buildID).WillReturnRows(jobRows)
@@ -55,6 +55,19 @@ func TestRepositoryOpenListGetBuild(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, env)
 	require.Equal(t, buildID, env.ID)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestRepositorySetBuildLogURIStampsColumn(t *testing.T) {
+	mock, repo := newMockRepo(t)
+	buildID := uuid.New()
+	uri := "s3://logs-prod/builds/" + buildID.String() + "/driver.log"
+
+	mock.ExpectExec("UPDATE builds SET log_uri").
+		WithArgs(buildID, uri).
+		WillReturnResult(pgconn.NewCommandTag("UPDATE 1"))
+
+	require.NoError(t, repo.SetBuildLogURI(context.Background(), buildID, uri))
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
@@ -163,8 +176,8 @@ func TestRepositoryGetBuildEnrichesExecutionHistory(t *testing.T) {
 	finished := time.Unix(130, 0).UTC()
 	buildRID := "ri.foundry.main.build." + buildID.String()
 
-	buildRows := pgxmock.NewRows([]string{"id", "rid", "pipeline_rid", "build_branch", "job_spec_fallback", "target_dataset_rids", "state", "trigger_kind", "force_build", "abort_policy", "queued_at", "started_at", "finished_at", "error_message", "requested_by", "created_at"}).
-		AddRow(buildID, buildRID, "pipe", "master", []string{}, []string{"out.extract", "out.load"}, string(models.BuildCompleted), "MANUAL", false, string(models.AbortDependentOnly), nil, &started, &finished, nil, "user-1", started.Add(-time.Second))
+	buildRows := pgxmock.NewRows([]string{"id", "rid", "pipeline_rid", "build_branch", "job_spec_fallback", "target_dataset_rids", "state", "trigger_kind", "force_build", "abort_policy", "queued_at", "started_at", "finished_at", "error_message", "log_uri", "requested_by", "created_at"}).
+		AddRow(buildID, buildRID, "pipe", "master", []string{}, []string{"out.extract", "out.load"}, string(models.BuildCompleted), "MANUAL", false, string(models.AbortDependentOnly), nil, &started, &finished, nil, nil, "user-1", started.Add(-time.Second))
 	mock.ExpectQuery("FROM builds WHERE").WithArgs(buildRID).WillReturnRows(buildRows)
 	mock.ExpectQuery("FROM jobs WHERE build_id").
 		WithArgs(buildID).
