@@ -103,6 +103,16 @@
       }
     },
     {
+      "name": "openfoundry_aws_connector",
+      "description": "Register an AWS-backed connector (s3, lambda, sqs, sns, dynamodb, athena) in connector-management-service. The provider applies the resource as a POST to /api/v1/connections with `connector_type` set to one of the per-service adapters wired in cmd/connector-management-service/main.go. Suitable for LocalStack-backed dev (set `endpoint` inside `config`) and real AWS in prod (IRSA / instance role takes over when `endpoint` is empty).",
+      "attributes": {
+        "name": "Human-friendly connection name shown in the connector picker.",
+        "connector_type": "One of s3, lambda, sqs, sns, dynamodb, athena. Must match an adapter registered with the connector-management service.",
+        "config": "JSON-encoded driver config. Required fields differ per connector_type: s3 needs bucket or url, lambda needs function_name, sqs needs queue_url or queue_name, sns needs topic_arn, dynamodb needs table_name, athena defaults workgroup=primary. AWS auth knobs (endpoint, region, access_key_id, secret_access_key, session_token) apply uniformly.",
+        "owner_id": "Optional UUID of the workspace user that owns the connection."
+      }
+    },
+    {
       "name": "openfoundry_apollo_rollout",
       "description": "Model autonomous CI/CD rollout posture for OpenFoundry fleets, tied to readiness gates and maintenance windows.",
       "attributes": {

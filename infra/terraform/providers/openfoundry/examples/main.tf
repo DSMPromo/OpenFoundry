@@ -94,6 +94,66 @@ resource "openfoundry_airgap_bundle" "sovereign_release" {
   public_egress_disabled  = true
 }
 
+resource "openfoundry_aws_connector" "echo_lambda" {
+  name           = "echo-lambda"
+  connector_type = "lambda"
+  config = jsonencode({
+    function_name = "openfoundry-echo"
+    region        = "us-east-1"
+    # Leave endpoint empty in production to use real AWS via IRSA /
+    # instance role; set it for LocalStack / a Bedrock emulator.
+    # endpoint = "http://localhost:4566"
+  })
+}
+
+resource "openfoundry_aws_connector" "ops_bucket" {
+  name           = "ops-reports"
+  connector_type = "s3"
+  config = jsonencode({
+    bucket    = "openfoundry-reports"
+    region    = "us-east-1"
+    path_style = false
+  })
+}
+
+resource "openfoundry_aws_connector" "pipeline_events" {
+  name           = "pipeline-events"
+  connector_type = "sqs"
+  config = jsonencode({
+    queue_url = "https://sqs.us-east-1.amazonaws.com/123456789012/openfoundry-pipeline-events"
+    region    = "us-east-1"
+  })
+}
+
+resource "openfoundry_aws_connector" "broadcast_topic" {
+  name           = "broadcast"
+  connector_type = "sns"
+  config = jsonencode({
+    topic_arn = "arn:aws:sns:us-east-1:123456789012:openfoundry-broadcast"
+    region    = "us-east-1"
+  })
+}
+
+resource "openfoundry_aws_connector" "kv_table" {
+  name           = "kv"
+  connector_type = "dynamodb"
+  config = jsonencode({
+    table_name = "openfoundry-kv"
+    region     = "us-east-1"
+  })
+}
+
+resource "openfoundry_aws_connector" "analytics_athena" {
+  name           = "analytics-warehouse"
+  connector_type = "athena"
+  config = jsonencode({
+    workgroup       = "primary"
+    database        = "analytics"
+    output_location = "s3://openfoundry-reports/athena-results/"
+    region          = "us-east-1"
+  })
+}
+
 resource "openfoundry_apollo_rollout" "ops_center" {
   name                         = "Ops Center Apollo"
   schedule                     = "*/10 * * * *"
