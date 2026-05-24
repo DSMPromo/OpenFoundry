@@ -49,7 +49,7 @@ type Readiness struct {
 // Subsequent slices add: /auth/sessions/*, /auth/sso/*, /users/*,
 // /roles/*, /groups/*, /permissions/*, /policies/*, /control-panel/*,
 // /scim/v2/*, /jwks/rotate, /audit/metrics.
-func New(cfg *config.Config, jwt *authmw.JWTConfig, auth *handlers.Auth, mfa *handlers.MFA, wa *handlers.WebAuthn, sso *handlers.SSO, ssoAdmin *handlers.SsoAdmin, rbac *handlers.RBAC, jwks *signingkeys.Handler, m *observability.Metrics, ready *Readiness, probes ...capabilities.DependencyProbe) *http.Server {
+func New(cfg *config.Config, jwt *authmw.JWTConfig, auth *handlers.Auth, mfa *handlers.MFA, wa *handlers.WebAuthn, sso *handlers.SSO, ssoAdmin *handlers.SsoAdmin, rbac *handlers.RBAC, passwordReset *handlers.PasswordReset, jwks *signingkeys.Handler, m *observability.Metrics, ready *Readiness, probes ...capabilities.DependencyProbe) *http.Server {
 	r := chi.NewRouter()
 	r.Use(chimw.RequestID, chimw.RealIP, chimw.Recoverer, chimw.Compress(5))
 	r.Use(chimw.Timeout(30 * time.Second))
@@ -104,6 +104,19 @@ func New(cfg *config.Config, jwt *authmw.JWTConfig, auth *handlers.Auth, mfa *ha
 		api.Post("/mfa/totp/complete-login", mfa.CompleteLogin)
 		api.Post("/mfa/webauthn/login/challenge", wa.LoginChallenge)
 		api.Post("/mfa/webauthn/login/finish", wa.LoginFinish)
+		// Password reset is intentionally public so a locked-out user
+		// can recover. Security comes from per-token expiry +
+		// single-use; see internal/handlers/password_reset.go.
+		//
+		// Mounted at /auth/forgot-password and /auth/reset-password
+		// (rather than under /auth/password/…) so the protected
+		// /api/v1/auth/password change-password sub-router doesn't
+		// shadow the public routes — chi mounts the more-specific
+		// prefix first and applies its middleware to everything below.
+		if passwordReset != nil {
+			api.Post("/forgot-password", passwordReset.Request)
+			api.Post("/reset-password", passwordReset.Confirm)
+		}
 		api.Get("/sso/providers", sso.ListProviders)
 		api.Get("/sso/{provider}/start", sso.Start)
 		api.Get("/sso/{provider}/callback", sso.Callback)

@@ -12,6 +12,8 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"strconv"
+	"strings"
 	"syscall"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -130,6 +132,32 @@ func main() {
 	ssoAdmin := handlers.NewSsoAdmin(r, nil)
 	rbac := &handlers.RBAC{Repo: r}
 
+	// Password reset is wired with optional SMTP. When SMTP_HOST is
+	// empty (the default in docker compose), the request handler
+	// returns the plaintext token in its response so a dev can paste
+	// it into the reset URL. Production deployments MUST set
+	// SMTP_HOST so tokens never round-trip through the API.
+	smtpPort := 587
+	if v := os.Getenv("SMTP_PORT"); v != "" {
+		if n, err := strconv.Atoi(v); err == nil {
+			smtpPort = n
+		}
+	}
+	passwordReset := &handlers.PasswordReset{
+		Repo: r,
+		Config: handlers.PasswordResetConfig{
+			SMTP: handlers.PasswordResetSMTPConfig{
+				Host:     os.Getenv("SMTP_HOST"),
+				Port:     smtpPort,
+				Username: os.Getenv("SMTP_USERNAME"),
+				Password: os.Getenv("SMTP_PASSWORD"),
+				From:     firstNonEmpty(os.Getenv("SMTP_FROM"), os.Getenv("SMTP_USERNAME")),
+			},
+			PublicURL:      os.Getenv("PUBLIC_WEB_ORIGIN"),
+			DevReturnToken: !strings.EqualFold(os.Getenv("OPENFOUNDRY_ENV"), "production"),
+		},
+	}
+
 	// Signing-key rotation (S3.1.c). Manager is wired only when
 	// JWT_SIGNING_SEALING_KEY is set — without it the RS256 path
 	// stays dormant and the legacy HS256 JWTConfig keeps signing.
@@ -147,11 +175,22 @@ func main() {
 			slog.String("reason", sealErr.Error()))
 	}
 
-	srv := server.New(cfg, jwt, auth, mfa, wa, sso, ssoAdmin, rbac, jwksHandler, metrics, &server.Readiness{OIDCDegraded: oidcDegraded}, probes.Postgres("primary", pool))
+	srv := server.New(cfg, jwt, auth, mfa, wa, sso, ssoAdmin, rbac, passwordReset, jwksHandler, metrics, &server.Readiness{OIDCDegraded: oidcDegraded}, probes.Postgres("primary", pool))
 	if err := server.Run(ctx, srv, log); err != nil && !errors.Is(err, context.Canceled) {
 		log.Error("server exited with error", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
+}
+
+// firstNonEmpty returns the first non-empty argument. Used to fall
+// back SMTP_FROM to SMTP_USERNAME when only one is set.
+func firstNonEmpty(values ...string) string {
+	for _, v := range values {
+		if strings.TrimSpace(v) != "" {
+			return v
+		}
+	}
+	return ""
 }
 
 // initOIDC builds the OIDC service from `configs`. On discovery failure

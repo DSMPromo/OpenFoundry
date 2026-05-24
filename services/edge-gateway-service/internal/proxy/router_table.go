@@ -31,6 +31,8 @@ func SelectUpstream(path string, u config.UpstreamURLs) string {
 		strings.HasPrefix(path, "/api/v1/auth/refresh"),
 		strings.HasPrefix(path, "/api/v1/auth/mfa"),
 		strings.HasPrefix(path, "/api/v1/auth/sessions"),
+		path == "/api/v1/auth/forgot-password",
+		path == "/api/v1/auth/reset-password",
 		path == "/api/v1/users/me",
 		path == "/api/v2/admin/users/me":
 		return u.IdentityFederation

@@ -18,7 +18,7 @@ func TestRestrictedViewCRUDRoutesAreConsolidatedInIdentityFederationService(t *t
 
 	cfg := &config.Config{}
 	cfg.Service.Name = "identity-federation-service"
-	srv := server.New(cfg, nil, nil, nil, nil, nil, nil, &handlers.RBAC{}, nil, observability.NewMetrics(), nil)
+	srv := server.New(cfg, nil, nil, nil, nil, nil, nil, &handlers.RBAC{}, nil, nil, observability.NewMetrics(), nil)
 	router, ok := srv.Handler.(chi.Routes)
 	require.True(t, ok)
 

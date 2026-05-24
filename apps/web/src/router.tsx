@@ -43,6 +43,18 @@ export const router = createBrowserRouter([
         path: 'callback',
         lazy: async () => ({ Component: (await import('./routes/auth/CallbackPage')).CallbackPage }),
       },
+      {
+        path: 'forgot-password',
+        lazy: async () => ({
+          Component: (await import('./routes/auth/ForgotPasswordPage')).ForgotPasswordPage,
+        }),
+      },
+      {
+        path: 'reset-password',
+        lazy: async () => ({
+          Component: (await import('./routes/auth/ResetPasswordPage')).ResetPasswordPage,
+        }),
+      },
     ],
   },
   {
