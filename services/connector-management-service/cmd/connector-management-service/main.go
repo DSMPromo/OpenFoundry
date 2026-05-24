@@ -21,6 +21,8 @@ import (
 	"github.com/openfoundry/openfoundry-go/libs/capabilities/probes"
 	"github.com/openfoundry/openfoundry-go/libs/observability"
 	"github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters"
+	athenaadapter "github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/athena"
+	dynamodbadapter "github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/dynamodb"
 	"github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/kafka"
 	lambdaadapter "github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/lambda"
 	s3adapter "github.com/openfoundry/openfoundry-go/services/connector-management-service/internal/adapters/s3"
@@ -96,6 +98,8 @@ func main() {
 	adapterRegistry.MustRegister(lambdaadapter.ConnectorType, lambdaadapter.Factory())
 	adapterRegistry.MustRegister(sqsadapter.ConnectorType, sqsadapter.Factory())
 	adapterRegistry.MustRegister(snsadapter.ConnectorType, snsadapter.Factory())
+	adapterRegistry.MustRegister(dynamodbadapter.ConnectorType, dynamodbadapter.Factory())
+	adapterRegistry.MustRegister(athenaadapter.ConnectorType, athenaadapter.Factory())
 
 	h := &handlers.Handlers{
 		Repo:            store,
