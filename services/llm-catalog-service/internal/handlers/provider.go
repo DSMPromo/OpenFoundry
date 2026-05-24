@@ -46,6 +46,16 @@ type ProviderRegistry struct {
 	OpenAIBaseURL string
 
 	OllamaBaseURL string
+
+	// BedrockClient is the optional Amazon Bedrock runtime client.
+	// Built in cmd/llm-catalog-service/main.go via libs/aws-client
+	// when BEDROCK_REGION (or OF_AWS__ENDPOINT_URL for LocalStack)
+	// is configured. Leave nil to disable Bedrock — Lookup returns
+	// ErrProviderUnimplemented in that case, matching the pre-3a
+	// behavior so the catalog still accepts BEDROCK rows for
+	// planning without a runtime.
+	BedrockClient bedrockClient
+	BedrockRegion string
 }
 
 // Lookup returns the invoker for the model's declared provider. Returns
@@ -77,6 +87,11 @@ func (r *ProviderRegistry) Lookup(p models.Provider) (providerInvoker, error) {
 			client:  client,
 			baseURL: firstNonEmpty(r.OllamaBaseURL, "http://localhost:11434/v1"),
 		}, nil
+	case models.ProviderBedrock:
+		if r.BedrockClient == nil {
+			return nil, ErrProviderUnimplemented
+		}
+		return &bedrockInvoker{client: r.BedrockClient, region: r.BedrockRegion}, nil
 	default:
 		return nil, ErrProviderUnimplemented
 	}
@@ -127,7 +142,8 @@ func (a *anthropicInvoker) Invoke(ctx context.Context, model models.Model, req m
 		return providerResult{}, fmt.Errorf("anthropic encode: %w", err)
 	}
 
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost,
+	httpReq, err := http.NewRequestWithContext(
+		ctx, http.MethodPost,
 		strings.TrimRight(a.baseURL, "/")+"/messages",
 		bytes.NewReader(encoded),
 	)
@@ -226,7 +242,8 @@ func (o *openAICompatibleInvoker) Invoke(ctx context.Context, model models.Model
 		return providerResult{}, fmt.Errorf("openai encode: %w", err)
 	}
 
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost,
+	httpReq, err := http.NewRequestWithContext(
+		ctx, http.MethodPost,
 		strings.TrimRight(o.baseURL, "/")+"/chat/completions",
 		bytes.NewReader(encoded),
 	)

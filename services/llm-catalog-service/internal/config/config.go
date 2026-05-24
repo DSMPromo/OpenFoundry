@@ -38,6 +38,14 @@ type Config struct {
 	AzureAPIKey  string
 	AzureBaseURL string
 
+	// Amazon Bedrock — region-scoped (model availability differs by
+	// region). Empty region disables Bedrock; Lookup then returns
+	// ErrProviderUnimplemented for BEDROCK models, matching the
+	// pre-3a behavior. AWSEndpointURL is the LocalStack/dev-runtime
+	// hook (OF_AWS__ENDPOINT_URL) shared with libs/aws-client.
+	BedrockRegion  string
+	AWSEndpointURL string
+
 	// Provider-health probe (B04 §AC#6).
 	ProviderHealthIntervalSeconds int
 	ProviderHealthDegradeAfterMS  int
@@ -67,6 +75,8 @@ func FromEnv() (*Config, error) {
 	cfg.OllamaBaseURL = os.Getenv("OLLAMA_BASE_URL")
 	cfg.AzureAPIKey = os.Getenv("AZURE_OPENAI_API_KEY")
 	cfg.AzureBaseURL = os.Getenv("AZURE_OPENAI_BASE_URL")
+	cfg.BedrockRegion = defaultStr(os.Getenv("BEDROCK_REGION"), os.Getenv("OF_AWS__REGION"))
+	cfg.AWSEndpointURL = os.Getenv("OF_AWS__ENDPOINT_URL")
 	cfg.ProviderHealthIntervalSeconds = parseInt(os.Getenv("LLM_PROVIDER_HEALTH_INTERVAL_SECONDS"), 30)
 	cfg.ProviderHealthDegradeAfterMS = parseInt(os.Getenv("LLM_PROVIDER_HEALTH_DEGRADE_AFTER_MS"), 2000)
 
