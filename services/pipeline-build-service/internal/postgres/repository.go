@@ -535,6 +535,26 @@ func (r *Repository) SetBuildLogURI(ctx context.Context, buildID uuid.UUID, uri 
 	return err
 }
 
+// JobRIDsForBuild returns every job RID belonging to the build, in
+// stable order. The log-archive finalizer uses it to enumerate the
+// per-job histories that make up the driver-log capture.
+func (r *Repository) JobRIDsForBuild(ctx context.Context, buildID uuid.UUID) ([]string, error) {
+	rows, err := r.db.Query(ctx, `SELECT rid FROM jobs WHERE build_id=$1 ORDER BY created_at ASC, rid ASC`, buildID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []string{}
+	for rows.Next() {
+		var rid string
+		if err := rows.Scan(&rid); err != nil {
+			return nil, err
+		}
+		out = append(out, rid)
+	}
+	return out, rows.Err()
+}
+
 // ListBuilds and GetBuild are production query helpers used by route handlers
 // and repository tests.
 func (r *Repository) ListBuilds(ctx context.Context, q models.ListBuildsQuery) ([]models.BuildEnvelope, error) {

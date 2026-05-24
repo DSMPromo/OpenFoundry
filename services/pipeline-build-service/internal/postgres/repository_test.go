@@ -71,6 +71,22 @@ func TestRepositorySetBuildLogURIStampsColumn(t *testing.T) {
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
+func TestRepositoryJobRIDsForBuildReturnsOrderedList(t *testing.T) {
+	mock, repo := newMockRepo(t)
+	buildID := uuid.New()
+
+	mock.ExpectQuery(`SELECT rid FROM jobs WHERE build_id`).
+		WithArgs(buildID).
+		WillReturnRows(pgxmock.NewRows([]string{"rid"}).
+			AddRow("ri.foundry.main.job.aaa").
+			AddRow("ri.foundry.main.job.bbb"))
+
+	rids, err := repo.JobRIDsForBuild(context.Background(), buildID)
+	require.NoError(t, err)
+	require.Equal(t, []string{"ri.foundry.main.job.aaa", "ri.foundry.main.job.bbb"}, rids)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
 func TestPersistResolvedBuildStoresBuildTargetsAndJobSpecSnapshot(t *testing.T) {
 	mock, _ := newMockRepo(t)
 	ctx := context.Background()

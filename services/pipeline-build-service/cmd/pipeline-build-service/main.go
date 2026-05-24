@@ -24,6 +24,7 @@ import (
 	pythonsidecar "github.com/openfoundry/openfoundry-go/libs/python-sidecar"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/config"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/dispatch"
+	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/domain/executor"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/domain/queuedispatcher"
 	"github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/handler"
 	livellogs "github.com/openfoundry/openfoundry-go/services/pipeline-build-service/internal/logs"
@@ -147,7 +148,15 @@ func main() {
 		} else if lambdaRunner != nil {
 			log.Info("lambda transform runner wired")
 		}
-		handler.SetExecutionPorts(handler.ExecutionPorts{Plans: repo, Runs: repo, Python: pythonRuntime, LLM: llmRunner, AIP: aipGenerator, Distributed: distributedRunner, Lambda: lambdaRunner, Transactions: handler.ConfigGatedTransactionManager{Metadata: repo, CatalogConfigured: cfg.FoundryIcebergCatalogURL != ""}, Committer: handler.ConfigGatedOutputCommitter{Metadata: outputCommitter, CatalogConfigured: cfg.FoundryIcebergCatalogURL != ""}, Audit: repo, Parallelism: cfg.DistributedPipelineWorkers})
+		// Build-log archiver — optional. When OF_BUILD_LOGS__S3__BUCKET
+		// is set we promote the postgres audit sink into an archiving
+		// wrapper that drains every terminal build's log history into
+		// S3 and stamps builds.log_uri (A4.3 of
+		// TASKS_COMPUTE_PIPELINES.md). Missing config = NoopArchiver =
+		// state-machine writes pass through untouched.
+		auditSink := buildAuditSink(ctx, log, repo, repo)
+
+		handler.SetExecutionPorts(handler.ExecutionPorts{Plans: repo, Runs: repo, Python: pythonRuntime, LLM: llmRunner, AIP: aipGenerator, Distributed: distributedRunner, Lambda: lambdaRunner, Transactions: handler.ConfigGatedTransactionManager{Metadata: repo, CatalogConfigured: cfg.FoundryIcebergCatalogURL != ""}, Committer: handler.ConfigGatedOutputCommitter{Metadata: outputCommitter, CatalogConfigured: cfg.FoundryIcebergCatalogURL != ""}, Audit: auditSink, Parallelism: cfg.DistributedPipelineWorkers})
 		handler.SetBuildQueryRepository(repo)
 		handler.SetPipelineAuthoringRepository(repo)
 		handler.SetTransformRepository(repo)
@@ -223,6 +232,49 @@ func main() {
 	if err := run(ctx, srv, log); err != nil && !errors.Is(err, context.Canceled) {
 		log.Error("server exited with error", slog.String("error", err.Error()))
 		os.Exit(1)
+	}
+}
+
+// buildAuditSink returns the audit sink wired into ExecutionPorts.
+// When OF_BUILD_LOGS__S3__BUCKET is set the postgres audit sink is
+// promoted into an ArchivingAuditSink that drains every terminal
+// build's log history into S3 and stamps builds.log_uri. Missing /
+// disabled config returns the raw postgres sink unwrapped, so the
+// state-machine writes still land but no archival is attempted.
+func buildAuditSink(ctx context.Context, log *slog.Logger, repo *postgres.Repository, store livellogs.LogStore) executor.AuditSink {
+	if repo == nil {
+		return nil
+	}
+	cfg := livellogs.S3Config{
+		Endpoint:        os.Getenv("OF_BUILD_LOGS__S3__ENDPOINT"),
+		Region:          os.Getenv("OF_BUILD_LOGS__S3__REGION"),
+		Bucket:          os.Getenv("OF_BUILD_LOGS__S3__BUCKET"),
+		Prefix:          os.Getenv("OF_BUILD_LOGS__S3__PREFIX"),
+		AccessKeyID:     os.Getenv("OF_BUILD_LOGS__S3__ACCESS_KEY_ID"),
+		SecretAccessKey: os.Getenv("OF_BUILD_LOGS__S3__SECRET_ACCESS_KEY"),
+		PathStyle:       os.Getenv("OF_BUILD_LOGS__S3__PATH_STYLE") == "true",
+	}
+	archiver, err := livellogs.NewS3Archiver(ctx, cfg)
+	if err != nil {
+		log.Warn("build log archiver init failed; archival disabled",
+			slog.String("error", err.Error()))
+		return repo
+	}
+	if archiver == nil {
+		log.Info("build log archiver disabled (OF_BUILD_LOGS__S3__BUCKET unset); builds.log_uri stays NULL")
+		return repo
+	}
+	log.Info("build log archiver wired",
+		slog.String("bucket", cfg.Bucket),
+		slog.String("prefix", cfg.Prefix))
+	return &livellogs.ArchivingAuditSink{
+		Delegate: repo,
+		Finalizer: &livellogs.Finalizer{
+			Repo:     repo,
+			Store:    store,
+			Archiver: archiver,
+		},
+		Logger: log,
 	}
 }
 
