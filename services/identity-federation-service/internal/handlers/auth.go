@@ -10,9 +10,11 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/google/uuid"
 
+	authmw "github.com/openfoundry/openfoundry-go/libs/auth-middleware"
 	"github.com/openfoundry/openfoundry-go/libs/core-models/ids"
 	"github.com/openfoundry/openfoundry-go/services/identity-federation-service/internal/models"
 	"github.com/openfoundry/openfoundry-go/services/identity-federation-service/internal/repo"
@@ -190,6 +192,84 @@ func (a *Auth) Login(w http.ResponseWriter, r *http.Request) {
 		TokenType:    "Bearer",
 		ExpiresIn:    int64(a.Issuer.AccessTTL.Seconds()),
 	})
+}
+
+// changePasswordRequest is the wire shape POSTed to
+// /api/v1/auth/password by an authenticated user.
+type changePasswordRequest struct {
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}
+
+// minPasswordLength is the lower bound enforced on new passwords.
+// Mirrors the de-facto floor used by the Register flow (8 chars).
+const minPasswordLength = 8
+
+// ChangePassword handles POST /api/v1/auth/password. Bearer-protected:
+// the caller must have a valid access token attached to a real user
+// row in the local realm. The handler verifies the supplied current
+// password against the stored argon2id hash, rejects mismatches with
+// 401, and on success replaces the hash with a freshly-salted argon2id
+// digest of the new password. Returns 204 No Content; the cookie
+// session stays valid (no forced re-login).
+func (a *Auth) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	claims, ok := authmw.FromContext(r.Context())
+	if !ok {
+		writeJSONErr(w, http.StatusUnauthorized, "missing session")
+		return
+	}
+	var body changePasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeJSONErr(w, http.StatusBadRequest, "invalid body")
+		return
+	}
+	if body.CurrentPassword == "" || body.NewPassword == "" {
+		writeJSONErr(w, http.StatusBadRequest, "current_password and new_password are required")
+		return
+	}
+	if utf8.RuneCountInString(body.NewPassword) < minPasswordLength {
+		writeJSONErr(w, http.StatusBadRequest, "new password must be at least 8 characters")
+		return
+	}
+	if body.CurrentPassword == body.NewPassword {
+		writeJSONErr(w, http.StatusBadRequest, "new password must differ from the current one")
+		return
+	}
+
+	user, err := a.Repo.FindUserByID(r.Context(), claims.Sub)
+	if err != nil {
+		slog.Error("change password: load user", slog.String("error", err.Error()))
+		writeJSONErr(w, http.StatusInternalServerError, "password change failed")
+		return
+	}
+	if user == nil {
+		writeJSONErr(w, http.StatusUnauthorized, "user not found")
+		return
+	}
+	if !user.IsActive {
+		writeJSONErr(w, http.StatusForbidden, "account disabled")
+		return
+	}
+	if err := service.VerifyPassword(body.CurrentPassword, user.PasswordHash); err != nil {
+		writeJSONErr(w, http.StatusUnauthorized, "current password is incorrect")
+		return
+	}
+	newHash, err := service.HashPassword(body.NewPassword)
+	if err != nil {
+		slog.Error("change password: hash", slog.String("error", err.Error()))
+		writeJSONErr(w, http.StatusInternalServerError, "password change failed")
+		return
+	}
+	if err := a.Repo.UpdatePasswordHash(r.Context(), user.ID, newHash); err != nil {
+		slog.Error("change password: persist", slog.String("error", err.Error()))
+		writeJSONErr(w, http.StatusInternalServerError, "password change failed")
+		return
+	}
+	slog.Info("password changed",
+		slog.String("user_id", user.ID.String()),
+		slog.String("email", user.Email),
+	)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 // clientIP picks an honest IP for the request: respects an explicit
