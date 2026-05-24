@@ -526,6 +526,15 @@ func (r *Repository) MarkBuildFailed(ctx context.Context, buildID uuid.UUID, rea
 	return err
 }
 
+// SetBuildLogURI stamps the archived-log location on a build row. Called
+// by the log archiver after a terminal-state hook successfully writes
+// the driver log to its backing store. Idempotent — repeated calls with
+// the same URI are a no-op at the column level.
+func (r *Repository) SetBuildLogURI(ctx context.Context, buildID uuid.UUID, uri string) error {
+	_, err := r.db.Exec(ctx, `UPDATE builds SET log_uri=$2 WHERE id=$1`, buildID, uri)
+	return err
+}
+
 // ListBuilds and GetBuild are production query helpers used by route handlers
 // and repository tests.
 func (r *Repository) ListBuilds(ctx context.Context, q models.ListBuildsQuery) ([]models.BuildEnvelope, error) {
@@ -541,7 +550,7 @@ func (r *Repository) ListBuilds(ctx context.Context, q models.ListBuildsQuery) (
 			cursor = &parsed
 		}
 	}
-	rows, err := r.db.Query(ctx, `SELECT id, rid, pipeline_rid, build_branch, job_spec_fallback, target_dataset_rids, state, trigger_kind, force_build, abort_policy, queued_at, started_at, finished_at, error_message, requested_by, created_at
+	rows, err := r.db.Query(ctx, `SELECT id, rid, pipeline_rid, build_branch, job_spec_fallback, target_dataset_rids, state, trigger_kind, force_build, abort_policy, queued_at, started_at, finished_at, error_message, log_uri, requested_by, created_at
 FROM builds
 WHERE ($1='' OR pipeline_rid=$1) AND ($2='' OR state=$2) AND ($3='' OR build_branch=$3)
   AND ($4::timestamptz IS NULL OR created_at >= $4)
@@ -565,8 +574,8 @@ LIMIT $6`, q.PipelineRID, q.Status, q.Branch, q.Since, cursor, limit)
 
 func (r *Repository) GetBuild(ctx context.Context, idOrRID string) (*models.BuildEnvelope, error) {
 	var b models.Build
-	err := r.db.QueryRow(ctx, `SELECT id, rid, pipeline_rid, build_branch, job_spec_fallback, target_dataset_rids, state, trigger_kind, force_build, abort_policy, queued_at, started_at, finished_at, error_message, requested_by, created_at
-FROM builds WHERE id::text=$1 OR rid=$1`, idOrRID).Scan(&b.ID, &b.RID, &b.PipelineRID, &b.BuildBranch, &b.JobSpecFallback, &b.TargetDatasetRIDs, &b.State, &b.TriggerKind, &b.ForceBuild, &b.AbortPolicy, &b.QueuedAt, &b.StartedAt, &b.FinishedAt, &b.ErrorMessage, &b.RequestedBy, &b.CreatedAt)
+	err := r.db.QueryRow(ctx, `SELECT id, rid, pipeline_rid, build_branch, job_spec_fallback, target_dataset_rids, state, trigger_kind, force_build, abort_policy, queued_at, started_at, finished_at, error_message, log_uri, requested_by, created_at
+FROM builds WHERE id::text=$1 OR rid=$1`, idOrRID).Scan(&b.ID, &b.RID, &b.PipelineRID, &b.BuildBranch, &b.JobSpecFallback, &b.TargetDatasetRIDs, &b.State, &b.TriggerKind, &b.ForceBuild, &b.AbortPolicy, &b.QueuedAt, &b.StartedAt, &b.FinishedAt, &b.ErrorMessage, &b.LogURI, &b.RequestedBy, &b.CreatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}
@@ -586,7 +595,7 @@ FROM builds WHERE id::text=$1 OR rid=$1`, idOrRID).Scan(&b.ID, &b.RID, &b.Pipeli
 
 func scanBuild(rows pgx.Rows) (models.Build, error) {
 	var b models.Build
-	err := rows.Scan(&b.ID, &b.RID, &b.PipelineRID, &b.BuildBranch, &b.JobSpecFallback, &b.TargetDatasetRIDs, &b.State, &b.TriggerKind, &b.ForceBuild, &b.AbortPolicy, &b.QueuedAt, &b.StartedAt, &b.FinishedAt, &b.ErrorMessage, &b.RequestedBy, &b.CreatedAt)
+	err := rows.Scan(&b.ID, &b.RID, &b.PipelineRID, &b.BuildBranch, &b.JobSpecFallback, &b.TargetDatasetRIDs, &b.State, &b.TriggerKind, &b.ForceBuild, &b.AbortPolicy, &b.QueuedAt, &b.StartedAt, &b.FinishedAt, &b.ErrorMessage, &b.LogURI, &b.RequestedBy, &b.CreatedAt)
 	enrichBuildSummary(&b, nil)
 	return b, err
 }
