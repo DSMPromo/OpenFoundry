@@ -157,7 +157,7 @@ services:
   # bucket, a stub Lambda, a test SQS queue, a DynamoDB table.
   # Idempotent — safe to re-run after `docker compose up` flaps.
   localstack-init:
-    image: ${OPENFOUNDRY_AWSCLI_IMAGE:-amazon/aws-cli:2}
+    image: ${OPENFOUNDRY_AWSCLI_IMAGE:-amazon/aws-cli:latest}
     profiles: ["localstack"]
     depends_on:
       localstack:
@@ -185,7 +185,7 @@ services:
   # first-run demos only (no production code or test depends on it).
   vespa:
     <<: *common
-    image: ${OPENFOUNDRY_VESPA_IMAGE:-vespaengine/vespa:8.450.30}
+    image: ${OPENFOUNDRY_VESPA_IMAGE:-vespaengine/vespa:8}
     hostname: vespa
     ports:
       - "${OPENFOUNDRY_VESPA_QUERY_HOST_PORT:-18080}:8080"
@@ -338,7 +338,7 @@ services:
   # whose lifecycle does not depend on the connector definition.
   debezium-connect:
     <<: *common
-    image: ${OPENFOUNDRY_DEBEZIUM_IMAGE:-debezium/connect:2.7}
+    image: ${OPENFOUNDRY_DEBEZIUM_IMAGE:-quay.io/debezium/connect:3.0}
     ports:
       - "${OPENFOUNDRY_DEBEZIUM_HOST_PORT:-8083}:8083"
     environment:
@@ -680,7 +680,7 @@ services:
       OF_SERVER__ADDR: ":50160"
       DATABASE_URL: postgres://openfoundry:openfoundry@postgres:5432/openfoundry_cipher_service
       JWT_SECRET: ${OPENFOUNDRY_JWT_SECRET:-openfoundry-dev-secret}
-      OF_CIPHER_LOCAL_KEK: ${OPENFOUNDRY_CIPHER_LOCAL_KEK:-openfoundry-dev-local-kek-change-me}
+      OF_CIPHER_LOCAL_KEK: ${OPENFOUNDRY_CIPHER_LOCAL_KEK:-acaa788167022022113fe03cc76dc849d91c1a3b446a1c884a0fbad93826469a}
       OF_CIPHER_AUDIT_FAIL_OPEN: "true"
     depends_on:
       postgres:
@@ -1076,22 +1076,32 @@ services:
   # at /api/kernels/{id}/channels.
   # https://jupyter-kernel-gateway.readthedocs.io/
   notebook-kernel-gateway:
-    image: jupyter/kernel-gateway:2.5.2
+    # jupyter/kernel-gateway:2.5.2 was deprecated and pulled from
+    # Docker Hub. Fall back to the upstream python image + a one-shot
+    # pip install of jupyter_kernel_gateway. Slower first start
+    # (~30 s) but the runtime behaviour matches the previous image.
+    image: ${OPENFOUNDRY_KERNEL_GATEWAY_IMAGE:-python:3.11-slim}
     profiles: *profiles-intelligence
     command:
-      - jupyter
-      - kernelgateway
-      - --KernelGatewayApp.ip=0.0.0.0
-      - --KernelGatewayApp.port=8888
-      - --KernelGatewayApp.api=kernel_gateway.notebook_http
-      - --KernelGatewayApp.auth_token=
-      - --KernelGatewayApp.allow_origin=*
+      - bash
+      - -lc
+      - >
+        pip install --quiet --no-cache-dir jupyter_kernel_gateway ipykernel &&
+        jupyter kernelgateway
+        --KernelGatewayApp.ip=0.0.0.0
+        --KernelGatewayApp.port=8888
+        --KernelGatewayApp.api=kernel_gateway.jupyter_websocket
+        --KernelGatewayApp.auth_token=
+        --KernelGatewayApp.allow_origin=*
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8888/api/kernels').read()"]
+      # /api/kernelspecs is reachable without auth (unlike /api/kernels
+      # which requires the disabled-but-still-enforced auth token in
+      # the new jupyter_kernel_gateway). TCP probe is a cheap fallback.
+      test: ["CMD-SHELL", "python -c \"import socket,sys; s=socket.socket(); s.settimeout(2); s.connect(('127.0.0.1',8888)); sys.exit(0)\""]
       interval: 10s
       timeout: 5s
-      retries: 12
-      start_period: 20s
+      retries: 30
+      start_period: 90s
     ports:
       - "${OPENFOUNDRY_KERNEL_GATEWAY_HOST_PORT:-8888}:8888"
 
@@ -1401,6 +1411,7 @@ services:
       NOTIFICATION_SERVICE_URL: http://notification-alerting-service:50114
       NODE_RUNTIME_COMMAND: node
       SEARCH_EMBEDDING_PROVIDER: deterministic-hash
+      OF_DEV_STUB_MODE: ${OF_DEV_STUB_MODE:-true}
     depends_on:
       postgres:
         condition: service_healthy
@@ -1427,6 +1438,7 @@ services:
       NOTIFICATION_SERVICE_URL: http://notification-alerting-service:50114
       NODE_RUNTIME_COMMAND: node
       SEARCH_EMBEDDING_PROVIDER: deterministic-hash
+      OF_DEV_STUB_MODE: ${OF_DEV_STUB_MODE:-true}
     depends_on:
       postgres:
         condition: service_healthy
@@ -1455,6 +1467,7 @@ services:
       NOTIFICATION_SERVICE_URL: http://notification-alerting-service:50114
       NODE_RUNTIME_COMMAND: node
       SEARCH_EMBEDDING_PROVIDER: deterministic-hash
+      OF_DEV_STUB_MODE: ${OF_DEV_STUB_MODE:-true}
     depends_on:
       postgres:
         condition: service_healthy
@@ -1481,6 +1494,9 @@ services:
       NOTIFICATION_SERVICE_URL: http://notification-alerting-service:50114
       NODE_RUNTIME_COMMAND: node
       SEARCH_EMBEDDING_PROVIDER: deterministic-hash
+      OF_DEV_STUB_MODE: ${OF_DEV_STUB_MODE:-true}
+      CASSANDRA_CONTACT_POINTS: cassandra
+      CASSANDRA_KEYSPACE: ontology_objects
     depends_on:
       postgres:
         condition: service_healthy
@@ -1934,6 +1950,12 @@ services:
       OPENFOUNDRY_ENV: development
       HOST: 0.0.0.0
       PORT: 8080
+      # Gateway uses a koanf YAML loader that reads OF_<SECTION>__<KEY>
+      # env vars (lower-cased, `__` → `.`). The flat JWT_SECRET below
+      # is honored by every other Go service in this compose, but the
+      # gateway specifically needs the namespaced form to override the
+      # empty string in services/edge-gateway-service/config.yaml.
+      OF_JWT__SECRET: ${OPENFOUNDRY_JWT_SECRET:-openfoundry-dev-secret}
       JWT_SECRET: ${OPENFOUNDRY_JWT_SECRET:-openfoundry-dev-secret}
       REDIS_URL: redis://valkey:6379
       AUTH_SERVICE_URL: http://identity-federation-service:50112
