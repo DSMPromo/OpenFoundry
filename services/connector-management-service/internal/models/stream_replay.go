@@ -22,10 +22,10 @@ import (
 type StreamReplayDownstreamKind string
 
 const (
-	StreamReplayDownstreamExport       StreamReplayDownstreamKind = "streaming_export"
-	StreamReplayDownstreamCDCView      StreamReplayDownstreamKind = "cdc_archive_view"
-	StreamReplayDownstreamObjectIndex  StreamReplayDownstreamKind = "object_index"
-	StreamReplayDownstreamConsumer     StreamReplayDownstreamKind = "duplicate_tolerant_consumer"
+	StreamReplayDownstreamExport      StreamReplayDownstreamKind = "streaming_export"
+	StreamReplayDownstreamCDCView     StreamReplayDownstreamKind = "cdc_archive_view"
+	StreamReplayDownstreamObjectIndex StreamReplayDownstreamKind = "object_index"
+	StreamReplayDownstreamConsumer    StreamReplayDownstreamKind = "duplicate_tolerant_consumer"
 )
 
 type StreamReplayImpactSeverity string
@@ -37,11 +37,11 @@ const (
 )
 
 type StreamReplayActiveExport struct {
-	ExportID         string `json:"export_id"`
-	ExportName       string `json:"export_name,omitempty"`
-	Status           string `json:"status"` // "running" | "stopped" | "scheduled"
-	ReplayBehavior   string `json:"replay_behavior,omitempty"`
-	HasActiveConsumers bool `json:"has_active_consumers,omitempty"`
+	ExportID           string `json:"export_id"`
+	ExportName         string `json:"export_name,omitempty"`
+	Status             string `json:"status"` // "running" | "stopped" | "scheduled"
+	ReplayBehavior     string `json:"replay_behavior,omitempty"`
+	HasActiveConsumers bool   `json:"has_active_consumers,omitempty"`
 }
 
 type StreamReplayCDCView struct {
@@ -58,58 +58,58 @@ type StreamReplayObjectIndex struct {
 }
 
 type StreamReplayConsumer struct {
-	ConsumerID    string `json:"consumer_id"`
-	ConsumerName  string `json:"consumer_name,omitempty"`
-	ConsumerGroup string `json:"consumer_group,omitempty"`
+	ConsumerID      string `json:"consumer_id"`
+	ConsumerName    string `json:"consumer_name,omitempty"`
+	ConsumerGroup   string `json:"consumer_group,omitempty"`
 	IdempotencyMode string `json:"idempotency_mode,omitempty"` // "duplicate_tolerant" | "exactly_once" | "unknown"
 }
 
 type StreamReplayPlanRequest struct {
-	StreamID          string                    `json:"stream_id"`
-	StreamRID         string                    `json:"stream_rid,omitempty"`
-	StreamName        string                    `json:"stream_name,omitempty"`
-	FromOffset        *int64                    `json:"from_offset,omitempty"`
-	ToOffset          *int64                    `json:"to_offset,omitempty"`
-	EarliestOffset    *int64                    `json:"earliest_offset,omitempty"`
-	LatestOffset      *int64                    `json:"latest_offset,omitempty"`
-	Reason            string                    `json:"reason"`
-	RequestedBy       string                    `json:"requested_by,omitempty"`
-	Acknowledgements  []string                  `json:"acknowledgements,omitempty"`
-	Exports           []StreamReplayActiveExport `json:"exports,omitempty"`
-	CDCViews          []StreamReplayCDCView      `json:"cdc_views,omitempty"`
-	ObjectIndices     []StreamReplayObjectIndex  `json:"object_indices,omitempty"`
-	Consumers         []StreamReplayConsumer     `json:"consumers,omitempty"`
-	ComputedAt        time.Time                  `json:"computed_at,omitempty"`
+	StreamID         string                     `json:"stream_id"`
+	StreamRID        string                     `json:"stream_rid,omitempty"`
+	StreamName       string                     `json:"stream_name,omitempty"`
+	FromOffset       *int64                     `json:"from_offset,omitempty"`
+	ToOffset         *int64                     `json:"to_offset,omitempty"`
+	EarliestOffset   *int64                     `json:"earliest_offset,omitempty"`
+	LatestOffset     *int64                     `json:"latest_offset,omitempty"`
+	Reason           string                     `json:"reason"`
+	RequestedBy      string                     `json:"requested_by,omitempty"`
+	Acknowledgements []string                   `json:"acknowledgements,omitempty"`
+	Exports          []StreamReplayActiveExport `json:"exports,omitempty"`
+	CDCViews         []StreamReplayCDCView      `json:"cdc_views,omitempty"`
+	ObjectIndices    []StreamReplayObjectIndex  `json:"object_indices,omitempty"`
+	Consumers        []StreamReplayConsumer     `json:"consumers,omitempty"`
+	ComputedAt       time.Time                  `json:"computed_at,omitempty"`
 }
 
 type StreamReplayDownstreamImpact struct {
-	Kind          StreamReplayDownstreamKind  `json:"kind"`
-	ResourceID    string                      `json:"resource_id"`
-	ResourceName  string                      `json:"resource_name,omitempty"`
-	Severity      StreamReplayImpactSeverity  `json:"severity"`
-	Implication   string                      `json:"implication"`
-	Mitigation    string                      `json:"mitigation,omitempty"`
-	WarningID     string                      `json:"warning_id,omitempty"`
+	Kind         StreamReplayDownstreamKind `json:"kind"`
+	ResourceID   string                     `json:"resource_id"`
+	ResourceName string                     `json:"resource_name,omitempty"`
+	Severity     StreamReplayImpactSeverity `json:"severity"`
+	Implication  string                     `json:"implication"`
+	Mitigation   string                     `json:"mitigation,omitempty"`
+	WarningID    string                     `json:"warning_id,omitempty"`
 }
 
 type StreamReplayPlan struct {
-	StreamID                   string                          `json:"stream_id"`
-	StreamRID                  string                          `json:"stream_rid,omitempty"`
-	StreamName                 string                          `json:"stream_name,omitempty"`
-	Status                     string                          `json:"status"` // "ready" | "requires_confirmation" | "blocked"
-	Reason                     string                          `json:"reason,omitempty"`
-	RequestedBy                string                          `json:"requested_by,omitempty"`
-	FromOffset                 *int64                          `json:"from_offset,omitempty"`
-	ToOffset                   *int64                          `json:"to_offset,omitempty"`
-	EstimatedRecords           *int64                          `json:"estimated_records,omitempty"`
-	ConfirmationRequired       bool                            `json:"confirmation_required"`
-	AcknowledgementsRequired   []string                        `json:"acknowledgements_required"`
-	AcknowledgementsSatisfied  []string                        `json:"acknowledgements_satisfied"`
-	AcknowledgementsMissing    []string                        `json:"acknowledgements_missing"`
-	PreconditionsSatisfied     []string                        `json:"preconditions_satisfied"`
-	PreconditionsBlocking      []string                        `json:"preconditions_blocking"`
-	Impacts                    []StreamReplayDownstreamImpact  `json:"impacts"`
-	ComputedAt                 time.Time                       `json:"computed_at"`
+	StreamID                  string                         `json:"stream_id"`
+	StreamRID                 string                         `json:"stream_rid,omitempty"`
+	StreamName                string                         `json:"stream_name,omitempty"`
+	Status                    string                         `json:"status"` // "ready" | "requires_confirmation" | "blocked"
+	Reason                    string                         `json:"reason,omitempty"`
+	RequestedBy               string                         `json:"requested_by,omitempty"`
+	FromOffset                *int64                         `json:"from_offset,omitempty"`
+	ToOffset                  *int64                         `json:"to_offset,omitempty"`
+	EstimatedRecords          *int64                         `json:"estimated_records,omitempty"`
+	ConfirmationRequired      bool                           `json:"confirmation_required"`
+	AcknowledgementsRequired  []string                       `json:"acknowledgements_required"`
+	AcknowledgementsSatisfied []string                       `json:"acknowledgements_satisfied"`
+	AcknowledgementsMissing   []string                       `json:"acknowledgements_missing"`
+	PreconditionsSatisfied    []string                       `json:"preconditions_satisfied"`
+	PreconditionsBlocking     []string                       `json:"preconditions_blocking"`
+	Impacts                   []StreamReplayDownstreamImpact `json:"impacts"`
+	ComputedAt                time.Time                      `json:"computed_at"`
 }
 
 // BuildStreamReplayPlan classifies every downstream dependency, raises the
@@ -123,15 +123,15 @@ func BuildStreamReplayPlan(req StreamReplayPlanRequest) StreamReplayPlan {
 	}
 
 	plan := StreamReplayPlan{
-		StreamID:    strings.TrimSpace(req.StreamID),
-		StreamRID:   strings.TrimSpace(req.StreamRID),
-		StreamName:  strings.TrimSpace(req.StreamName),
-		Reason:      strings.TrimSpace(req.Reason),
-		RequestedBy: strings.TrimSpace(req.RequestedBy),
-		FromOffset:  req.FromOffset,
-		ToOffset:    req.ToOffset,
-		ComputedAt:  now,
-		Impacts:     []StreamReplayDownstreamImpact{},
+		StreamID:                  strings.TrimSpace(req.StreamID),
+		StreamRID:                 strings.TrimSpace(req.StreamRID),
+		StreamName:                strings.TrimSpace(req.StreamName),
+		Reason:                    strings.TrimSpace(req.Reason),
+		RequestedBy:               strings.TrimSpace(req.RequestedBy),
+		FromOffset:                req.FromOffset,
+		ToOffset:                  req.ToOffset,
+		ComputedAt:                now,
+		Impacts:                   []StreamReplayDownstreamImpact{},
 		PreconditionsSatisfied:    []string{},
 		PreconditionsBlocking:     []string{},
 		AcknowledgementsRequired:  []string{},
@@ -201,13 +201,13 @@ func BuildStreamReplayPlan(req StreamReplayPlanRequest) StreamReplayPlan {
 			mitigation = "Confirm consumers downstream of the export can tolerate the skip, or switch replay_behavior to export_replayed_records."
 		}
 		addImpact(StreamReplayDownstreamImpact{
-			Kind:        StreamReplayDownstreamExport,
-			ResourceID:  exp.ExportID,
+			Kind:         StreamReplayDownstreamExport,
+			ResourceID:   exp.ExportID,
 			ResourceName: exp.ExportName,
-			Severity:    severity,
-			Implication: implication,
-			Mitigation:  mitigation,
-			WarningID:   warningID,
+			Severity:     severity,
+			Implication:  implication,
+			Mitigation:   mitigation,
+			WarningID:    warningID,
 		})
 	}
 
@@ -217,24 +217,24 @@ func BuildStreamReplayPlan(req StreamReplayPlanRequest) StreamReplayPlan {
 		warningID := "ack_cdc_archive_view_" + view.ViewID
 		if ordering == "" {
 			addImpact(StreamReplayDownstreamImpact{
-				Kind:        StreamReplayDownstreamCDCView,
-				ResourceID:  view.ViewID,
+				Kind:         StreamReplayDownstreamCDCView,
+				ResourceID:   view.ViewID,
 				ResourceName: view.ViewName,
-				Severity:    StreamReplayImpactSeverityBlock,
-				Implication: "CDC archive view has no ordering column; replay would corrupt the current-state resolution.",
-				Mitigation:  "Set the ordering column on the CDC sync before replaying.",
-				WarningID:   warningID,
+				Severity:     StreamReplayImpactSeverityBlock,
+				Implication:  "CDC archive view has no ordering column; replay would corrupt the current-state resolution.",
+				Mitigation:   "Set the ordering column on the CDC sync before replaying.",
+				WarningID:    warningID,
 			})
 			continue
 		}
 		addImpact(StreamReplayDownstreamImpact{
-			Kind:        StreamReplayDownstreamCDCView,
-			ResourceID:  view.ViewID,
+			Kind:         StreamReplayDownstreamCDCView,
+			ResourceID:   view.ViewID,
 			ResourceName: view.ViewName,
-			Severity:    StreamReplayImpactSeverityWarn,
-			Implication: fmt.Sprintf("CDC archive view will re-resolve current state using %s; expect transient incorrect rows until replay completes.", ordering),
-			Mitigation:  "Coordinate with downstream consumers of the archive view; consider replaying outside business hours.",
-			WarningID:   warningID,
+			Severity:     StreamReplayImpactSeverityWarn,
+			Implication:  fmt.Sprintf("CDC archive view will re-resolve current state using %s; expect transient incorrect rows until replay completes.", ordering),
+			Mitigation:   "Coordinate with downstream consumers of the archive view; consider replaying outside business hours.",
+			WarningID:    warningID,
 		})
 	}
 
@@ -242,13 +242,13 @@ func BuildStreamReplayPlan(req StreamReplayPlanRequest) StreamReplayPlan {
 	for _, index := range req.ObjectIndices {
 		warningID := "ack_object_index_" + index.IndexID
 		addImpact(StreamReplayDownstreamImpact{
-			Kind:        StreamReplayDownstreamObjectIndex,
-			ResourceID:  index.IndexID,
+			Kind:         StreamReplayDownstreamObjectIndex,
+			ResourceID:   index.IndexID,
 			ResourceName: index.ObjectType,
-			Severity:    StreamReplayImpactSeverityWarn,
-			Implication: "Object indexing will reapply changes for the replay window; indexed objects may oscillate while the replay drains.",
-			Mitigation:  "Pause downstream object indexing or accept the transient drift; key-by " + index.KeyByField + " preserves ordering when the stream CDC metadata is intact.",
-			WarningID:   warningID,
+			Severity:     StreamReplayImpactSeverityWarn,
+			Implication:  "Object indexing will reapply changes for the replay window; indexed objects may oscillate while the replay drains.",
+			Mitigation:   "Pause downstream object indexing or accept the transient drift; key-by " + index.KeyByField + " preserves ordering when the stream CDC metadata is intact.",
+			WarningID:    warningID,
 		})
 	}
 
@@ -269,13 +269,13 @@ func BuildStreamReplayPlan(req StreamReplayPlanRequest) StreamReplayPlan {
 			warningID = "ack_consumer_" + consumer.ConsumerID
 		}
 		addImpact(StreamReplayDownstreamImpact{
-			Kind:        StreamReplayDownstreamConsumer,
-			ResourceID:  consumer.ConsumerID,
+			Kind:         StreamReplayDownstreamConsumer,
+			ResourceID:   consumer.ConsumerID,
 			ResourceName: consumer.ConsumerName,
-			Severity:    severity,
-			Implication: implication,
-			Mitigation:  mitigation,
-			WarningID:   warningID,
+			Severity:     severity,
+			Implication:  implication,
+			Mitigation:   mitigation,
+			WarningID:    warningID,
 		})
 	}
 

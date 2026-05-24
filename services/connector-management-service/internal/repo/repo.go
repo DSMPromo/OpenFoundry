@@ -95,7 +95,8 @@ func (r *Repo) CreateConnection(ctx context.Context, body *models.CreateConnecti
 	if len(cfg) == 0 {
 		cfg = []byte(`{}`)
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO connections (id, name, connector_type, config, owner_id)
 		 VALUES ($1, $2, $3, $4, $5)
 		 RETURNING id, name, connector_type, config, status, owner_id,
@@ -122,7 +123,8 @@ func (r *Repo) UpdateConnection(ctx context.Context, id uuid.UUID, body *models.
 	if body.Status != nil {
 		status = *body.Status
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE connections SET name = $2, config = $3, status = $4, updated_at = $5
 		 WHERE id = $1
 		 RETURNING id, name, connector_type, config, status, owner_id,
@@ -145,7 +147,8 @@ func (r *Repo) DeleteConnection(ctx context.Context, id uuid.UUID) (bool, error)
 // `worker = "foundry"` into the active config. Callers have a 30-day window
 // to revert by copying `previous_config_snapshot` back over `config`.
 func (r *Repo) MigrateConnectionToFoundryWorker(ctx context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.Connection, error) {
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE connections
 		 SET previous_config_snapshot = config,
 		     migrated_at = NOW(),
@@ -624,7 +627,8 @@ func (r *Repo) UpdateSourceCodeImport(ctx context.Context, sourceID uuid.UUID, o
 	if err != nil {
 		return nil, err
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO source_code_imports (source_id, enabled, friendly_name, python_identifier, code_repositories, export_controls)
 			 SELECT c.id, $3, $4, $5, $6::jsonb, $7::jsonb FROM connections c WHERE c.id = $1 AND `+sourceAccessSQL("c", "$2", "$8", "$9")+`
 		 ON CONFLICT (source_id) DO UPDATE SET enabled = EXCLUDED.enabled,
@@ -874,7 +878,8 @@ func (r *Repo) CreateSyncJob(ctx context.Context, body *models.CreateSyncJobRequ
 	if len(schema) == 0 {
 		schema = []byte(`[]`)
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO batch_sync_defs (id, source_id, capability_type, output_kind, output_dataset_id,
 		     output_stream_id, output_media_set_id, source_selector, source_path, source_table, source_topic,
 		     schema_json, write_mode, transaction_mode, build_integration, dataset_transaction_type,
@@ -978,7 +983,8 @@ func (r *Repo) UpdateSyncJob(ctx context.Context, id uuid.UUID, body *models.Upd
 	if body.ScheduleCron != nil {
 		schedule = body.ScheduleCron
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE batch_sync_defs d SET output_dataset_id = $2, output_stream_id = $3, output_media_set_id = $4,
 		     source_selector = $5, source_path = $6, source_table = $7, source_topic = $8, schema_json = $9::jsonb,
 		     write_mode = $10, transaction_mode = $11, build_integration = $12, dataset_transaction_type = $13,
@@ -996,7 +1002,8 @@ func (r *Repo) UpdateSyncJob(ctx context.Context, id uuid.UUID, body *models.Upd
 }
 
 func (r *Repo) RunSyncJob(ctx context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.SyncRun, error) {
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO sync_runs (id, sync_def_id, status)
 			 SELECT $1, d.id, 'running' FROM batch_sync_defs d JOIN connections c ON c.id = d.source_id
 			 WHERE d.id = $2 AND `+sourceAccessSQL("c", "$3", "$4", "$5")+`
@@ -1012,7 +1019,8 @@ func (r *Repo) RunSyncJob(ctx context.Context, id uuid.UUID, ownerID uuid.UUID) 
 }
 
 func (r *Repo) CompleteSyncRun(ctx context.Context, runID uuid.UUID, ownerID uuid.UUID, status string, bytesWritten int64, filesWritten int64, errMsg *string, ingestJobID *string, datasetVersionID *uuid.UUID, contentHash *string) (*models.SyncRun, error) {
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE sync_runs r
 		    SET status = $2,
 		        finished_at = NOW(),
@@ -1263,7 +1271,8 @@ func (r *Repo) CreateDataExport(ctx context.Context, body *models.CreateDataExpo
 			name = "Export"
 		}
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO data_exports (id, source_id, name, export_type, export_mode,
 		     input_dataset_id, input_dataset_rid, input_stream_id, destination_path,
 		     destination_table, destination_topic, schedule_cron, start_behavior, stop_behavior,
@@ -1399,7 +1408,8 @@ func (r *Repo) UpdateDataExport(ctx context.Context, id uuid.UUID, body *models.
 			return nil, err
 		}
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE data_exports e SET name = $2, export_mode = $3,
 		     input_dataset_id = $4, input_dataset_rid = $5, input_stream_id = $6,
 		     destination_path = $7, destination_table = $8, destination_topic = $9,
@@ -1488,7 +1498,8 @@ func (r *Repo) runFileDataExport(ctx context.Context, current *models.DataExport
 	if err != nil {
 		return nil, err
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE data_exports e SET status = $2, health = $3::jsonb, history = $4::jsonb,
 		     file_export = $5::jsonb, last_run_at = $6, updated_at = NOW()
 		  FROM connections c WHERE e.source_id = c.id AND e.id = $1 AND `+sourceAccessSQL("c", "$7", "$8", "$9")+`
@@ -1565,7 +1576,8 @@ func (r *Repo) runTableDataExport(ctx context.Context, current *models.DataExpor
 	if err != nil {
 		return nil, err
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE data_exports e SET status = $2, health = $3::jsonb, history = $4::jsonb,
 		     table_export = $5::jsonb, last_run_at = $6, updated_at = NOW()
 		  FROM connections c WHERE e.source_id = c.id AND e.id = $1 AND `+sourceAccessSQL("c", "$7", "$8", "$9")+`
@@ -1689,7 +1701,8 @@ func (r *Repo) updateStreamingExportState(ctx context.Context, current *models.D
 	if err != nil {
 		return nil, err
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE data_exports e SET status = $2, health = $3::jsonb, history = $4::jsonb,
 		     streaming_export = $5::jsonb, last_run_at = COALESCE($6::timestamptz, e.last_run_at), updated_at = NOW()
 		  FROM connections c WHERE e.source_id = c.id AND e.id = $1 AND `+sourceAccessSQL("c", "$7", "$8", "$9")+`
@@ -1723,7 +1736,8 @@ func (r *Repo) transitionDataExport(ctx context.Context, id uuid.UUID, ownerID u
 	if err != nil {
 		return nil, err
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE data_exports e SET status = $2, health = $3::jsonb, history = $4::jsonb,
 		     last_run_at = COALESCE($5::timestamptz, e.last_run_at), updated_at = NOW()
 		  FROM connections c WHERE e.source_id = c.id AND e.id = $1 AND `+sourceAccessSQL("c", "$6", "$7", "$8")+`
@@ -1841,7 +1855,8 @@ func (r *Repo) EnableVirtualTableSource(ctx context.Context, sourceRID string, b
 	if len(cfg) == 0 {
 		cfg = []byte(`null`)
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO virtual_table_sources_link (source_rid, provider, virtual_tables_enabled, iceberg_catalog_kind, iceberg_catalog_config)
 		 VALUES ($1, $2, TRUE, $3, $4)
 		 ON CONFLICT (source_rid) DO UPDATE SET virtual_tables_enabled = TRUE, provider = EXCLUDED.provider,
@@ -1904,7 +1919,8 @@ func (r *Repo) CreateVirtualTable(ctx context.Context, sourceRID string, actorID
 		return nil, err
 	}
 	parentFolderRID := trimmedStringPtr(body.ParentFolderRID)
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO virtual_tables (id, source_rid, project_rid, name, parent_folder_rid, locator, table_type,
 		     schema_inferred, capabilities, markings, properties, created_by)
 		 SELECT $1, l.source_rid, $3, $4, $5, $6::jsonb, $7, $8::jsonb, $9::jsonb, $10,
@@ -2013,7 +2029,8 @@ func (r *Repo) EnableVirtualTableAutoRegistration(ctx context.Context, sourceRID
 		return nil, fmt.Errorf("poll_interval_seconds must be at least 60")
 	}
 	projectRID := managedVirtualTableProjectRID(projectName)
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE virtual_table_sources_link
 		    SET auto_register_enabled = TRUE,
 		        auto_register_project_rid = $2,
@@ -2030,7 +2047,8 @@ func (r *Repo) EnableVirtualTableAutoRegistration(ctx context.Context, sourceRID
 }
 
 func (r *Repo) DisableVirtualTableAutoRegistration(ctx context.Context, sourceRID string) error {
-	_, err := r.Pool.Exec(ctx,
+	_, err := r.Pool.Exec(
+		ctx,
 		`UPDATE virtual_table_sources_link
 		    SET auto_register_enabled = FALSE,
 		        updated_at = NOW()
@@ -2049,7 +2067,8 @@ func (r *Repo) ScanVirtualTableAutoRegistrationNow(ctx context.Context, sourceRI
 		return nil, nil
 	}
 	summary := &models.AutoRegistrationScanSummary{}
-	err = r.Pool.QueryRow(ctx,
+	err = r.Pool.QueryRow(
+		ctx,
 		`WITH run AS (
 		    INSERT INTO auto_register_runs (source_rid, finished_at, status, added, updated, orphaned, errors)
 		    VALUES ($1, NOW(), 'succeeded', 0, 0, 0, '[]'::jsonb)
@@ -2151,7 +2170,8 @@ func (r *Repo) SetVirtualTableUpdateDetection(ctx context.Context, rid string, o
 		intervalArg = interval
 		nextPollArg = time.Now().UTC()
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`WITH updated AS (
 		   UPDATE virtual_tables
 		      SET update_detection_enabled = $3,
@@ -2199,7 +2219,8 @@ func (r *Repo) PollVirtualTableUpdateDetection(ctx context.Context, rid string, 
 		latencyMS = 1
 	}
 	nextPollAt := time.Now().UTC().Add(time.Duration(virtualTableUpdateDetectionInterval(v)) * time.Second)
-	_, err = r.Pool.Exec(ctx,
+	_, err = r.Pool.Exec(
+		ctx,
 		`UPDATE virtual_tables
 		    SET last_observed_version = $2,
 		        last_polled_at = NOW(),
@@ -2212,7 +2233,8 @@ func (r *Repo) PollVirtualTableUpdateDetection(ctx context.Context, rid string, 
 	if err != nil {
 		return nil, err
 	}
-	_, err = r.Pool.Exec(ctx,
+	_, err = r.Pool.Exec(
+		ctx,
 		`INSERT INTO update_detection_polls (virtual_table_id, observed_version, change_detected, latency_ms)
 		 VALUES ($1, $2, $3, $4)`,
 		v.ID, observed, changeDetected, latencyMS,
@@ -2254,7 +2276,8 @@ func (r *Repo) ListVirtualTableUpdateDetectionHistory(ctx context.Context, rid s
 	if limit > 500 {
 		limit = 500
 	}
-	rows, err := r.Pool.Query(ctx,
+	rows, err := r.Pool.Query(
+		ctx,
 		`SELECT id, virtual_table_id, polled_at, observed_version, change_detected, latency_ms, error_message
 		   FROM update_detection_polls
 		  WHERE virtual_table_id = $1
@@ -2309,7 +2332,8 @@ func (r *Repo) GetVirtualTableLineage(ctx context.Context, rid string, ownerID s
 	outcome := models.PollOutcomeInitial
 	var latestChanged bool
 	var latestError *string
-	err = r.Pool.QueryRow(ctx,
+	err = r.Pool.QueryRow(
+		ctx,
 		`SELECT change_detected, error_message
 		   FROM update_detection_polls
 		  WHERE virtual_table_id = $1
@@ -2682,7 +2706,8 @@ func (r *Repo) CreateMediaSetSync(ctx context.Context, sourceID uuid.UUID, body 
 	if err != nil {
 		return nil, err
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO media_set_syncs (id, source_id, sync_type, target_media_set_rid, subfolder, filters, schedule_cron)
 			 SELECT $1, c.id, $3, $4, $5, $6, $7 FROM connections c WHERE c.id = $2 AND `+sourceAccessSQL("c", "$8", "$9", "$10")+`
 			 RETURNING id, source_id, sync_type, target_media_set_rid, subfolder, filters, schedule_cron, created_at`,
@@ -2728,7 +2753,8 @@ func (r *Repo) UpdateMediaSetSync(ctx context.Context, id uuid.UUID, body *model
 	if err != nil {
 		return nil, err
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE media_set_syncs m SET sync_type = $2, target_media_set_rid = $3, subfolder = $4, filters = $5, schedule_cron = $6
 			 FROM connections c WHERE m.source_id = c.id AND m.id = $1 AND `+sourceAccessSQL("c", "$7", "$8", "$9")+`
 			 RETURNING m.id, m.source_id, m.sync_type, m.target_media_set_rid, m.subfolder, m.filters, m.schedule_cron, m.created_at`,
@@ -2926,7 +2952,8 @@ func (r *Repo) RegisterConnectorAgent(ctx context.Context, body *models.Register
 	if err != nil {
 		return nil, err
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO connector_agents
 			(id, name, agent_url, version, environment, host, owner_id, status, capabilities, metadata,
 			 connected_sources, supported_connector_capabilities, assigned_proxy_policies, connection_failures, last_heartbeat_at)
@@ -2965,7 +2992,8 @@ func (r *Repo) HeartbeatConnectorAgent(ctx context.Context, id uuid.UUID, body *
 	if err != nil {
 		return nil, err
 	}
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`UPDATE connector_agents
 		 SET status = 'online',
 		     capabilities = $3,
@@ -3121,7 +3149,8 @@ func (r *Repo) AppendWebhookHistory(ctx context.Context, body *models.CreateWebh
 		httpStatus = int(*body.HTTPStatus)
 	}
 	id := uuid.New()
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO webhook_invocation_history
 			(id, source_id, user_id, status, http_status, input_policy, inputs,
 			 output_parameters, error, call_count, started_at, finished_at,
@@ -3227,7 +3256,8 @@ func (r *Repo) AppendInboundListenerEvent(ctx context.Context, body *models.Crea
 		return nil, err
 	}
 	id := uuid.New()
-	row := r.Pool.QueryRow(ctx,
+	row := r.Pool.QueryRow(
+		ctx,
 		`INSERT INTO inbound_listener_events
 			(id, source_id, listener_id, event_id, status, signature_verified,
 			 payload, headers, destination)
@@ -3367,10 +3397,10 @@ func (r *Repo) UpsertSourceRetryPolicy(ctx context.Context, sourceID uuid.UUID, 
 		 RETURNING source_id, categories, updated_by, updated_at`,
 		sourceID, categoriesJSON, actorID)
 	var (
-		id         uuid.UUID
-		stored     []byte
-		updatedBy  *string
-		updatedAt  time.Time
+		id        uuid.UUID
+		stored    []byte
+		updatedBy *string
+		updatedAt time.Time
 	)
 	if err := row.Scan(&id, &stored, &updatedBy, &updatedAt); err != nil {
 		return nil, err
@@ -3751,9 +3781,9 @@ func (r *Repo) UpsertDeadLetterSink(ctx context.Context, syncDefID uuid.UUID, ow
 func scanDeadLetterSink(r rowLikeT) (*models.DeadLetterSink, error) {
 	v := &models.DeadLetterSink{}
 	var (
-		kind         string
-		rules        []byte
-		updatedBy    *string
+		kind      string
+		rules     []byte
+		updatedBy *string
 	)
 	if err := r.Scan(&v.SyncDefID, &kind, &v.TargetRID, &v.RetentionDays, &rules, &updatedBy, &v.CreatedAt, &v.UpdatedAt); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -3873,8 +3903,8 @@ func (r *Repo) PurgeExpiredQuarantinedRecords(ctx context.Context, now time.Time
 func scanQuarantinedRecord(r rowLikeT) (*models.QuarantinedRecord, error) {
 	v := &models.QuarantinedRecord{}
 	var (
-		category string
-		runID    *uuid.UUID
+		category  string
+		runID     *uuid.UUID
 		recordKey *string
 		payload   []byte
 		headers   []byte
@@ -3900,4 +3930,3 @@ func scanQuarantinedRecord(r rowLikeT) (*models.QuarantinedRecord, error) {
 	}
 	return v, nil
 }
-

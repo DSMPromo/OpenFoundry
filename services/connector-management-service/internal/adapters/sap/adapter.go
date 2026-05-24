@@ -262,8 +262,8 @@ func (a *Adapter) BuildIngestSpec(_ context.Context, c *models.Connection, src *
 		return nil, errors.New("sap: connection config missing 'base_url'")
 	}
 	specCfg := map[string]any{
-		"base_url":  cfg.BaseURL,
-		"entity":    src.Selector,
+		"base_url": cfg.BaseURL,
+		"entity":   src.Selector,
 	}
 	if cfg.ServicePath != "" {
 		specCfg["service_path"] = cfg.ServicePath

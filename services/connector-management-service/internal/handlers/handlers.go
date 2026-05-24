@@ -806,7 +806,8 @@ func (h *Handlers) MigrateToFoundryWorker(w http.ResponseWriter, r *http.Request
 		writeJSONErr(w, http.StatusNotFound, "source not found")
 		return
 	}
-	slog.Info("migrated source to foundry worker",
+	slog.Info(
+		"migrated source to foundry worker",
 		slog.String("source_id", sourceID.String()),
 		slog.String("representative_agent_id", body.RepresentativeAgentID),
 		slog.Int("certificate_count", len(body.Certificates)),

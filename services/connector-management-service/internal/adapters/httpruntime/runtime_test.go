@@ -131,7 +131,7 @@ func TestClientGetRoutesThroughAgent(t *testing.T) {
 func TestHeaderMapExtractsConfigHeaders(t *testing.T) {
 	headers, err := HeaderMap(map[string]any{
 		"headers": map[string]any{
-			"X-Trace": "abc-123",
+			"X-Trace":  "abc-123",
 			"X-Tenant": "openfoundry",
 		},
 	})

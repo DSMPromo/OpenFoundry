@@ -53,6 +53,7 @@ func TestEnumWireTokensMatchRustSerde(t *testing.T) {
 		}
 	}
 }
+
 func assertFixtureRoundTrip(t *testing.T, path string, dst any) {
 	t.Helper()
 	raw, err := os.ReadFile(path)
@@ -68,6 +69,7 @@ func assertFixtureRoundTrip(t *testing.T, path string, dst any) {
 	}
 	assertSameJSON(t, raw, encoded)
 }
+
 func assertSameJSON(t *testing.T, wantRaw, gotRaw []byte) {
 	t.Helper()
 	var want, got any

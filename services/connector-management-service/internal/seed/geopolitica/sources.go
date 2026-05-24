@@ -89,7 +89,7 @@ func gdeltGkgSeed() SeedConnection {
 		}),
 		Markings: []string{"MARKING:GDELT-RAW", "MARKING:OPEN-SOURCE"},
 		Notes:    "GKG = themes + named entities + locations; same cadence as events; different schema.",
-		DownstreamPipelineDoc: `Bronze: gdelt-gkg-decoder — same lastupdate.txt indirection, filters for `+"`gkg.csv.zip`"+`.
+		DownstreamPipelineDoc: `Bronze: gdelt-gkg-decoder — same lastupdate.txt indirection, filters for ` + "`gkg.csv.zip`" + `.
 Silver: gkg-entity-projector — split themes, persons, organizations, locations into separate ontology-bound silver datasets.
 Gold:  newsarticle-linker — write to NewsArticle / Theme object types, link to actors/locations.`,
 	}
@@ -122,8 +122,8 @@ func acledSeed() SeedConnection {
 		}),
 		Markings: []string{"MARKING:ACLED-RAW", "MARKING:OPEN-SOURCE"},
 		Notes:    "REST JSON; 5000-row pages; API key required; daily cadence is fine for PoC scale.",
-		DownstreamPipelineDoc: `Bronze: acled-page-collector — walks `+"`page=1..N`"+` until the API returns an empty result.
-Silver: acled-event-normaliser — flatten ACLED's nested `+"`actor1`"+`/`+"`actor2`"+` shapes into row-per-event.
+		DownstreamPipelineDoc: `Bronze: acled-page-collector — walks ` + "`page=1..N`" + ` until the API returns an empty result.
+Silver: acled-event-normaliser — flatten ACLED's nested ` + "`actor1`" + `/` + "`actor2`" + ` shapes into row-per-event.
 Gold:  acled-event-projector — write to Event object type; link Actor1/Actor2 to canonical Actor objects via entity-resolution-service.`,
 	}
 }
@@ -151,7 +151,7 @@ func ofacSdnSeed() SeedConnection {
 		Notes:    "Stable URL; daily cadence; OFAC accepts unauthenticated GETs; XML payload.",
 		DownstreamPipelineDoc: `Bronze: ofac-sdn-xml-decoder — XPath through sdnList/sdnEntry, emit a row per sdnEntry.
 Silver: sanctions-aggregator — normalise sdnEntry fields into the canonical SanctionsEntry schema (program, aliases, addresses).
-Gold:  sanctions-actor-projector — link SanctionsEntry to Actor via name + program; mark `+"`Actor.is_sanctioned=true`"+`.`,
+Gold:  sanctions-actor-projector — link SanctionsEntry to Actor via name + program; mark ` + "`Actor.is_sanctioned=true`" + `.`,
 	}
 }
 
@@ -251,8 +251,8 @@ func wikidataSeed() SeedConnection {
 		}),
 		Markings: []string{"MARKING:WIKIDATA", "MARKING:OPEN-SOURCE"},
 		Notes:    "Wikidata SPARQL endpoint; class-bound enrichment; weekly cadence sufficient for PoC.",
-		DownstreamPipelineDoc: `Bronze: wikidata-sparql-rotator — issue one query per Actor class with class-bound SPARQL, persist `+"`itemLabel`"+`, `+"`item`"+`, country, instance-of, etc.
+		DownstreamPipelineDoc: `Bronze: wikidata-sparql-rotator — issue one query per Actor class with class-bound SPARQL, persist ` + "`itemLabel`" + `, ` + "`item`" + `, country, instance-of, etc.
 Silver: wikidata-actor-enricher — flatten the SPARQL result envelope.
-Gold:  wikidata-actor-projector — backfill `+"`Actor.wikidata_qid`"+`, country, type onto canonical Actor; used by entity-resolution-service as a high-trust source.`,
+Gold:  wikidata-actor-projector — backfill ` + "`Actor.wikidata_qid`" + `, country, type onto canonical Actor; used by entity-resolution-service as a high-trust source.`,
 	}
 }

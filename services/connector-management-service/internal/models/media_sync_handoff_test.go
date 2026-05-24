@@ -60,8 +60,8 @@ func TestComputeMediaSetSyncBytesAccepted_FiltersBySizeAndMIME(t *testing.T) {
 	}
 	request := &RunMediaSetSyncRequest{
 		SourceFiles: []SourceFile{
-			{Path: "a.png", SizeBytes: 200, MimeType: "image/png"},     // accepted
-			{Path: "b.png", SizeBytes: 800, MimeType: "image/png"},     // accepted
+			{Path: "a.png", SizeBytes: 200, MimeType: "image/png"},                // accepted
+			{Path: "b.png", SizeBytes: 800, MimeType: "image/png"},                // accepted
 			{Path: "huge.png", SizeBytes: 5 * 1024 * 1024, MimeType: "image/png"}, // exceeds size limit
 			{Path: "skipped.png", SizeBytes: 100, MimeType: "image/png"},          // already synced
 			{Path: "doc.pdf", SizeBytes: 50, MimeType: "application/pdf"},         // mime not allowed

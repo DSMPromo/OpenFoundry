@@ -209,8 +209,8 @@ func TestRetryRecoveryHealthChecks_EscalationFeedsHealthSummary(t *testing.T) {
 	policy := DefaultSourceRetryPolicy(sourceID, now)
 
 	summary := BuildRetryRecoverySummary(RetryRecoveryInput{
-		SourceID:  sourceID,
-		Policy:    policy,
+		SourceID: sourceID,
+		Policy:   policy,
 		Failures: []RetryRecoveryRunSummary{{
 			RunID:       uuid.New(),
 			SyncDefID:   uuid.New(),

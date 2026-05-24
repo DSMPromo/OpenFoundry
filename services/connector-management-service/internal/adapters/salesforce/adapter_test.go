@@ -491,4 +491,3 @@ func jsonConfig(m map[string]any) json.RawMessage {
 	}
 	return raw
 }
-

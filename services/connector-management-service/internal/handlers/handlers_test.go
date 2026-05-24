@@ -264,9 +264,11 @@ type testConnectionAdapter struct {
 func (a testConnectionAdapter) TestConnection(_ context.Context, _ json.RawMessage) (adapters.ConnectionTestResult, error) {
 	return a.result, a.err
 }
+
 func (a testConnectionAdapter) DiscoverSources(context.Context, *models.Connection, string) ([]adapters.Source, error) {
 	return nil, adapters.ErrNotImplemented
 }
+
 func (a testConnectionAdapter) QueryVirtualTable(_ context.Context, _ *models.Connection, q *adapters.Query, _ string) (*adapters.Result, error) {
 	if a.queryErr != nil {
 		return nil, a.queryErr
@@ -280,9 +282,11 @@ func (a testConnectionAdapter) QueryVirtualTable(_ context.Context, _ *models.Co
 	}
 	return nil, adapters.ErrNotImplemented
 }
+
 func (a testConnectionAdapter) StreamArrow(context.Context, *models.Connection, *adapters.Query, string) (adapters.ArrowStream, error) {
 	return adapters.EmptyArrowStream{}, adapters.ErrNotImplemented
 }
+
 func (a testConnectionAdapter) BuildIngestSpec(context.Context, *models.Connection, *adapters.Source) (*adapters.IngestSpec, error) {
 	return nil, adapters.ErrNotImplemented
 }
@@ -375,6 +379,7 @@ func newFakeStore(owner uuid.UUID) *fakeStore {
 func (f *fakeStore) ListConnections(_ context.Context, ownerID *uuid.UUID) ([]models.Connection, error) {
 	return f.connections, nil
 }
+
 func (f *fakeStore) GetConnection(_ context.Context, id uuid.UUID) (*models.Connection, error) {
 	for i := range f.connections {
 		if f.connections[i].ID == id {
@@ -383,6 +388,7 @@ func (f *fakeStore) GetConnection(_ context.Context, id uuid.UUID) (*models.Conn
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) GetConnectionForOwner(_ context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.Connection, error) {
 	for i := range f.connections {
 		allowed, _ := f.CheckSourceRole(context.Background(), id, ownerID, models.SourceRoleView)
@@ -392,10 +398,12 @@ func (f *fakeStore) GetConnectionForOwner(_ context.Context, id uuid.UUID, owner
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) CreateConnection(_ context.Context, body *models.CreateConnectionRequest, ownerID uuid.UUID) (*models.Connection, error) {
 	c := models.Connection{ID: uuid.New(), Name: body.Name, ConnectorType: body.ConnectorType, Config: body.Config, OwnerID: ownerID}
 	return &c, nil
 }
+
 func (f *fakeStore) UpdateConnection(_ context.Context, id uuid.UUID, body *models.UpdateConnectionRequest) (*models.Connection, error) {
 	for i := range f.connections {
 		if f.connections[i].ID == id {
@@ -413,10 +421,12 @@ func (f *fakeStore) UpdateConnection(_ context.Context, id uuid.UUID, body *mode
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) DeleteConnection(_ context.Context, id uuid.UUID) (bool, error) {
 	c, _ := f.GetConnection(context.Background(), id)
 	return c != nil, nil
 }
+
 func (f *fakeStore) CheckSourceRole(_ context.Context, sourceID uuid.UUID, actorID uuid.UUID, role models.SourcePermissionRole) (bool, error) {
 	conn, _ := f.GetConnection(context.Background(), sourceID)
 	if conn == nil {
@@ -442,6 +452,7 @@ func (f *fakeStore) CheckSourceRole(_ context.Context, sourceID uuid.UUID, actor
 	}
 	return false, nil
 }
+
 func (f *fakeStore) GetSourceGovernance(ctx context.Context, sourceID uuid.UUID, actorID uuid.UUID) (*models.SourceGovernance, error) {
 	conn, _ := f.GetConnection(ctx, sourceID)
 	if conn == nil {
@@ -482,6 +493,7 @@ func (f *fakeStore) GetSourceGovernance(ctx context.Context, sourceID uuid.UUID,
 	current.PermissionGrants = models.NormalizeSourcePermissionGrants(current.PermissionGrants, sourceID, conn.OwnerID, time.Now().UTC())
 	return &current, nil
 }
+
 func (f *fakeStore) UpdateSourceGovernance(ctx context.Context, sourceID uuid.UUID, actorID uuid.UUID, body *models.UpdateSourceGovernanceRequest) (*models.SourceGovernance, error) {
 	allowed, _ := f.CheckSourceRole(ctx, sourceID, actorID, models.SourceRoleOwner)
 	if !allowed {
@@ -519,6 +531,7 @@ func (f *fakeStore) UpdateSourceGovernance(ctx context.Context, sourceID uuid.UU
 	})
 	return f.GetSourceGovernance(ctx, sourceID, actorID)
 }
+
 func (f *fakeStore) ListSourceGovernanceAudit(ctx context.Context, sourceID uuid.UUID, actorID uuid.UUID, limit int) ([]models.SourceGovernanceAuditEvent, error) {
 	allowed, _ := f.CheckSourceRole(ctx, sourceID, actorID, models.SourceRoleView)
 	if !allowed {
@@ -533,6 +546,7 @@ func (f *fakeStore) ListSourceGovernanceAudit(ctx context.Context, sourceID uuid
 	}
 	return items, nil
 }
+
 func (f *fakeStore) RecordSourceGovernanceAudit(ctx context.Context, body models.RecordSourceGovernanceAuditRequest) (*models.SourceGovernanceAuditEvent, error) {
 	if conn, _ := f.GetConnection(ctx, body.SourceID); conn == nil {
 		return nil, nil
@@ -561,12 +575,14 @@ func (f *fakeStore) RecordSourceGovernanceAudit(ctx context.Context, body models
 	f.auditEvents[body.SourceID] = append([]models.SourceGovernanceAuditEvent{event}, f.auditEvents[body.SourceID]...)
 	return &event, nil
 }
+
 func (f *fakeStore) ListSyncJobs(_ context.Context, sourceID uuid.UUID, ownerID uuid.UUID) ([]models.SyncJob, error) {
 	if c, _ := f.GetConnectionForOwner(context.Background(), sourceID, ownerID); c == nil {
 		return []models.SyncJob{}, nil
 	}
 	return f.syncJobs[sourceID], nil
 }
+
 func (f *fakeStore) GetSyncJob(_ context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.SyncJob, error) {
 	for source, jobs := range f.syncJobs {
 		if c, _ := f.GetConnectionForOwner(context.Background(), source, ownerID); c == nil {
@@ -580,6 +596,7 @@ func (f *fakeStore) GetSyncJob(_ context.Context, id uuid.UUID, ownerID uuid.UUI
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) CreateSyncJob(_ context.Context, body *models.CreateSyncJobRequest, ownerID uuid.UUID) (*models.SyncJob, error) {
 	allowed, _ := f.CheckSourceRole(context.Background(), body.SourceID, ownerID, models.SourceRoleSyncCreate)
 	if !allowed {
@@ -606,6 +623,7 @@ func (f *fakeStore) CreateSyncJob(_ context.Context, body *models.CreateSyncJobR
 	f.syncJobs[body.SourceID] = append([]models.SyncJob{j}, f.syncJobs[body.SourceID]...)
 	return &j, nil
 }
+
 func (f *fakeStore) UpdateSyncJob(_ context.Context, id uuid.UUID, body *models.UpdateSyncJobRequest, ownerID uuid.UUID) (*models.SyncJob, error) {
 	for source, jobs := range f.syncJobs {
 		if c, _ := f.GetConnectionForOwner(context.Background(), source, ownerID); c == nil {
@@ -635,6 +653,7 @@ func (f *fakeStore) UpdateSyncJob(_ context.Context, id uuid.UUID, body *models.
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) RunSyncJob(_ context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.SyncRun, error) {
 	if _, err := f.GetSyncJob(context.Background(), id, ownerID); err != nil {
 		return nil, err
@@ -648,15 +667,18 @@ func (f *fakeStore) RunSyncJob(_ context.Context, id uuid.UUID, ownerID uuid.UUI
 	f.runs[id] = append(f.runs[id], run)
 	return &run, nil
 }
+
 func (f *fakeStore) ListSyncRuns(_ context.Context, syncID uuid.UUID, _ uuid.UUID) ([]models.SyncRun, error) {
 	return f.runs[syncID], nil
 }
+
 func (f *fakeStore) ListDataExports(_ context.Context, sourceID uuid.UUID, ownerID uuid.UUID) ([]models.DataExport, error) {
 	if c, _ := f.GetConnectionForOwner(context.Background(), sourceID, ownerID); c == nil {
 		return []models.DataExport{}, nil
 	}
 	return f.exports[sourceID], nil
 }
+
 func (f *fakeStore) GetDataExport(_ context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.DataExport, error) {
 	for source, exports := range f.exports {
 		if c, _ := f.GetConnectionForOwner(context.Background(), source, ownerID); c == nil {
@@ -670,6 +692,7 @@ func (f *fakeStore) GetDataExport(_ context.Context, id uuid.UUID, ownerID uuid.
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) CreateDataExport(_ context.Context, body *models.CreateDataExportRequest, ownerID uuid.UUID) (*models.DataExport, error) {
 	allowed, _ := f.CheckSourceRole(context.Background(), body.SourceID, ownerID, models.SourceRoleExportCreate)
 	if !allowed {
@@ -790,6 +813,7 @@ func (f *fakeStore) UpdateDataExport(_ context.Context, id uuid.UUID, body *mode
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) RunDataExport(ctx context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.DataExport, error) {
 	current, _ := f.GetDataExport(ctx, id, ownerID)
 	if current != nil && current.ExportType == models.DataExportTypeFile {
@@ -871,6 +895,7 @@ func (f *fakeStore) RunDataExport(ctx context.Context, id uuid.UUID, ownerID uui
 	}
 	return f.transitionExport(ctx, id, ownerID, models.DataExportStatusSucceeded, models.DataExportHealthHealthy, "run")
 }
+
 func (f *fakeStore) StartDataExport(ctx context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.DataExport, error) {
 	current, _ := f.GetDataExport(ctx, id, ownerID)
 	if current != nil && current.ExportType == models.DataExportTypeStreaming {
@@ -878,6 +903,7 @@ func (f *fakeStore) StartDataExport(ctx context.Context, id uuid.UUID, ownerID u
 	}
 	return f.transitionExport(ctx, id, ownerID, models.DataExportStatusRunning, models.DataExportHealthRunning, "started")
 }
+
 func (f *fakeStore) StopDataExport(ctx context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.DataExport, error) {
 	current, _ := f.GetDataExport(ctx, id, ownerID)
 	if current != nil && current.ExportType == models.DataExportTypeStreaming {
@@ -885,6 +911,7 @@ func (f *fakeStore) StopDataExport(ctx context.Context, id uuid.UUID, ownerID uu
 	}
 	return f.transitionExport(ctx, id, ownerID, models.DataExportStatusStopped, models.DataExportHealthHealthy, "stopped")
 }
+
 func (f *fakeStore) setStreamingExportState(_ context.Context, id uuid.UUID, ownerID uuid.UUID, running bool) (*models.DataExport, error) {
 	now := time.Now().UTC()
 	for source, exports := range f.exports {
@@ -958,6 +985,7 @@ func (f *fakeStore) setStreamingExportState(_ context.Context, id uuid.UUID, own
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) transitionExport(_ context.Context, id uuid.UUID, ownerID uuid.UUID, status models.DataExportStatus, health models.DataExportHealthState, action string) (*models.DataExport, error) {
 	now := time.Now().UTC()
 	for source, exports := range f.exports {
@@ -981,6 +1009,7 @@ func (f *fakeStore) transitionExport(_ context.Context, id uuid.UUID, ownerID uu
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) CompleteSyncRun(_ context.Context, runID uuid.UUID, _ uuid.UUID, status string, bytesWritten int64, filesWritten int64, errMsg *string, ingestJobID *string, datasetVersionID *uuid.UUID, contentHash *string) (*models.SyncRun, error) {
 	for syncID, runs := range f.runs {
 		for i := range runs {
@@ -1001,6 +1030,7 @@ func (f *fakeStore) CompleteSyncRun(_ context.Context, runID uuid.UUID, _ uuid.U
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) PreviousDatasetVersionForHash(_ context.Context, syncDefID uuid.UUID, contentHash string) (*uuid.UUID, error) {
 	for _, run := range f.runs[syncDefID] {
 		if run.ContentHash != nil && *run.ContentHash == contentHash && run.DatasetVersionID != nil {
@@ -1009,6 +1039,7 @@ func (f *fakeStore) PreviousDatasetVersionForHash(_ context.Context, syncDefID u
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) RecordDatasetVersionOnRun(_ context.Context, runID uuid.UUID, datasetVersionID uuid.UUID, contentHash string) error {
 	for syncID, runs := range f.runs {
 		for i := range runs {
@@ -1022,6 +1053,7 @@ func (f *fakeStore) RecordDatasetVersionOnRun(_ context.Context, runID uuid.UUID
 	}
 	return nil
 }
+
 func (f *fakeStore) ListCredentials(_ context.Context, sourceID uuid.UUID, ownerID uuid.UUID) ([]models.CredentialResponse, error) {
 	allowed, _ := f.CheckSourceRole(context.Background(), sourceID, ownerID, models.SourceRoleCodeImport)
 	if !allowed {
@@ -1029,6 +1061,7 @@ func (f *fakeStore) ListCredentials(_ context.Context, sourceID uuid.UUID, owner
 	}
 	return append([]models.CredentialResponse(nil), f.credentials[sourceID]...), nil
 }
+
 func (f *fakeStore) SetCredential(_ context.Context, sourceID uuid.UUID, ownerID uuid.UUID, kind string, _ []byte, fingerprint string) (*models.CredentialResponse, error) {
 	allowed, _ := f.CheckSourceRole(context.Background(), sourceID, ownerID, models.SourceRoleEdit)
 	if !allowed {
@@ -1038,6 +1071,7 @@ func (f *fakeStore) SetCredential(_ context.Context, sourceID uuid.UUID, ownerID
 	f.credentials[sourceID] = append([]models.CredentialResponse{credential}, f.credentials[sourceID]...)
 	return &credential, nil
 }
+
 func (f *fakeStore) ListConnectorAgents(_ context.Context, ownerID uuid.UUID) ([]models.ConnectorAgent, error) {
 	out := []models.ConnectorAgent{}
 	for _, agent := range f.agents {
@@ -1047,6 +1081,7 @@ func (f *fakeStore) ListConnectorAgents(_ context.Context, ownerID uuid.UUID) ([
 	}
 	return out, nil
 }
+
 func (f *fakeStore) RegisterConnectorAgent(_ context.Context, body *models.RegisterAgentRequest, ownerID uuid.UUID) (*models.ConnectorAgent, error) {
 	now := time.Now().UTC()
 	for i := range f.agents {
@@ -1073,6 +1108,7 @@ func (f *fakeStore) RegisterConnectorAgent(_ context.Context, body *models.Regis
 	f.agents = append([]models.ConnectorAgent{agent}, f.agents...)
 	return &f.agents[0], nil
 }
+
 func (f *fakeStore) HeartbeatConnectorAgent(_ context.Context, id uuid.UUID, body *models.AgentHeartbeatRequest, ownerID uuid.UUID) (*models.ConnectorAgent, error) {
 	now := time.Now().UTC()
 	for i := range f.agents {
@@ -1109,6 +1145,7 @@ func (f *fakeStore) HeartbeatConnectorAgent(_ context.Context, id uuid.UUID, bod
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) DeleteConnectorAgent(_ context.Context, id uuid.UUID, ownerID uuid.UUID) (bool, error) {
 	for i := range f.agents {
 		if f.agents[i].ID == id && f.agents[i].OwnerID == ownerID {
@@ -1118,6 +1155,7 @@ func (f *fakeStore) DeleteConnectorAgent(_ context.Context, id uuid.UUID, ownerI
 	}
 	return false, nil
 }
+
 func (f *fakeStore) GetConnectorAgent(_ context.Context, id uuid.UUID) (*models.ConnectorAgent, error) {
 	for i := range f.agents {
 		if f.agents[i].ID == id {
@@ -1127,6 +1165,7 @@ func (f *fakeStore) GetConnectorAgent(_ context.Context, id uuid.UUID) (*models.
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) MigrateConnectionToFoundryWorker(_ context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.Connection, error) {
 	for i := range f.connections {
 		if f.connections[i].ID == id && f.connections[i].OwnerID == ownerID {
@@ -1136,12 +1175,14 @@ func (f *fakeStore) MigrateConnectionToFoundryWorker(_ context.Context, id uuid.
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) ListSourcePolicies(_ context.Context, sourceID uuid.UUID, ownerID uuid.UUID) ([]models.SourcePolicyBindingResponse, error) {
 	if c, _ := f.GetConnectionForOwner(context.Background(), sourceID, ownerID); c == nil {
 		return []models.SourcePolicyBindingResponse{}, nil
 	}
 	return append([]models.SourcePolicyBindingResponse(nil), f.policies[sourceID]...), nil
 }
+
 func (f *fakeStore) AttachPolicy(_ context.Context, sourceID uuid.UUID, ownerID uuid.UUID, policyID uuid.UUID, kind string) (*models.SourcePolicyBindingResponse, error) {
 	allowed, _ := f.CheckSourceRole(context.Background(), sourceID, ownerID, models.SourceRoleEdit)
 	if !allowed {
@@ -1159,6 +1200,7 @@ func (f *fakeStore) AttachPolicy(_ context.Context, sourceID uuid.UUID, ownerID 
 	f.policies[sourceID] = append(items, binding)
 	return &binding, nil
 }
+
 func (f *fakeStore) DetachPolicy(_ context.Context, sourceID uuid.UUID, ownerID uuid.UUID, policyID uuid.UUID) (bool, error) {
 	allowed, _ := f.CheckSourceRole(context.Background(), sourceID, ownerID, models.SourceRoleEdit)
 	if !allowed {
@@ -1327,6 +1369,7 @@ func (f *fakeStore) EnableVirtualTableSource(_ context.Context, sourceRID string
 	f.links[sourceRID] = l
 	return &l, nil
 }
+
 func (f *fakeStore) DiscoverVirtualTableCatalog(_ context.Context, sourceRID string, path string) ([]models.DiscoveredEntry, error) {
 	if _, ok := f.links[sourceRID]; !ok {
 		return nil, nil
@@ -1340,6 +1383,7 @@ func (f *fakeStore) DiscoverVirtualTableCatalog(_ context.Context, sourceRID str
 	}
 	return []models.DiscoveredEntry{{DisplayName: "orders", Path: "analytics/public/orders", Kind: "table", Registrable: true, InferredTableType: &tableType}}, nil
 }
+
 func (f *fakeStore) CreateVirtualTable(_ context.Context, sourceRID string, actorID string, body *models.CreateVirtualTableRequest) (*models.VirtualTable, error) {
 	if _, ok := f.links[sourceRID]; !ok {
 		return nil, nil
@@ -1395,6 +1439,7 @@ func (f *fakeStore) CreateVirtualTable(_ context.Context, sourceRID string, acto
 	f.vtables[rid] = v
 	return &v, nil
 }
+
 func (f *fakeStore) BulkRegisterVirtualTables(ctx context.Context, sourceRID string, actorID string, body *models.VirtualTableBulkRegisterRequest) (*models.VirtualTableBulkRegisterResponse, error) {
 	if _, ok := f.links[sourceRID]; !ok {
 		return nil, nil
@@ -1418,6 +1463,7 @@ func (f *fakeStore) BulkRegisterVirtualTables(ctx context.Context, sourceRID str
 	}
 	return out, nil
 }
+
 func (f *fakeStore) EnableVirtualTableAutoRegistration(_ context.Context, sourceRID string, body *models.EnableAutoRegistrationRequest) (*models.VirtualTableSourceLink, error) {
 	link, ok := f.links[sourceRID]
 	if !ok {
@@ -1440,6 +1486,7 @@ func (f *fakeStore) EnableVirtualTableAutoRegistration(_ context.Context, source
 	f.links[sourceRID] = link
 	return &link, nil
 }
+
 func (f *fakeStore) DisableVirtualTableAutoRegistration(_ context.Context, sourceRID string) error {
 	link, ok := f.links[sourceRID]
 	if ok {
@@ -1448,6 +1495,7 @@ func (f *fakeStore) DisableVirtualTableAutoRegistration(_ context.Context, sourc
 	}
 	return nil
 }
+
 func (f *fakeStore) ScanVirtualTableAutoRegistrationNow(_ context.Context, sourceRID string) (*models.AutoRegistrationScanSummary, error) {
 	link, ok := f.links[sourceRID]
 	if !ok || !link.AutoRegisterEnabled {
@@ -1455,6 +1503,7 @@ func (f *fakeStore) ScanVirtualTableAutoRegistrationNow(_ context.Context, sourc
 	}
 	return &models.AutoRegistrationScanSummary{}, nil
 }
+
 func (f *fakeStore) ListVirtualTables(_ context.Context, ownerID string, project, source, name, tableType string, _ int) ([]models.VirtualTable, error) {
 	out := []models.VirtualTable{}
 	for _, v := range f.vtables {
@@ -1464,6 +1513,7 @@ func (f *fakeStore) ListVirtualTables(_ context.Context, ownerID string, project
 	}
 	return out, nil
 }
+
 func (f *fakeStore) GetVirtualTable(_ context.Context, rid string, ownerID string) (*models.VirtualTable, error) {
 	v, ok := f.vtables[rid]
 	if !ok || v.CreatedBy == nil || *v.CreatedBy != ownerID {
@@ -1471,6 +1521,7 @@ func (f *fakeStore) GetVirtualTable(_ context.Context, rid string, ownerID strin
 	}
 	return &v, nil
 }
+
 func (f *fakeStore) SetVirtualTableUpdateDetection(_ context.Context, rid string, ownerID string, body *models.UpdateDetectionToggle) (*models.VirtualTable, error) {
 	v, ok := f.vtables[rid]
 	if !ok || v.CreatedBy == nil || *v.CreatedBy != ownerID {
@@ -1490,6 +1541,7 @@ func (f *fakeStore) SetVirtualTableUpdateDetection(_ context.Context, rid string
 	f.vtables[rid] = v
 	return &v, nil
 }
+
 func (f *fakeStore) PollVirtualTableUpdateDetection(_ context.Context, rid string, ownerID string) (*models.PollResult, error) {
 	v, ok := f.vtables[rid]
 	if !ok || v.CreatedBy == nil || *v.CreatedBy != ownerID {
@@ -1519,6 +1571,7 @@ func (f *fakeStore) PollVirtualTableUpdateDetection(_ context.Context, rid strin
 	builds := fakeDownstreamBuilds(v, outcome)
 	return &models.PollResult{VirtualTableRID: rid, Outcome: outcome, ObservedVersion: observed, PreviousVersion: previous, LatencyMS: 1, ChangeDetected: change, EventEmitted: outcome != models.PollOutcomeUnchanged, DownstreamBuilds: builds}, nil
 }
+
 func (f *fakeStore) ListVirtualTableUpdateDetectionHistory(_ context.Context, rid string, ownerID string, limit int) ([]models.PollHistoryRow, error) {
 	v, ok := f.vtables[rid]
 	if !ok || v.CreatedBy == nil || *v.CreatedBy != ownerID {
@@ -1530,6 +1583,7 @@ func (f *fakeStore) ListVirtualTableUpdateDetectionHistory(_ context.Context, ri
 	}
 	return items, nil
 }
+
 func (f *fakeStore) GetVirtualTableLineage(_ context.Context, rid string, ownerID string) (*models.VirtualTableLineageResponse, error) {
 	v, ok := f.vtables[rid]
 	if !ok || v.CreatedBy == nil || *v.CreatedBy != ownerID {
@@ -1572,6 +1626,7 @@ func (f *fakeStore) GetVirtualTableLineage(_ context.Context, rid string, ownerI
 func (f *fakeStore) ListRegistrations(_ context.Context, sourceID uuid.UUID) ([]models.ConnectionRegistration, error) {
 	return f.registrations[sourceID], nil
 }
+
 func (f *fakeStore) UpsertRegistration(_ context.Context, sourceID uuid.UUID, source models.DiscoveredSource, mode string, autoSync bool, updateDetection bool, targetDatasetID *uuid.UUID, metadata json.RawMessage) (*models.ConnectionRegistration, error) {
 	if len(metadata) == 0 || string(metadata) == "null" {
 		metadata = []byte(`{}`)
@@ -1593,6 +1648,7 @@ func (f *fakeStore) UpsertRegistration(_ context.Context, sourceID uuid.UUID, so
 	f.registrations[sourceID] = append([]models.ConnectionRegistration{reg}, f.registrations[sourceID]...)
 	return &reg, nil
 }
+
 func (f *fakeStore) GetRegistration(_ context.Context, sourceID uuid.UUID, registrationID uuid.UUID) (*models.ConnectionRegistration, error) {
 	for i := range f.registrations[sourceID] {
 		if f.registrations[sourceID][i].ID == registrationID {
@@ -1601,6 +1657,7 @@ func (f *fakeStore) GetRegistration(_ context.Context, sourceID uuid.UUID, regis
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) DeleteRegistration(_ context.Context, sourceID uuid.UUID, registrationID uuid.UUID) (bool, error) {
 	regs := f.registrations[sourceID]
 	for i := range regs {
@@ -1611,6 +1668,7 @@ func (f *fakeStore) DeleteRegistration(_ context.Context, sourceID uuid.UUID, re
 	}
 	return false, nil
 }
+
 func (f *fakeStore) UpdateConnectionConfig(_ context.Context, id uuid.UUID, config json.RawMessage) (*models.Connection, error) {
 	for i := range f.connections {
 		if f.connections[i].ID == id {
@@ -1621,6 +1679,7 @@ func (f *fakeStore) UpdateConnectionConfig(_ context.Context, id uuid.UUID, conf
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) AppendWebhookHistory(_ context.Context, body *models.CreateWebhookHistoryEntry) (*models.WebhookHistoryEntry, error) {
 	now := time.Now().UTC()
 	if body.StartedAt.IsZero() {
@@ -1656,6 +1715,7 @@ func (f *fakeStore) AppendWebhookHistory(_ context.Context, body *models.CreateW
 	f.webhookHistory[body.SourceID] = append([]models.WebhookHistoryEntry{entry}, f.webhookHistory[body.SourceID]...)
 	return &entry, nil
 }
+
 func (f *fakeStore) ListWebhookHistory(_ context.Context, sourceID uuid.UUID, limit int) ([]models.WebhookHistoryEntry, error) {
 	if limit <= 0 || limit > 500 {
 		limit = 100
@@ -1673,6 +1733,7 @@ func (f *fakeStore) ListWebhookHistory(_ context.Context, sourceID uuid.UUID, li
 	}
 	return out, nil
 }
+
 func (f *fakeStore) AppendInboundListenerEvent(_ context.Context, body *models.CreateInboundListenerEvent) (*models.InboundListenerEvent, error) {
 	now := time.Now().UTC()
 	entry := models.InboundListenerEvent{
@@ -1693,6 +1754,7 @@ func (f *fakeStore) AppendInboundListenerEvent(_ context.Context, body *models.C
 	f.listenerEvents[body.SourceID] = append([]models.InboundListenerEvent{entry}, f.listenerEvents[body.SourceID]...)
 	return &entry, nil
 }
+
 func (f *fakeStore) ListInboundListenerEvents(_ context.Context, sourceID uuid.UUID, limit int) ([]models.InboundListenerEvent, error) {
 	if limit <= 0 || limit > 500 {
 		limit = 100
@@ -1706,6 +1768,7 @@ func (f *fakeStore) ListInboundListenerEvents(_ context.Context, sourceID uuid.U
 	}
 	return out, nil
 }
+
 func cloneTestRawMessage(raw json.RawMessage) json.RawMessage {
 	if len(raw) == 0 {
 		return nil
@@ -1734,6 +1797,7 @@ func (f *fakeStore) ListIcebergNamespaces(_ context.Context) ([]models.Connectio
 	}
 	return out, nil
 }
+
 func (f *fakeStore) GetIcebergConnection(_ context.Context, namespace string) (*models.Connection, error) {
 	for i := range f.connections {
 		if f.connections[i].Name == namespace || strings.NewReplacer("-", "-", " ", "_", ".", "_").Replace(f.connections[i].Name) == namespace {
@@ -1742,6 +1806,7 @@ func (f *fakeStore) GetIcebergConnection(_ context.Context, namespace string) (*
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) ListIcebergTables(_ context.Context, connectionID uuid.UUID) ([]models.ConnectionRegistration, error) {
 	out := []models.ConnectionRegistration{}
 	for _, r := range f.registrations[connectionID] {
@@ -1760,6 +1825,7 @@ func (f *fakeStore) ListMediaSetSyncs(_ context.Context, sourceID uuid.UUID, own
 	}
 	return f.mediaSyncs[sourceID], nil
 }
+
 func (f *fakeStore) GetMediaSetSync(_ context.Context, id uuid.UUID, ownerID uuid.UUID) (*models.MediaSetSync, error) {
 	for source, syncs := range f.mediaSyncs {
 		if c, _ := f.GetConnectionForOwner(context.Background(), source, ownerID); c == nil {
@@ -1773,6 +1839,7 @@ func (f *fakeStore) GetMediaSetSync(_ context.Context, id uuid.UUID, ownerID uui
 	}
 	return nil, nil
 }
+
 func (f *fakeStore) CreateMediaSetSync(_ context.Context, sourceID uuid.UUID, body *models.CreateMediaSetSyncRequest, ownerID uuid.UUID) (*models.MediaSetSync, error) {
 	allowed, _ := f.CheckSourceRole(context.Background(), sourceID, ownerID, models.SourceRoleSyncCreate)
 	if !allowed {
@@ -1782,6 +1849,7 @@ func (f *fakeStore) CreateMediaSetSync(_ context.Context, sourceID uuid.UUID, bo
 	f.mediaSyncs[sourceID] = append([]models.MediaSetSync{m}, f.mediaSyncs[sourceID]...)
 	return &m, nil
 }
+
 func (f *fakeStore) UpdateMediaSetSync(_ context.Context, id uuid.UUID, body *models.UpdateMediaSetSyncRequest, ownerID uuid.UUID) (*models.MediaSetSync, error) {
 	for source, syncs := range f.mediaSyncs {
 		allowed, _ := f.CheckSourceRole(context.Background(), source, ownerID, models.SourceRoleEdit)
