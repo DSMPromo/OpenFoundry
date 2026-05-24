@@ -16,6 +16,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	authmw "github.com/openfoundry/openfoundry-go/libs/auth-middleware"
+	awsclient "github.com/openfoundry/openfoundry-go/libs/aws-client"
 	"github.com/openfoundry/openfoundry-go/libs/capabilities/probes"
 	"github.com/openfoundry/openfoundry-go/libs/observability"
 	"github.com/openfoundry/openfoundry-go/services/llm-catalog-service/internal/config"
@@ -72,6 +73,25 @@ func main() {
 		OpenAIAPIKey:     cfg.OpenAIAPIKey,
 		OpenAIBaseURL:    cfg.OpenAIBaseURL,
 		OllamaBaseURL:    cfg.OllamaBaseURL,
+		BedrockRegion:    cfg.BedrockRegion,
+	}
+	// Bedrock client is optional: when neither BEDROCK_REGION nor
+	// OF_AWS__ENDPOINT_URL is set the catalog still accepts BEDROCK
+	// rows for planning but Lookup returns ErrProviderUnimplemented.
+	if cfg.BedrockRegion != "" || cfg.AWSEndpointURL != "" {
+		bedrockClient, err := awsclient.BedrockRuntime(ctx, awsclient.Config{
+			Region:      cfg.BedrockRegion,
+			EndpointURL: cfg.AWSEndpointURL,
+		})
+		if err != nil {
+			log.Warn("bedrock client init failed; BEDROCK provider disabled",
+				slog.String("error", err.Error()))
+		} else {
+			providerRegistry.BedrockClient = bedrockClient
+			log.Info("bedrock runtime client wired",
+				slog.String("region", cfg.BedrockRegion),
+				slog.Bool("custom_endpoint", cfg.AWSEndpointURL != ""))
+		}
 	}
 
 	// Provider-health prober (B04 §AC#6). Runs in the background and
