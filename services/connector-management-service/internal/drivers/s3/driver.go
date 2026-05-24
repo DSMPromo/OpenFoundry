@@ -16,9 +16,9 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials"
 	awss3 "github.com/aws/aws-sdk-go-v2/service/s3"
+
+	awsclient "github.com/openfoundry/openfoundry-go/libs/aws-client"
 )
 
 // Config is the wire-shape consumed by the driver. It maps onto the same
@@ -94,35 +94,18 @@ type Driver struct {
 // invalid or the AWS SDK refuses to load the credential chain — the
 // network is NOT touched here, that is what Connect is for.
 func New(ctx context.Context, cfg Config) (*Driver, error) {
-	loadOpts := []func(*awsconfig.LoadOptions) error{}
-	if cfg.Region != "" {
-		loadOpts = append(loadOpts, awsconfig.WithRegion(cfg.Region))
-	}
-	if cfg.AccessKeyID != "" && cfg.SecretAccessKey != "" {
-		loadOpts = append(loadOpts, awsconfig.WithCredentialsProvider(
-			credentials.NewStaticCredentialsProvider(cfg.AccessKeyID, cfg.SecretAccessKey, cfg.SessionToken),
-		))
-	}
-	awsCfg, err := awsconfig.LoadDefaultConfig(ctx, loadOpts...)
+	client, err := awsclient.S3(ctx, awsclient.Config{
+		EndpointURL:     cfg.Endpoint,
+		Region:          cfg.Region,
+		AccessKeyID:     cfg.AccessKeyID,
+		SecretAccessKey: cfg.SecretAccessKey,
+		SessionToken:    cfg.SessionToken,
+		PathStyle:       cfg.PathStyle,
+	})
 	if err != nil {
-		return nil, fmt.Errorf("s3: load aws config: %w", err)
+		return nil, fmt.Errorf("s3: %w", err)
 	}
-	if awsCfg.Region == "" {
-		awsCfg.Region = "us-east-1"
-	}
-	clientOpts := []func(*awss3.Options){}
-	if cfg.Endpoint != "" {
-		endpoint := cfg.Endpoint
-		clientOpts = append(clientOpts, func(o *awss3.Options) {
-			o.BaseEndpoint = aws.String(endpoint)
-		})
-	}
-	if cfg.PathStyle || cfg.Endpoint != "" {
-		clientOpts = append(clientOpts, func(o *awss3.Options) {
-			o.UsePathStyle = true
-		})
-	}
-	return &Driver{cfg: cfg, client: awss3.NewFromConfig(awsCfg, clientOpts...)}, nil
+	return &Driver{cfg: cfg, client: client}, nil
 }
 
 // Bucket reports the bucket the driver operates against. Useful in tests
